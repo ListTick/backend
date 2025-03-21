@@ -1,4 +1,4 @@
-package com.pro.list_tick.user.model;
+package com.pro.list_tick.account.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,8 +18,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "user")
-public class User {
+@Table(name = "account")
+public class Account {
 
     @Id
     @UuidGenerator
@@ -36,15 +36,15 @@ public class User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
+            name = "account_role",
+            joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_name")
     )
     private Set<Role> roles = new HashSet<>();
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Account{" +
                 "id=" + id +
                 "username='" + username +
                 ", email='" + email + '}';
