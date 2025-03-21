@@ -1,4 +1,4 @@
-package com.pro.list_tick.user.model;
+package com.pro.list_tick.account.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<User> users = new HashSet<>();
+    private Set<Account> accounts = new HashSet<>();
 
     @Override
     public int hashCode() {

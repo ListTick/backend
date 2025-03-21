@@ -1,6 +1,6 @@
-package com.pro.list_tick.user.repository;
+package com.pro.list_tick.account.repository;
 
-import com.pro.list_tick.user.model.Role;
+import com.pro.list_tick.account.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
