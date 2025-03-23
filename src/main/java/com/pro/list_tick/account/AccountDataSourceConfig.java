@@ -41,6 +41,9 @@ public class AccountDataSourceConfig {
     @Value("${datasource.driver}")
     private String driver;
 
+    @Value("${datasource.dialect}")
+    private String dialect;
+
     private final Environment environment;
 
     @Bean(name = "accountDataSource")
@@ -76,7 +79,7 @@ public class AccountDataSourceConfig {
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+        properties.put("hibernate.dialect", dialect);
         entityManager.setJpaPropertyMap(properties);
 
         return entityManager;

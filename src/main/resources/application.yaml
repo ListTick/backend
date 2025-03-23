@@ -1,17 +1,14 @@
 spring:
   application:
     name: ListTick
-
-    docker:
-      compose:
-        enabled: false
-
+  docker:
+    compose:
+      enabled: false
   flyway:
     enabled: true
   jpa:
     hibernate:
       ddl-auto: update
-
 
 datasource:
   database:
@@ -22,5 +19,6 @@ datasource:
     shopping_list: jdbc:postgresql://localhost:5432/shopping_list
     task: jdbc:postgresql://localhost:5432/task
   user: postgres
-  password: postgres
+  password: admin
   driver: org.postgresql.Driver
+  dialect: org.hibernate.dialect.PostgreSQLDialect
