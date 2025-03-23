@@ -34,8 +34,14 @@ dependencies {
 	implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
 	implementation 'org.springframework.boot:spring-boot-docker-compose'
 	implementation 'org.postgresql:postgresql'
+
+	implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+	implementation 'org.flywaydb:flyway-core:11.4.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.4.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
