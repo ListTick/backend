@@ -40,6 +40,9 @@ public class NotificationDataSourceConfig {
     @Value("${datasource.driver}")
     private String driver;
 
+    @Value("${datasource.dialect}")
+    private String dialect;
+
     private final Environment environment;
 
     @Bean(name = "notificationDataSource")
@@ -54,10 +57,12 @@ public class NotificationDataSourceConfig {
 
     @Bean(name = "notificationFlyway")
     public Flyway flyway(@Qualifier("notificationDataSource") DataSource dataSource) {
-        return Flyway.configure()
+        Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/notification/migration")
                 .load();
+        flyway.migrate();
+        return flyway;
     }
 
     @Bean(name = "notificationEntityManagerFactory")
@@ -72,7 +77,7 @@ public class NotificationDataSourceConfig {
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+        properties.put("hibernate.dialect", dialect);
         entityManager.setJpaPropertyMap(properties);
 
         return entityManager;

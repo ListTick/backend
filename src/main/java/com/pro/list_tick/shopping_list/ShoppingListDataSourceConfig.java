@@ -40,6 +40,9 @@ public class ShoppingListDataSourceConfig {
     @Value("${datasource.driver}")
     private String driver;
 
+    @Value("${datasource.dialect}")
+    private String dialect;
+
     private final Environment environment;
 
     @Bean(name = "shoppingListDataSource")
@@ -54,10 +57,12 @@ public class ShoppingListDataSourceConfig {
 
     @Bean(name = "shoppingListFlyway")
     public Flyway flyway(@Qualifier("shoppingListDataSource") DataSource dataSource) {
-        return Flyway.configure()
+        Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/shopping_list/migration")
                 .load();
+        flyway.migrate();
+        return flyway;
     }
 
     @Bean(name = "shoppingListEntityManagerFactory")
@@ -72,7 +77,7 @@ public class ShoppingListDataSourceConfig {
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+        properties.put("hibernate.dialect", dialect);
         entityManager.setJpaPropertyMap(properties);
 
         return entityManager;
