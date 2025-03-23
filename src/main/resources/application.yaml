@@ -1,8 +1,24 @@
 spring:
   application:
     name: ListTick
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+  docker:
+    compose:
+      enabled: false
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+datasource:
+  database:
+    account: jdbc:postgresql://localhost:5432/account
+    bucket_list: jdbc:postgresql://localhost:5432/bucket_list
+    note: jdbc:postgresql://localhost:5432/note
+    notification: jdbc:postgresql://localhost:5432/notification
+    shopping_list: jdbc:postgresql://localhost:5432/shopping_list
+    task: jdbc:postgresql://localhost:5432/task
+  user: postgres
+  password: admin
+  driver: org.postgresql.Driver
+  dialect: org.hibernate.dialect.PostgreSQLDialect
