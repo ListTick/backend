@@ -1,1 +1,49 @@
 CREATE SCHEMA IF NOT EXISTS public;
+
+CREATE TABLE IF NOT EXISTS public.account (
+    id UUID PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS public.goal (
+    id UUID PRIMARY KEY,
+    description VARCHAR(512),
+    priority int,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    realization_date TIMESTAMP,
+    account_id UUID,
+    FOREIGN KEY (account_id) REFERENCES public.account(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.task (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(1024),
+    total_pomodoros int,
+    completed_pomodoros int,
+    pomodoro_duration int,
+    break_duration int,
+    due_date TIMESTAMP,
+    is_completed BOOLEAN NOT NULL,
+    is_delete BOOLEAN NOT NULL,
+    goal_id UUID,
+    account_id UUID,
+    FOREIGN KEY (goal_id) REFERENCES public.goal(id),
+    FOREIGN KEY (account_id) REFERENCES public.account(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.task_tag (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    color VARCHAR(255),
+    account_id UUID,
+    FOREIGN KEY (account_id) REFERENCES public.account(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.task_task_tag (
+    task_id UUID,
+    task_tag_id UUID,
+    PRIMARY KEY (task_id, task_tag_id),
+    FOREIGN KEY (task_id) REFERENCES public.task(id),
+    FOREIGN KEY (task_tag_id) REFERENCES public.task(id)
+);
