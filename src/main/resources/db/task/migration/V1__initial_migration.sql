@@ -1,10 +1,10 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE IF NOT EXISTS public.account (
+CREATE TABLE public.account (
     id UUID PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS public.goal (
+CREATE TABLE public.goal (
     id UUID PRIMARY KEY,
     description VARCHAR(512),
     priority int,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.goal (
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.task (
+CREATE TABLE public.task (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(1024),
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.task (
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.task_tag (
+CREATE TABLE public.tag (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     color VARCHAR(255),
@@ -40,10 +40,10 @@ CREATE TABLE IF NOT EXISTS public.task_tag (
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.task_task_tag (
+CREATE TABLE public.task_tag (
     task_id UUID,
-    task_tag_id UUID,
-    PRIMARY KEY (task_id, task_tag_id),
+    tag_id UUID,
+    PRIMARY KEY (task_id, tag_id),
     FOREIGN KEY (task_id) REFERENCES public.task(id),
-    FOREIGN KEY (task_tag_id) REFERENCES public.task(id)
+    FOREIGN KEY (tag_id) REFERENCES public.task(id)
 );

@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE IF NOT EXISTS public.account (
+CREATE TABLE public.account (
     id UUID PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(60) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS public.account_settings (
+CREATE TABLE public.account_settings (
     account_id UUID PRIMARY KEY,
     default_pomodoro_duration INT DEFAULT 25,
     default_pomodoro_break_duration INT DEFAULT 5,
@@ -23,11 +23,11 @@ CREATE TABLE IF NOT EXISTS public.account_settings (
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.role (
+CREATE TABLE public.role (
     name VARCHAR(255) PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS public.account_role (
+CREATE TABLE public.account_role (
     name VARCHAR(255),
     account_id UUID,
     PRIMARY KEY (name, account_id),
