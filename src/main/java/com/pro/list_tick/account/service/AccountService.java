@@ -1,11 +1,11 @@
 package com.pro.list_tick.account.service;
 
 import com.pro.list_tick.account.dto.AccountCreatedDto;
-import com.pro.list_tick.account.event.AccountCreatedEvent;
 import com.pro.list_tick.account.model.Account;
 import com.pro.list_tick.account.model.Role;
 import com.pro.list_tick.account.repository.AccountRepository;
 import com.pro.list_tick.account.repository.RoleRepository;
+import com.pro.list_tick.event.AccountCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,7 @@ public class AccountService {
 
         publisher.publishEvent(new AccountCreatedEvent(accountDto.accountId()));
     }
+
 
     public AccountCreatedDto saveAccount() {
         Account account = new Account();
