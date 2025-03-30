@@ -25,7 +25,7 @@ CREATE TABLE public.task (
     break_duration int,
     due_date TIMESTAMP,
     is_completed BOOLEAN NOT NULL,
-    is_delete BOOLEAN NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
     goal_id UUID,
     account_id UUID,
     FOREIGN KEY (goal_id) REFERENCES public.goal(id),
