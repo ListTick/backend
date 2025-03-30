@@ -4,7 +4,8 @@ CREATE TABLE public.account (
     id UUID PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    password VARCHAR(60) NOT NULL
+    password VARCHAR(60) NOT NULL,
+    roles TEXT[] NOT NULL DEFAULT ARRAY['USER']
 );
 
 CREATE TABLE public.account_settings (
@@ -20,17 +21,5 @@ CREATE TABLE public.account_settings (
     default_shoppingList_category_colour VARCHAR(9) NOT NULL,
     default_bucketList_category_colour VARCHAR(9) NOT NULL,
     default_goal_category_colour VARCHAR(9) NOT NULL,
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
-);
-
-CREATE TABLE public.role (
-    name VARCHAR(255) PRIMARY KEY
-);
-
-CREATE TABLE public.account_role (
-    name VARCHAR(255),
-    account_id UUID,
-    PRIMARY KEY (name, account_id),
-    FOREIGN KEY (name) REFERENCES public.role(name),
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
