@@ -5,7 +5,7 @@ CREATE TABLE public.account (
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(60) NOT NULL,
-    roles JSONB NOT NULL DEFAULT '[]'
+    roles TEXT[] NOT NULL DEFAULT ARRAY['USER']
 );
 
 CREATE TABLE public.account_settings (

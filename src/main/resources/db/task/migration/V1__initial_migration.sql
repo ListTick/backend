@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE TABLE public.account (
     id UUID PRIMARY KEY,
-    roles JSONB NOT NULL,
+    roles TEXT[] NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
