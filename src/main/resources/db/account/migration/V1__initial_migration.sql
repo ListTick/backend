@@ -4,8 +4,7 @@ CREATE TABLE public.account (
     id UUID PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    password VARCHAR(60) NOT NULL,
-    roles TEXT[] NOT NULL DEFAULT ARRAY['USER']
+    password VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE public.account_settings (
