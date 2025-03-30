@@ -1,20 +1,19 @@
 package com.pro.list_tick.account.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
 
-import java.util.*;
+import java.util.UUID;
 
 @Entity
 @Data
 @Table(name = "account")
 public class Account {
-
     @Id
     @UuidGenerator
     private UUID id;
@@ -28,10 +27,6 @@ public class Account {
 
     @NotBlank(message = "Password cannot be blank")
     private String password;
-
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "roles", columnDefinition = "text[] default '{ROLE_USER}'")
-    private List<String> roles = new ArrayList<>();
 
     @Override
     public String toString() {
