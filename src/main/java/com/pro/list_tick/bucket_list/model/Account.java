@@ -1,4 +1,4 @@
-package com.pro.list_tick.task.model;
+package com.pro.list_tick.bucket_list.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
