@@ -1,6 +1,7 @@
 package com.pro.list_tick.account;
 
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
