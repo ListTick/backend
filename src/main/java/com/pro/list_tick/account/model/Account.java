@@ -22,6 +22,7 @@ public class Account {
     @NotBlank(message = "Username cannot be blank")
     private String username;
 
+    @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email should be valid")
     private String email;
 

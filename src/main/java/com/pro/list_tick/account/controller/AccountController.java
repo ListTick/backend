@@ -1,9 +1,11 @@
 package com.pro.list_tick.account.controller;
 
+import com.pro.list_tick.account.dto.AccountDto;
 import com.pro.list_tick.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -13,8 +15,8 @@ public class AccountController {
     private final AccountService accountService;
 
     @RequestMapping("/create")
-    public ResponseEntity<String> createAccount() {
-        accountService.createAccount();
+    public ResponseEntity<String> createAccount(@RequestBody AccountDto accountDto) {
+        accountService.createAccount(accountDto);
 
         return ResponseEntity.ok("Account created");
     }
