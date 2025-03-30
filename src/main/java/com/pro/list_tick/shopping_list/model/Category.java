@@ -12,9 +12,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.dialect.VarcharUUIDJdbcType;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +24,6 @@ public class Category {
 
     @Id
     @UuidGenerator
-    @JdbcType(VarcharUUIDJdbcType.class)
     private UUID id;
 
     @NotBlank(message = "Name cannot be blank")

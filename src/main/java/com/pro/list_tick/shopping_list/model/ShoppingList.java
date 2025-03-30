@@ -11,9 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.dialect.VarcharUUIDJdbcType;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -25,7 +23,6 @@ public class ShoppingList {
 
     @Id
     @UuidGenerator
-    @JdbcType(VarcharUUIDJdbcType.class)
     private UUID id;
 
     @NotBlank(message = "Name cannot be blank")
