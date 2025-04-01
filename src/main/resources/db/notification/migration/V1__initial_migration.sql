@@ -1,7 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE TABLE public.account (
-     id UUID PRIMARY KEY
+     id UUID PRIMARY KEY,
+     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE public.notification (

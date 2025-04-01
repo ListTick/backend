@@ -9,5 +9,4 @@ public class ListTickApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ListTickApplication.class, args);
 	}
-
 }

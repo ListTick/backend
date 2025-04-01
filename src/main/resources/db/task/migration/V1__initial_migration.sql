@@ -1,7 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE TABLE public.account (
-    id UUID PRIMARY KEY
+    id UUID PRIMARY KEY,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE public.goal (
@@ -25,7 +26,7 @@ CREATE TABLE public.task (
     break_duration int,
     due_date TIMESTAMP,
     is_completed BOOLEAN NOT NULL,
-    is_delete BOOLEAN NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
     goal_id UUID,
     account_id UUID,
     FOREIGN KEY (goal_id) REFERENCES public.goal(id),

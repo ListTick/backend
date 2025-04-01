@@ -22,15 +22,3 @@ CREATE TABLE public.account_settings (
     default_goal_category_colour VARCHAR(9) NOT NULL,
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
-
-CREATE TABLE public.role (
-    name VARCHAR(255) PRIMARY KEY
-);
-
-CREATE TABLE public.account_role (
-    name VARCHAR(255),
-    account_id UUID,
-    PRIMARY KEY (name, account_id),
-    FOREIGN KEY (name) REFERENCES public.role(name),
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
-);
