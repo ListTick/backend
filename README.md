@@ -21,3 +21,8 @@ Database setup:
         'CREATE DATABASE task'
 
     - configure the InteliJ database plugin connections for every database
+
+OpenAPI documentation:
+
+api documentation -> http://localhost:8080/api-docs
+swagger ui -> http://localhost:8080/swagger-ui/index.html

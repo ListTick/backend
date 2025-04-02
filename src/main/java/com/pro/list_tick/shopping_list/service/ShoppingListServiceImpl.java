@@ -10,14 +10,14 @@ import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.model.Category;
-import com.pro.list_tick.shopping_list.model.SLAccount;
+import com.pro.list_tick.shopping_list.model.Account;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
 import com.pro.list_tick.shopping_list.repository.SLAccountRepository;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
 import com.pro.list_tick.shopping_list.repository.SharedShoppingListRepository;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ShoppingListServiceImpl implements ShoppingListService{
+public class ShoppingListServiceImpl implements ShoppingListService {
     public static final String LIST_NOT_FOUND = "Shopping list not found: %s";
 
     private final ShoppingListRepository shoppingListRepository;
@@ -57,11 +57,12 @@ public class ShoppingListServiceImpl implements ShoppingListService{
     }
 
     public List<ItemDTO> getItemsByShoppingListId(UUID id) {
-        var shoppingList = shoppingListRepository.findById(id)
+        var shoppingList = shoppingListRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new ShoppingListException(String.format(LIST_NOT_FOUND, id)));
         return shoppingList.getItems().stream().map(ItemMapper::toDTO).toList();
     }
 
+    @Transactional
     public ShoppingListDTO create(ShoppingListInputDTO shoppingListInputDTO) {
         var shoppingList = ShoppingListMapper.toModel(shoppingListInputDTO);
         var owner = getAccount(shoppingListInputDTO.getAccountId());
@@ -87,6 +88,7 @@ public class ShoppingListServiceImpl implements ShoppingListService{
         return ShoppingListMapper.toDTO(savedShoppingList);
     }
 
+    @Transactional
     public ShoppingListDTO update(UUID id, ShoppingListDTO shoppingListDTO) {
         var optional = shoppingListRepository.findById(id);
         var shoppingList = optional
@@ -121,7 +123,7 @@ public class ShoppingListServiceImpl implements ShoppingListService{
                 .orElseThrow(() -> new CategoryException(String.format("Category not found: %s", categoryId)));
     }
 
-    private SLAccount getAccount(UUID accountId) {
+    private Account getAccount(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountException(String.format("Account not found: %s", accountId)));
     }
@@ -129,9 +131,9 @@ public class ShoppingListServiceImpl implements ShoppingListService{
     private List<SharedShoppingList> createSharedLists(ShoppingList shoppingList, List<AccountSharedWithDto> sharedWith) {
         return sharedWith.stream()
                 .map(accountSharedWithDto -> {
-                    SLAccount SLAccount = getAccount(accountSharedWithDto.getUuid());
+                    Account account = getAccount(accountSharedWithDto.getUuid());
                     SharedShoppingList shared = new SharedShoppingList();
-                    shared.setShoppingListAndAccount(shoppingList, SLAccount);
+                    shared.setShoppingListAndAccount(shoppingList, account);
                     shared.setCostFactor(accountSharedWithDto.getCostFactor());
                     return sharedShoppingListRepository.save(shared);
                 }).toList();

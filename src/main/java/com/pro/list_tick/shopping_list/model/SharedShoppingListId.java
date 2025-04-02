@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class AccountShoppingListId implements Serializable {
+public class SharedShoppingListId implements Serializable {
 
     private UUID account;
 
