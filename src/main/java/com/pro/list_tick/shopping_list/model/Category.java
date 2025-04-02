@@ -43,7 +43,7 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
-    private Account account;
+    private SLAccount account;
 
     @Override
     public String toString() {
