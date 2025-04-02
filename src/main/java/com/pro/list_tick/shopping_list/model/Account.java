@@ -1,4 +1,4 @@
-package com.pro.list_tick.notification.model;
+package com.pro.list_tick.shopping_list.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

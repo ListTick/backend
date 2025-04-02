@@ -1,5 +1,6 @@
 package com.pro.list_tick.task.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -18,6 +19,7 @@ public class Account {
     private UUID id;
 
     @UpdateTimestamp
+    @Column(name = "last_updated")
     private Instant lastUpdated;
 
 }
