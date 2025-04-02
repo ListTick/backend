@@ -1,29 +1,18 @@
-package com.pro.list_tick.shopping_list.model;
+package com.pro.list_tick.shopping_list.dto;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
-@Entity
 @Data
-@Table(name = "item")
-public class Item {
+public class ItemDTO {
 
-    @Id
-    @UuidGenerator
     private UUID id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -38,12 +27,10 @@ public class Item {
     @NotNull(message = "Active field cannot be null")
     private Boolean active;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "expense_id")
-    private Expense expense;
+    @Nullable
+    private UUID expenseId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_list_id")
-    private ShoppingList shoppingList;
+    @NotBlank(message = "ShoppingListId cannot be blank")
+    private UUID shoppingListId;
 
 }
