@@ -1,4 +1,4 @@
-package com.pro.list_tick.shopping_list;
+package com.pro.list_tick.shopping_list.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
