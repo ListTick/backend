@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -16,6 +17,9 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, UUID
 
     @Query("SELECT sl.account.id FROM ShoppingList sl WHERE sl.id = :shoppingListId")
     UUID findUserIdById(@Param("shoppingListId")UUID shoppingListId);
+
+    @Query("SELECT sl FROM ShoppingList sl LEFT JOIN FETCH sl.items WHERE sl.id = :id")
+    Optional<ShoppingList> findByIdWithItems(UUID id);
 
     boolean existsByNameAndAccountId(String name, UUID accountId);
 

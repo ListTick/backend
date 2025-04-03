@@ -1,11 +1,11 @@
 package com.pro.list_tick.shopping_list.repository;
 
-import com.pro.list_tick.shopping_list.model.SLAccount;
+import com.pro.list_tick.shopping_list.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 @Repository
-public interface SLAccountRepository extends JpaRepository<SLAccount, UUID> {
+public interface SLAccountRepository extends JpaRepository<Account, UUID> {
 }
