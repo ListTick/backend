@@ -29,4 +29,7 @@ public class Task {
 
     @ManyToOne
     private Goal goal;
+
+    @ManyToOne
+    private Account account;
 }
