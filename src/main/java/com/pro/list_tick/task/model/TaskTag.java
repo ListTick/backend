@@ -11,8 +11,10 @@ import java.util.UUID;
 public class TaskTag {
 
     @Id
+    @Column(name = "task_id")
     private UUID taskId;
 
     @Id
+    @Column(name = "tag_id")
     private UUID tagId;
 }
