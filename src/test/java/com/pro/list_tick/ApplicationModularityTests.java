@@ -9,7 +9,7 @@ public class ApplicationModularityTests {
     @Test
     void testModulesAreValid() {
         ApplicationModules modules = ApplicationModules.of(ListTickApplication.class,
-                JavaClass.Predicates.resideInAPackage("com.pro.list_tick.event"));
+                JavaClass.Predicates.resideInAPackage("com.pro.list_tick.shared.."));
 
         modules.verify();
     }
