@@ -1,7 +1,7 @@
 package com.pro.list_tick.task.listener;
 
 import com.pro.list_tick.task.service.TaskAccountService;
-import com.pro.list_tick.event.AccountCreatedEvent;
+import com.pro.list_tick.shared.event.AccountCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

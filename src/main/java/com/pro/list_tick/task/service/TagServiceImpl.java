@@ -1,5 +1,6 @@
 package com.pro.list_tick.task.service;
 
+import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.task.dto.TagRequestDto;
 import com.pro.list_tick.task.dto.TagResponseDto;
 import com.pro.list_tick.task.exception.TagNameAlreadyUsedException;
@@ -19,24 +20,25 @@ import java.util.UUID;
 public class TagServiceImpl implements TagService {
     private final TaskTagService taskTagService;
     private final TagRepository tagRepository;
+    private final CurrentAccountService currentAccountService;
 
     @Transactional
     public TagResponseDto createTag(TagRequestDto tagRequestDto) {
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc"); //TODO how do we check the currentUser
-        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentUserAccountId);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentAccountId);
 
         if (tagEntity != null && tagEntity.getName().equals(tagRequestDto.name())) {
             throw new TagNameAlreadyUsedException("Tag name is already used!");
         }
 
-        Tag tag = TagMapper.toEntity(tagRequestDto, currentUserAccountId);
+        Tag tag = TagMapper.toEntity(tagRequestDto, currentAccountId);
         tagRepository.save(tag);
         return TagMapper.toDto(tag);
     }
 
     public List<TagResponseDto> getAllTags() {
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc"); //TODO how do we check the currentUser
-        List<Tag> tags = tagRepository.findAllByAccountId(currentUserAccountId);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        List<Tag> tags = tagRepository.findAllByAccountId(currentAccountId);
 
         return tags.stream().map(TagMapper::toDto).toList();
     }
@@ -44,9 +46,8 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagResponseDto updateTag(TagRequestDto tagRequestDto, UUID tagId) {
         Tag tag = findTagById(tagId);
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc");  //TODO how do we check the currentUser
-
-        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentUserAccountId);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentAccountId);
 
         if (tagEntity != null && !tagEntity.getId().equals(tag.getId())) {
             throw new TagNameAlreadyUsedException("Tag name is already used!");

@@ -1,5 +1,6 @@
 package com.pro.list_tick.task.service;
 
+import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.task.dto.TaskPageDto;
 import com.pro.list_tick.task.dto.TaskRequestDto;
 import com.pro.list_tick.task.dto.TaskResponseDto;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -22,11 +22,12 @@ public class TaskServiceImpl implements TaskService {
     private final TagService tagService;
     private final TaskTagService taskTagService;
     private final TaskRepository taskRepository;
+    private final CurrentAccountService currentAccountService;
 
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc");  //TODO how do we check the currentUser
-        Task task = TaskMapper.toEntity(taskRequestDto, currentUserAccountId);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
         taskRepository.save(task);
         if (taskRequestDto.tagIds() == null) {
@@ -41,11 +42,11 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskResponseDto> getTasksByAccountId(List<String> tags) {
         List<Task> tasks;
 
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc");  //TODO how do we check the currentUser
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
         if (tags == null || tags.isEmpty()) {
-            tasks = taskRepository.findAllNotDeletedByAccountId(currentUserAccountId);
+            tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
         } else {
-            tasks = taskRepository.findAllNotDeletedByAccountIdAndTags(currentUserAccountId, tags);
+            tasks = taskRepository.findAllNotDeletedByAccountIdAndTags(currentAccountId, tags);
         }
 
         return tasks.stream()
@@ -57,8 +58,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public TaskPageDto getArchivedTasksByAccountId(Pageable pageable) {
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc");  //TODO how do we check the currentUser
-        Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentUserAccountId, pageable);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
 
         List<TaskResponseDto> tasks =  tasksPage.getContent().stream()
                 .map(task -> TaskMapper
@@ -109,7 +110,7 @@ public class TaskServiceImpl implements TaskService {
         Integer alreadyCompletedPomodoros = task.getCompletedPomodoros();
         task.setCompletedPomodoros(alreadyCompletedPomodoros + completedPomodoros);
 
-        if (Objects.equals(task.getCompletedPomodoros(), task.getTotalPomodoros())) {
+        if (task.getCompletedPomodoros().equals(task.getTotalPomodoros())) {
             task.setCompleted(true);
         }
         taskRepository.save(task);
@@ -125,9 +126,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public void deleteAllCompletedTasks() {
-        UUID currentUserAccountId = UUID.fromString("0a247225-f9b9-4021-8848-75f56fb6fedc");  //TODO how do we check the currentUser
-
-        taskRepository.deleteAllCompletedTasksByAccountId(currentUserAccountId);
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        taskRepository.deleteAllCompletedTasksByAccountId(currentAccountId);
     }
 
     public Task findTaskById(UUID taskId) {
