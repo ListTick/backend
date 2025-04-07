@@ -3,6 +3,7 @@ package com.pro.list_tick.task.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -17,6 +18,7 @@ public class Tag {
     @UuidGenerator
     private UUID id;
 
+    @NotNull
     String name;
     String color;
 

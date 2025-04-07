@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Name;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -19,6 +20,7 @@ public class Task {
     @UuidGenerator
     private UUID id;
 
+    @NotNull
     private String name;
     private String description;
 
@@ -38,9 +40,11 @@ public class Task {
     private LocalDate dueDate;
 
     @Column(name = "is_completed")
+    @NotNull
     private boolean isCompleted;
 
     @Column(name = "is_deleted")
+    @NotNull
     private boolean isDeleted;
 
     @ManyToOne
