@@ -17,13 +17,7 @@ public class TaskTagServiceImpl implements TaskTagService {
 
     @Transactional
     public void linkTaskWithTags(UUID taskId, List<UUID> tagIds) {
-        List<TaskTag> taskTags = getAllTaskTagsByTaskId(taskId);
-
-        List<UUID> idsToDelete = taskTags.stream()
-                .map(TaskTag::getTagId)
-                .toList();
-
-        taskTagRepository.deleteAllByTagIdIn(idsToDelete);
+        taskTagRepository.deleteAllByTaskId(taskId);
 
         if (!tagIds.isEmpty()) {
             List<TaskTag> newTaskTags = tagIds.stream()

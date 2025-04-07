@@ -10,4 +10,6 @@ public interface TaskTagRepository extends JpaRepository<TaskTag, UUID> {
     List<TaskTag> findAllByTaskId(UUID taskId);
 
     void deleteAllByTagIdIn(List<UUID> idsToDelete);
+
+    void deleteAllByTaskId(UUID taskId);
 }

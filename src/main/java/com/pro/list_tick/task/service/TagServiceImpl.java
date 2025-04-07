@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
-    private final TaskTagServiceImpl taskTagServiceImpl;
+    private final TaskTagService taskTagService;
     private final TagRepository tagRepository;
 
     @Transactional
@@ -68,7 +68,7 @@ public class TagServiceImpl implements TagService {
     }
 
     public List<Tag> getAllTagsByTaskId(UUID id) {
-        List<TaskTag> taskTags = taskTagServiceImpl.getAllTaskTagsByTaskId(id);
+        List<TaskTag> taskTags = taskTagService.getAllTaskTagsByTaskId(id);
         List<UUID> tagIds = taskTags.stream().map(TaskTag::getTagId).toList();
 
         return tagRepository.findAllById(tagIds);

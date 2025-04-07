@@ -19,8 +19,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-    private final TagServiceImpl tagServiceImpl;
-    private final TaskTagServiceImpl taskTagServiceImpl;
+    private final TagService tagService;
+    private final TaskTagService taskTagService;
     private final TaskRepository taskRepository;
 
     @Transactional
@@ -32,7 +32,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskRequestDto.tagIds() == null) {
             return TaskMapper.toDto(task);
         }
-        taskTagServiceImpl.linkTaskWithTags(task.getId(), taskRequestDto.tagIds());
+        taskTagService.linkTaskWithTags(task.getId(), taskRequestDto.tagIds());
 
         return TaskMapper.toDto(task);
     }
@@ -50,7 +50,7 @@ public class TaskServiceImpl implements TaskService {
 
         return tasks.stream()
                 .map(task -> TaskMapper
-                        .toDto(task, tagServiceImpl.getAllTagsByTaskId(task.getId())))
+                        .toDto(task, tagService.getAllTagsByTaskId(task.getId())))
                 .toList();
     }
 
@@ -62,7 +62,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<TaskResponseDto> tasks =  tasksPage.getContent().stream()
                 .map(task -> TaskMapper
-                        .toDto(task, tagServiceImpl.getAllTagsByTaskId(task.getId())))
+                        .toDto(task, tagService.getAllTagsByTaskId(task.getId())))
                 .toList();
 
         return new TaskPageDto(
