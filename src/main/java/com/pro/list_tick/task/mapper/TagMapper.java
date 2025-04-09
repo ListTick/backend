@@ -2,6 +2,7 @@ package com.pro.list_tick.task.mapper;
 
 import com.pro.list_tick.task.dto.TagRequestDto;
 import com.pro.list_tick.task.dto.TagResponseDto;
+import com.pro.list_tick.task.model.Account;
 import com.pro.list_tick.task.model.Tag;
 
 import java.util.List;
@@ -25,11 +26,16 @@ public class TagMapper {
         return tags.stream().map(TagMapper::toDto).toList();
     }
 
-    public static Tag toEntity(TagRequestDto tagRequestDto, UUID userId) {
+    public static Tag toEntity(TagRequestDto tagRequestDto, UUID accountId) {
         Tag tag = new Tag();
         tag.setId(UUID.randomUUID());
         tag.setName(tagRequestDto.name());
         tag.setColor(tagRequestDto.color());
+
+        Account account = new Account();
+        account.setId(accountId);
+
+        tag.setAccount(account);
 
         return tag;
     }

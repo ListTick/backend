@@ -8,6 +8,7 @@ import com.pro.list_tick.task.mapper.TaskMapper;
 import com.pro.list_tick.task.model.Task;
 import com.pro.list_tick.task.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskServiceImpl implements TaskService {
     private final TagService tagService;
     private final TaskTagService taskTagService;
@@ -30,10 +32,12 @@ public class TaskServiceImpl implements TaskService {
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
         taskRepository.save(task);
-        if (taskRequestDto.tagIds() == null) {
+        if (taskRequestDto.tagIds() == null || taskRequestDto.tagIds().isEmpty()) {
             return TaskMapper.toDto(task);
+        } else {
+            taskTagService.linkTaskWithTags(task.getId(), taskRequestDto.tagIds());
+            log.info("xD");
         }
-        taskTagService.linkTaskWithTags(task.getId(), taskRequestDto.tagIds());
 
         return TaskMapper.toDto(task);
     }
@@ -130,7 +134,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteAllCompletedTasksByAccountId(currentAccountId);
     }
 
-    public Task findTaskById(UUID taskId) {
+    private Task findTaskById(UUID taskId) {
         return taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task doesn't exist!"));
     }

@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface TagRepository extends JpaRepository<Tag, UUID> {
     List<Tag> findAllByAccountId(UUID accountId);
 
-    @Query("SELECT t FROM Tag t WHERE t.name = :name AND t.account.id = :accountId")
-    Tag findByName(String name, UUID accountId);
+    @Query("SELECT COUNT(t) > 0 FROM Tag t WHERE t.name = :name AND t.account.id = :accountId")
+    boolean existsByName(String name, UUID accountId);
 }

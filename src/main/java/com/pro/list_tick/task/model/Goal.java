@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -21,9 +23,11 @@ public class Goal {
     private Integer priority;
 
     @Column(name = "start_date")
+    @FutureOrPresent
     private LocalDate startDate;
 
     @Column(name = "end_date")
+    @Future
     private LocalDate endDate;
 
     @Column(name = "realization_date")

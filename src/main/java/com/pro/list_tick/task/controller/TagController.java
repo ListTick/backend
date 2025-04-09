@@ -2,7 +2,7 @@ package com.pro.list_tick.task.controller;
 
 import com.pro.list_tick.task.dto.TagRequestDto;
 import com.pro.list_tick.task.dto.TagResponseDto;
-import com.pro.list_tick.task.service.TagServiceImpl;
+import com.pro.list_tick.task.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +14,18 @@ import java.util.UUID;
 @RequestMapping("/api/tag")
 @RequiredArgsConstructor
 public class TagController {
-    private final TagServiceImpl tagServiceImpl;
+    private final TagService tagService;
 
     @PostMapping
     public ResponseEntity<TagResponseDto> createTag(@RequestBody TagRequestDto tagRequestDto) {
-        TagResponseDto tagResponseDto = tagServiceImpl.createTag(tagRequestDto);
+        TagResponseDto tagResponseDto = tagService.createTag(tagRequestDto);
 
         return ResponseEntity.ok(tagResponseDto);
     }
 
     @GetMapping
     public ResponseEntity<List<TagResponseDto>> getTags() {
-        List<TagResponseDto> tags = tagServiceImpl.getAllTags();
+        List<TagResponseDto> tags = tagService.getAllTags();
 
         return ResponseEntity.ok(tags);
     }
@@ -33,14 +33,14 @@ public class TagController {
     @PutMapping("/{tagId}")
     public ResponseEntity<TagResponseDto> updateTag(@RequestBody TagRequestDto tagRequestDto,
                                                     @PathVariable UUID tagId) {
-        TagResponseDto tagResponseDto = tagServiceImpl.updateTag(tagRequestDto, tagId);
+        TagResponseDto tagResponseDto = tagService.updateTag(tagRequestDto, tagId);
 
         return ResponseEntity.ok(tagResponseDto);
     }
 
     @DeleteMapping("/{tagId}")
     public ResponseEntity<String> deleteTag(@PathVariable UUID tagId) {
-        tagServiceImpl.deleteTag(tagId);
+        tagService.deleteTag(tagId);
 
         return ResponseEntity.ok("Tag deleted");
     }

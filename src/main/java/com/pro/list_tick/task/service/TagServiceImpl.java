@@ -25,11 +25,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagResponseDto createTag(TagRequestDto tagRequestDto) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentAccountId);
-
-        if (tagEntity != null && tagEntity.getName().equals(tagRequestDto.name())) {
-            throw new TagNameAlreadyUsedException("Tag name is already used!");
-        }
+        checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
 
         Tag tag = TagMapper.toEntity(tagRequestDto, currentAccountId);
         tagRepository.save(tag);
@@ -45,13 +41,9 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public TagResponseDto updateTag(TagRequestDto tagRequestDto, UUID tagId) {
-        Tag tag = findTagById(tagId);
+        Tag tag = getTagById(tagId);
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        Tag tagEntity = tagRepository.findByName(tagRequestDto.name(), currentAccountId);
-
-        if (tagEntity != null && !tagEntity.getId().equals(tag.getId())) {
-            throw new TagNameAlreadyUsedException("Tag name is already used!");
-        }
+        checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
 
         tag.setName(tagRequestDto.name());
         tag.setColor(tagRequestDto.color());
@@ -63,7 +55,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public void deleteTag(UUID tagId) {
-        Tag tag = findTagById(tagId);
+        Tag tag = getTagById(tagId);
 
         tagRepository.delete(tag);
     }
@@ -75,7 +67,13 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findAllById(tagIds);
     }
 
-    private Tag findTagById(UUID tagId) {
+    private void checkIfTagNameExists(String name, UUID currentAccountId) {
+        if (tagRepository.existsByName(name, currentAccountId)) {
+            throw new TagNameAlreadyUsedException("Tag name is already used!");
+        }
+    }
+
+    private Tag getTagById(UUID tagId) {
         return tagRepository.findById(tagId)
                 .orElseThrow(() -> new RuntimeException("Tag doesn't exist!"));
     }
