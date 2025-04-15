@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -19,6 +20,9 @@ public class Goal {
     @Id
     @UuidGenerator
     private UUID id;
+
+    @NotNull
+    private String name;
     private String description;
     private Integer priority;
 

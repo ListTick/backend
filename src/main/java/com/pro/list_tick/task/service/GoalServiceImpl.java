@@ -38,18 +38,7 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public void createGoal(GoalRequestDto goalRequestDto) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-
-        Goal goal = new Goal();
-        goal.setDescription(goalRequestDto.description());
-        goal.setPriority(goalRequestDto.priority());
-        goal.setStartDate(goalRequestDto.startDate());
-        goal.setEndDate(goalRequestDto.endDate());
-        goal.setRealizationDate(goalRequestDto.realizationDate());
-
-        Account account = new Account();
-        account.setId(currentAccountId);
-
-        goal.setAccount(account);
+        Goal goal = GoalMapper.toEntity(goalRequestDto, currentAccountId);
 
         goalRepository.save(goal);
     }
