@@ -28,7 +28,6 @@ public class TagMapper {
 
     public static Tag toEntity(TagRequestDto tagRequestDto, UUID accountId) {
         Tag tag = new Tag();
-        tag.setId(UUID.randomUUID());
         tag.setName(tagRequestDto.name());
         tag.setColor(tagRequestDto.color());
 
