@@ -1,6 +1,5 @@
 package com.pro.list_tick.task.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -10,12 +9,13 @@ import java.util.UUID;
 public record TaskRequestDto(
 
         @NotBlank
+        @Max(value = 255, message = "Name should be less than 255 characters")
         String name,
 
         @Min(value = 1, message = "There should be at least 1 pomodoro")
         Integer totalPomodoros,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "Completed pomodoros should not be negative")
         Integer completedPomodoros,
 
         @Min(value = 5, message = "Pomodoro duration should be at least 5")
@@ -26,9 +26,9 @@ public record TaskRequestDto(
         @Max(value = 30, message = "Break duration should be at max 30")
         Integer breakDuration,
 
-        @Future
-        @JsonFormat(pattern = "yyyy-MM-dd")
+        @Future(message = "Due date should be in the future")
         LocalDate dueDate,
+
         boolean isCompleted,
         boolean isDeleted,
         List<UUID> tagIds
