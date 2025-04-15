@@ -1,9 +1,9 @@
 package com.pro.list_tick.task.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -18,8 +18,10 @@ public class Tag {
     @UuidGenerator
     private UUID id;
 
-    @NotNull
+    @Column(nullable = false, length = 255)
     String name;
+
+    @Column(length = 7)
     String color;
 
     @ManyToOne

@@ -1,0 +1,2 @@
+ALTER TABLE tag
+    ALTER color SET DATA TYPE VARCHAR(7);
