@@ -1,0 +1,3 @@
+ALTER TABLE task_tag
+    ALTER COLUMN task_id SET NOT NULL,
+    ALTER COLUMN tag_id SET NOT NULL;
