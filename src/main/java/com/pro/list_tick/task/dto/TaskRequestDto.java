@@ -9,7 +9,7 @@ import java.util.UUID;
 public record TaskRequestDto(
 
         @NotBlank
-        @Max(value = 255, message = "Name should be less than 255 characters")
+        @Size(min = 1, max = 255, message = "Task name should be between 1 and 255 characters")
         String name,
 
         @Min(value = 1, message = "There should be at least 1 pomodoro")

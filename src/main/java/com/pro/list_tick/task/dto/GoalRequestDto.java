@@ -1,17 +1,18 @@
 package com.pro.list_tick.task.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public record GoalRequestDto(
 
-        @NotNull(message = "Name cannot be null")
+        @NotBlank(message = "Name cannot be blank")
+        @Size(min = 1, max = 255, message = "Name should be between 1 and 255 characters")
         String name,
 
-        @Size(max = 512, message = "Description should be less than 512 characters")
+        @Size(max = 255, message = "Description should be at most 255 characters")
         String description,
         Integer priority,
 
