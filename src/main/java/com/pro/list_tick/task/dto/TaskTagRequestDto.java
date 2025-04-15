@@ -6,10 +6,10 @@ import java.util.UUID;
 
 public record TaskTagRequestDto(
 
-        @NotNull
+        @NotNull(message = "Task ID cannot be null")
         UUID taskId,
 
-        @NotNull
+        @NotNull(message = "Tag ID cannot be null")
         UUID tagId
 ) {
 }
