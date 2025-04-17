@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -17,12 +18,12 @@ import lombok.Data;
 public class SharedShoppingList {
 
     @EmbeddedId
-    private AccountShoppingListId id;
+    private SharedShoppingListId id;
 
     @ManyToOne
     @MapsId("account")
     @JoinColumn(name = "account_id")
-    private SLAccount account;
+    private Account account;
 
     @ManyToOne
     @MapsId("shoppingList")
@@ -32,12 +33,13 @@ public class SharedShoppingList {
     @NotNull(message = "Cost factor cannot be null")
     @Min(message = "Cost factor minimum value is 0", value = 0)
     @Max(message = "Cost factor maximum value is 100", value = 100)
+    @Column(name = "cost_factor")
     private Integer costFactor;
 
-    public void setShoppingListAndAccount(ShoppingList shoppingList, SLAccount account) {
+    public void setShoppingListAndAccount(ShoppingList shoppingList, Account account) {
         this.shoppingList = shoppingList;
         this.account = account;
-        this.id = new AccountShoppingListId();
+        this.id = new SharedShoppingListId();
         this.id.setShoppingList(shoppingList.getId());
         this.id.setAccount(account.getId());
     }

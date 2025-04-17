@@ -1,6 +1,6 @@
 package com.pro.list_tick.shopping_list.repository;
 
-import com.pro.list_tick.shopping_list.model.AccountShoppingListId;
+import com.pro.list_tick.shopping_list.model.SharedShoppingListId;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface SharedShoppingListRepository extends JpaRepository<SharedShoppingList, AccountShoppingListId> {
+public interface SharedShoppingListRepository extends JpaRepository<SharedShoppingList, SharedShoppingListId> {
 
     List<SharedShoppingList> findAllByAccountId(UUID userId);
 
