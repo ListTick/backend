@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/account/categories")
+@RequestMapping("/api/shopping-lists/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
