@@ -3,12 +3,17 @@ spring:
     name: ListTick
   docker:
     compose:
-      enabled: false
+      enabled: true
   flyway:
     enabled: true
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/listtick 
 
 datasource:
   database:
@@ -26,3 +31,4 @@ datasource:
 springdoc:
   api-docs:
     path: /api-docs
+

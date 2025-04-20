@@ -1,34 +1,9 @@
 services:
-  postgres:
-    container_name: postgres_db
-    image: postgres:17
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: account
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - list-tick-network
-
-  pgadmin:
-    container_name: pgadmin4
-    image: dpage/pgadmin4
+      - "8090:8080"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: password
-    ports:
-      - "8000:80"
-    networks:
-      - list-tick-network
-    depends_on:
-      - postgres
-
-volumes:
-  postgres-data:
-
-networks:
-  list-tick-network:
-    driver: bridge
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
