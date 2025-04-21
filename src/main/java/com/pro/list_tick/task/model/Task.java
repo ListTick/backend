@@ -45,9 +45,12 @@ public class Task {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    @ManyToOne
-    private Goal goal;
+    @Column(name = "account_id", nullable = false)
+    private UUID accountId;
 
     @ManyToOne
-    private Account account;
+    private Tag tag;
+
+    @ManyToOne
+    private Goal goal;
 }

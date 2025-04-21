@@ -2,12 +2,8 @@ package com.pro.list_tick.task.mapper;
 
 import com.pro.list_tick.task.dto.TaskRequestDto;
 import com.pro.list_tick.task.dto.TaskResponseDto;
-import com.pro.list_tick.task.model.Account;
-import com.pro.list_tick.task.model.Tag;
 import com.pro.list_tick.task.model.Task;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class TaskMapper {
@@ -18,30 +14,18 @@ public class TaskMapper {
 
     public static TaskResponseDto toDto(Task task) {
         return new TaskResponseDto(
-                task.getId(),
-                task.getName(),
-                task.getTotalPomodoros(),
-                task.getCompletedPomodoros(),
-                task.getPomodoroDuration(),
-                task.getBreakDuration(),
-                task.getDueDate(),
-                task.isCompleted(),
-                new ArrayList<>()
-                );
-    }
-    public static TaskResponseDto toDto(Task task, List<Tag> tags) {
-        return new TaskResponseDto(
-                task.getId(),
-                task.getName(),
-                task.getTotalPomodoros(),
-                task.getCompletedPomodoros(),
-                task.getPomodoroDuration(),
-                task.getBreakDuration(),
-                task.getDueDate(),
-                task.isCompleted(),
-                TagMapper.toDto(tags)
+            task.getId(),
+            task.getName(),
+            task.getTotalPomodoros(),
+            task.getCompletedPomodoros(),
+            task.getPomodoroDuration(),
+            task.getBreakDuration(),
+            task.getDueDate(),
+            task.isCompleted(),
+            task.getTag() != null ? TagMapper.toDto(task.getTag()) : null
         );
     }
+
     public static Task toEntity(TaskRequestDto taskDto, UUID userId) {
         Task task = new Task();
 
@@ -53,11 +37,7 @@ public class TaskMapper {
         task.setDueDate(taskDto.dueDate());
         task.setCompleted(false);
         task.setDeleted(false);
-
-        Account account = new Account();
-        account.setId(userId);
-
-        task.setAccount(account);
+        task.setAccountId(userId);
 
         return task;
     }

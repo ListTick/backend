@@ -3,7 +3,6 @@ package com.pro.list_tick.task.dto;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 public record TaskRequestDto(
@@ -31,6 +30,6 @@ public record TaskRequestDto(
 
         boolean isCompleted,
         boolean isDeleted,
-        List<UUID> tagIds
+        UUID tagId
 ) {
 }

@@ -3,7 +3,6 @@ package com.pro.list_tick.task.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 public record TaskResponseDto(
@@ -17,6 +16,6 @@ public record TaskResponseDto(
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate dueDate,
         boolean isCompleted,
-        List<TagResponseDto> tags
+        TagResponseDto tag
 ) {
 }

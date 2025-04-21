@@ -21,8 +21,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class TaskServiceImpl implements TaskService {
-    private final TagService tagService;
-    private final TaskTagService taskTagService;
     private final TaskRepository taskRepository;
     private final CurrentAccountService currentAccountService;
 
@@ -32,43 +30,28 @@ public class TaskServiceImpl implements TaskService {
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
         taskRepository.save(task);
-        if (taskRequestDto.tagIds() == null || taskRequestDto.tagIds().isEmpty()) {
-            return TaskMapper.toDto(task);
-        } else {
-            taskTagService.linkTaskWithTags(task.getId(), taskRequestDto.tagIds());
-            log.info("xD");
-        }
 
         return TaskMapper.toDto(task);
     }
 
     @Transactional
-    public List<TaskResponseDto> getTasksByAccountId(List<String> tags) {
-        List<Task> tasks;
-
+    public List<TaskResponseDto> getTasks(String tag) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        if (tags == null || tags.isEmpty()) {
-            tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
-        } else {
-            tasks = taskRepository.findAllNotDeletedByAccountIdAndTags(currentAccountId, tags);
-        }
+        List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
 
-        return tasks.stream()
-                .map(task -> TaskMapper
-                        .toDto(task, tagService.getAllTagsByTaskId(task.getId())))
-                .toList();
+        return tasks.stream().map(TaskMapper::toDto).toList();
     }
 
 
     @Transactional
-    public TaskPageDto getArchivedTasksByAccountId(Pageable pageable) {
+    public TaskPageDto getArchivedTasks(Pageable pageable) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
         Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
 
-        List<TaskResponseDto> tasks =  tasksPage.getContent().stream()
-                .map(task -> TaskMapper
-                        .toDto(task, tagService.getAllTagsByTaskId(task.getId())))
-                .toList();
+        List<TaskResponseDto> tasks =  tasksPage
+                .getContent()
+                .stream()
+                .map(TaskMapper::toDto).toList();
 
         return new TaskPageDto(
                 tasksPage.getTotalPages(),

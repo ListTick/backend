@@ -35,6 +35,6 @@ public class Goal {
     @Column(name = "realization_date")
     private LocalDate realizationDate;
 
-    @ManyToOne
-    private Account account;
+    @Column(name = "account_id", nullable = false)
+    private UUID accountId;
 }

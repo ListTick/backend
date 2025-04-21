@@ -24,6 +24,6 @@ public class Tag {
     @Column(length = 7)
     String color;
 
-    @ManyToOne
-    Account account;
+    @Column(name = "account_id", nullable = false)
+    UUID accountId;
 }

@@ -6,7 +6,6 @@ import com.pro.list_tick.task.dto.TagResponseDto;
 import com.pro.list_tick.task.exception.TagNameAlreadyUsedException;
 import com.pro.list_tick.task.mapper.TagMapper;
 import com.pro.list_tick.task.model.Tag;
-import com.pro.list_tick.task.model.TaskTag;
 import com.pro.list_tick.task.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
-    private final TaskTagService taskTagService;
     private final TagRepository tagRepository;
     private final CurrentAccountService currentAccountService;
 
@@ -58,13 +56,6 @@ public class TagServiceImpl implements TagService {
         Tag tag = getTagById(tagId);
 
         tagRepository.delete(tag);
-    }
-
-    public List<Tag> getAllTagsByTaskId(UUID id) {
-        List<TaskTag> taskTags = taskTagService.getAllTaskTagsByTaskId(id);
-        List<UUID> tagIds = taskTags.stream().map(TaskTag::getTagId).toList();
-
-        return tagRepository.findAllById(tagIds);
     }
 
     private void checkIfTagNameExists(String name, UUID currentAccountId) {
