@@ -11,6 +11,7 @@ import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +37,14 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream()
                 .map(CategoryMapper::toDTO)
                 .toList();
+    }
+
+    public List<CategoryDTO> getAllByAccountId() {
+        //var categories = categoryRepository.findAllByAccountId(accountId);
+//        return categories.stream()
+//                .map(CategoryMapper::toDTO)
+//                .toList();
+        return new ArrayList<>();
     }
 
     public CategoryDTO getById(UUID id) {

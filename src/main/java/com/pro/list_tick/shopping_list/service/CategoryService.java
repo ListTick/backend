@@ -10,6 +10,7 @@ public interface CategoryService {
 
     List<CategoryDTO> getAll();
     List<CategoryDTO> getAllByAccountId(UUID userId);
+    List<CategoryDTO> getAllByAccountId();
     CategoryDTO getById(UUID id);
     CategoryDTO create(UUID userId, CategoryInputDTO categoryInputDTO);
     CategoryDTO update(UUID id, CategoryDTO categoryDTO);
