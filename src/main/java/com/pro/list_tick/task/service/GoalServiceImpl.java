@@ -4,7 +4,6 @@ import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.task.dto.GoalRequestDto;
 import com.pro.list_tick.task.dto.GoalResponseDto;
 import com.pro.list_tick.task.mapper.GoalMapper;
-import com.pro.list_tick.task.model.Account;
 import com.pro.list_tick.task.model.Goal;
 import com.pro.list_tick.task.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;
