@@ -4,7 +4,7 @@ import com.pro.list_tick.account.dto.AccountDto;
 import com.pro.list_tick.account.mapper.AccountMapper;
 import com.pro.list_tick.account.model.Account;
 import com.pro.list_tick.account.repository.AccountRepository;
-import com.pro.list_tick.event.AccountCreatedEvent;
+import com.pro.list_tick.shared.event.AccountCreatedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

@@ -1,4 +1,4 @@
-package com.pro.list_tick.event;
+package com.pro.list_tick.shared.event;
 
 import java.util.UUID;
 

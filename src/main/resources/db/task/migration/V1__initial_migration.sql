@@ -7,13 +7,19 @@ CREATE TABLE public.account (
 
 CREATE TABLE public.goal (
     id UUID PRIMARY KEY,
+    name VARCHAR(255),
     description VARCHAR(512),
     priority int,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
-    realization_date TIMESTAMP,
-    account_id UUID,
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
+    realization_date TIMESTAMP
+);
+
+CREATE TABLE public.tag (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    color VARCHAR(7),
+    account_id UUID NOT NULL
 );
 
 CREATE TABLE public.task (
@@ -28,23 +34,8 @@ CREATE TABLE public.task (
     is_completed BOOLEAN NOT NULL,
     is_deleted BOOLEAN NOT NULL,
     goal_id UUID,
-    account_id UUID,
-    FOREIGN KEY (goal_id) REFERENCES public.goal(id),
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
-);
-
-CREATE TABLE public.tag (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    color VARCHAR(255),
-    account_id UUID,
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
-);
-
-CREATE TABLE public.task_tag (
-    task_id UUID,
     tag_id UUID,
-    PRIMARY KEY (task_id, tag_id),
-    FOREIGN KEY (task_id) REFERENCES public.task(id),
-    FOREIGN KEY (tag_id) REFERENCES public.task(id)
+    account_id UUID NOT NULL,
+    FOREIGN KEY (goal_id) REFERENCES public.goal(id),
+    FOREIGN KEY (tag_id) REFERENCES public.tag(id)
 );
