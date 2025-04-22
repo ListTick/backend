@@ -13,7 +13,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8090/realms/listtick 
+          issuer-uri: http://localhost:8090/realms/listtick
 
 datasource:
   database:
@@ -31,4 +31,3 @@ datasource:
 springdoc:
   api-docs:
     path: /api-docs
-

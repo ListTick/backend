@@ -1,5 +1,6 @@
 package com.pro.list_tick.task.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -17,9 +18,12 @@ public class Tag {
     @UuidGenerator
     private UUID id;
 
+    @Column(nullable = false, length = 255)
     String name;
+
+    @Column(length = 7)
     String color;
 
-    @ManyToOne
-    Account account;
+    @Column(name = "account_id", nullable = false)
+    UUID accountId;
 }
