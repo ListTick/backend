@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @Table(name = "account_shopping_list")
@@ -20,10 +22,8 @@ public class SharedShoppingList {
     @EmbeddedId
     private SharedShoppingListId id;
 
-    @ManyToOne
     @MapsId("account")
-    @JoinColumn(name = "account_id")
-    private Account account;
+    private UUID accountId;
 
     @ManyToOne
     @MapsId("shoppingList")
@@ -36,12 +36,12 @@ public class SharedShoppingList {
     @Column(name = "cost_factor")
     private Integer costFactor;
 
-    public void setShoppingListAndAccount(ShoppingList shoppingList, Account account) {
+    public void setShoppingListAndAccount(ShoppingList shoppingList, UUID accountId) {
         this.shoppingList = shoppingList;
-        this.account = account;
+        this.accountId = accountId;
         this.id = new SharedShoppingListId();
         this.id.setShoppingList(shoppingList.getId());
-        this.id.setAccount(account.getId());
+        this.id.setAccount(accountId);
     }
 
 }

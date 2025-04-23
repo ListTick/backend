@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.controller;
 
+import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.CategoryDTO;
 import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
 import com.pro.list_tick.shopping_list.service.CategoryService;
@@ -26,13 +27,13 @@ import java.util.UUID;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CurrentAccountService currentAccountService;
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllByAccountId() {
-        //get the id from token
-        //var categories = categoryService.getAllByAccountId(accountId);
-        var categories = categoryService.getAllByAccountId();
+        var accountId = currentAccountService.getCurrentAccountId();
+        var categories = categoryService.getAllByAccountId(accountId);
         return ResponseEntity.ok(categories);
     }
 

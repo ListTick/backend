@@ -52,9 +52,8 @@ public class ShoppingList {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @NotNull(message = "Account id cannot be null")
+    private UUID accountId;
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE,
