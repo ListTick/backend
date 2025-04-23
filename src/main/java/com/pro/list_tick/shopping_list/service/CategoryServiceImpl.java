@@ -18,6 +18,7 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService {
 
     public static final String CATEGORY_NOT_FOUND = "Category not found: %s";
+    public static final String CATEGORY_CONFLICT = "Category not found: %s, for the user: %s";
 
     private final SLCategoryRepository categoryRepository;
     private final CurrentAccountService currentAccountService;
@@ -33,7 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO getById(UUID id) {
         final var category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
-            return CategoryMapper.toDTO(category);
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!category.getAccountId().equals(accountId)) {
+            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+        }
+        return CategoryMapper.toDTO(category);
     }
 
     public CategoryDTO create(CategoryInputDTO categoryInputDTO) {
@@ -47,18 +52,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public CategoryDTO update(UUID id, CategoryDTO categoryDTO) {
-        var optional = categoryRepository.findById(id);
-        var category = optional
+        final var category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!category.getAccountId().equals(accountId)) {
+            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+        }
         category.setName(categoryDTO.getName());
         category.setColour(categoryDTO.getColour());
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
 
     public CategoryDTO updateByFields(UUID id, CategoryInputDTO categoryInputDTO) {
-        var optional = categoryRepository.findById(id);
-        var category = optional
+        var category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!category.getAccountId().equals(accountId)) {
+            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+        }
         if (categoryInputDTO.getName() != null) {
             category.setName(categoryInputDTO.getName());
         }
@@ -71,6 +82,10 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(UUID id) {
         var category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!category.getAccountId().equals(accountId)) {
+            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+        }
         categoryRepository.delete(category);
     }
 
