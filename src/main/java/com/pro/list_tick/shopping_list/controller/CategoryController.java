@@ -6,7 +6,6 @@ import com.pro.list_tick.shopping_list.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -55,14 +54,12 @@ public class CategoryController {
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateByFields(@PathVariable UUID id,
                                                               @RequestBody CategoryInputDTO categoryInputDTO) {
-        //todo maybe dto without an id, verify if the user has an access to the resource
         var category = categoryService.updateByFields(id, categoryInputDTO);
         return ResponseEntity.ok(category);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        //todo check the access
         categoryService.delete(id);
         return ResponseEntity.ok().build();
     }
