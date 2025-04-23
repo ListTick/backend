@@ -1,28 +1,18 @@
-Database setup:
+1. Database setup:
 
-    - pull the postgres version 17 image
-        'docker pull postgres:17'
+- execute setup-db.sh script
 
-    - create a postgres container 
-        'docker run -d --name listtick -p 5432:5432 -e POSTGRES_PASSWORD=admin postgres:17'
+2. Keycloak setup:
 
-    - check if you can see the postgres container
-        'docker ps'
+keycloak url -> http://localhost:8090/
+user -> admin
+password -> admin
 
-    - connect to the container 
-        'docker exec -it postgres psql -U postgres'
+on the left top corner, click 'Create realm' button
+choose a path to the realm-export.json file 
 
-    - create the project databases
-        'CREATE DATABASE account'
-        'CREATE DATABASE bucket_list'
-        'CREATE DATABASE note'
-        'CREATE DATABASE notification'
-        'CREATE DATABASE shopping_list'
-        'CREATE DATABASE task'
 
-    - configure the InteliJ database plugin connections for every database
-
-OpenAPI documentation:
+3. OpenAPI documentation:
 
 api documentation -> http://localhost:8080/api-docs
 swagger ui -> http://localhost:8080/swagger-ui/index.html
