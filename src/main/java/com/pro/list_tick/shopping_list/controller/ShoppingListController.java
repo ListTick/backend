@@ -27,36 +27,24 @@ public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
 
-
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ShoppingListDTO>> getAll() {
-        var shoppingLists = shoppingListService.getAll();
+    public ResponseEntity<List<ShoppingListDTO>> getAllByAccountId() {
+        var shoppingLists = shoppingListService.getAllByAccountId();
         return ResponseEntity.ok(shoppingLists);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN') || (hasRole('ROLE_USER') && @securityService.isCurrentUser(#userId))")
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<ShoppingListDTO>> getAllByAccountId(@PathVariable UUID accountId) {
-        var shoppingLists = shoppingListService.getAllByAccountId(accountId);
-        return ResponseEntity.ok(shoppingLists);
-    }
-
-    //@PreAuthorize("hasRole('ROLE_ADMIN') || (hasRole('ROLE_USER') && @securityService.isShoppingListAuthorized(#id))")
     @GetMapping("/{id}")
     public ResponseEntity<ShoppingListDTO> getById(@PathVariable UUID id) {
         var shoppingLists = shoppingListService.getById(id);
         return ResponseEntity.ok(shoppingLists);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN') || (hasRole('ROLE_USER') && @securityService.isShoppingListAuthorized(#id))")
     @GetMapping("/{id}/items")
     public ResponseEntity<List<ItemDTO>> getItemsByShoppingListId(@PathVariable UUID id) {
         var items = shoppingListService.getItemsByShoppingListId(id);
         return ResponseEntity.ok(items);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN') || (hasRole('ROLE_USER') && @securityService.isCurrentUser(#shoppingListInputDTO.userId))")
     @PostMapping
     public ResponseEntity<ShoppingListDTO> create(@Valid @RequestBody ShoppingListInputDTO shoppingListInputDTO) {
         var shoppingList = shoppingListService.create(shoppingListInputDTO);

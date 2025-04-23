@@ -9,8 +9,7 @@ import java.util.UUID;
 
 public interface ShoppingListService {
 
-    List<ShoppingListDTO> getAll();
-    List<ShoppingListDTO> getAllByAccountId(UUID accountId);
+    List<ShoppingListDTO> getAllByAccountId();
     ShoppingListDTO getById(UUID id);
     List<ItemDTO> getItemsByShoppingListId(UUID id);
     ShoppingListDTO create(ShoppingListInputDTO shoppingListInputDTO);
