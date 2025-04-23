@@ -12,7 +12,8 @@ CREATE TABLE public.goal (
     priority int,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
-    realization_date TIMESTAMP
+    realization_date TIMESTAMP,
+    account_id UUID NOT NULL
 );
 
 CREATE TABLE public.tag (

@@ -38,6 +38,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskResponseDto> getTasks(String tag) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
         List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
+        //todo: add tag
 
         return tasks.stream().map(TaskMapper::toDto).toList();
     }
