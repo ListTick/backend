@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "shopping_list")
+@Data
 public class ShoppingList {
 
     @Id

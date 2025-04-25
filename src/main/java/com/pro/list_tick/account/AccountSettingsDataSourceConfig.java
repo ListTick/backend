@@ -22,14 +22,14 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.pro.list_tick.account",
-        entityManagerFactoryRef = "accountEntityManagerFactory",
-        transactionManagerRef = "accountTransactionManager"
+        basePackages = "com.pro.list_tick.account.repository.settings",
+        entityManagerFactoryRef = "accountSettingsEntityManagerFactory",
+        transactionManagerRef = "accountSettingsTransactionManager"
 )
 @RequiredArgsConstructor
-public class AccountDataSourceConfig {
+public class AccountSettingsDataSourceConfig {
 
-    @Value("${datasource.database.account}")
+    @Value("${datasource.database.account_settings}")
     private String database;
 
     @Value("${datasource.user}")
@@ -46,7 +46,7 @@ public class AccountDataSourceConfig {
 
     private final Environment environment;
 
-    @Bean(name = "accountDataSource")
+    @Bean(name = "accountSettingsDataSource")
     public DataSource getDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(driver);
@@ -56,23 +56,23 @@ public class AccountDataSourceConfig {
         return dataSourceBuilder.build();
     }
 
-    @Bean(name = "accountFlyway")
-    public Flyway flyway(@Qualifier("accountDataSource") DataSource dataSource) {
+    @Bean(name = "accountSettingsFlyway")
+    public Flyway flyway(@Qualifier("accountSettingsDataSource") DataSource dataSource) {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
-                .locations("classpath:db/account/migration")
+                .locations("classpath:db/account_settings/migration")
                 .load();
         flyway.migrate();
         return flyway;
     }
 
     @Primary
-    @Bean(name = "accountEntityManagerFactory")
+    @Bean(name = "accountSettingsEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("accountDataSource") DataSource dataSource) {
+            @Qualifier("accountSettingsDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
         entityManager.setDataSource(dataSource);
-        entityManager.setPackagesToScan("com.pro.list_tick.account", "org.springframework.modulith.events.jpa");
+        entityManager.setPackagesToScan("com.pro.list_tick.account.model.settings");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         entityManager.setJpaVendorAdapter(vendorAdapter);
@@ -86,9 +86,9 @@ public class AccountDataSourceConfig {
     }
 
     @Primary
-    @Bean(name = "accountTransactionManager")
+    @Bean(name = "accountSettingsTransactionManager")
     public PlatformTransactionManager transactionManager(
-            @Qualifier("accountEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+            @Qualifier("accountSettingsEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 

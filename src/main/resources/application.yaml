@@ -17,7 +17,8 @@ spring:
 
 datasource:
   database:
-    account: jdbc:postgresql://localhost:5432/account
+    account_settings: jdbc:postgresql://localhost:5432/account_settings
+    keycloak: jdbc:postgresql://localhost:5432/keycloak
     bucket_list: jdbc:postgresql://localhost:5432/bucket_list
     note: jdbc:postgresql://localhost:5432/note
     notification: jdbc:postgresql://localhost:5432/notification

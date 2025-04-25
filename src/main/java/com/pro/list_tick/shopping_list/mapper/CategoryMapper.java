@@ -30,7 +30,7 @@ public class CategoryMapper {
     public static Category toModel(CategoryInputDTO categoryInputDTO) {
         Category category = new Category();
         category.setName(categoryInputDTO.getName());
-        category.setColour("BLACK"); //todo
+        category.setColour(categoryInputDTO.getColour());
         return category;
     }
 

@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "expense")
+@Data
 public class Expense {
 
     @Id

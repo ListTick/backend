@@ -1,15 +1,20 @@
 package com.pro.list_tick.shopping_list.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.UUID;
 
+@Embeddable
 @Data
 public class SharedShoppingListId implements Serializable {
 
-    private UUID account;
+    @Column(name = "account_id")
+    private UUID accountId;
 
-    private UUID shoppingList;
+    @Column(name = "shopping_list_id")
+    private UUID shoppingListId;
 
 }

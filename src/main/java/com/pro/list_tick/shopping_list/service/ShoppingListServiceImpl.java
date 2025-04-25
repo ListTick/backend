@@ -5,20 +5,16 @@ import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
-import com.pro.list_tick.shopping_list.exception.AccountException;
 import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.model.Category;
-import com.pro.list_tick.shopping_list.model.Account;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
-import com.pro.list_tick.shopping_list.repository.SLAccountRepository;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
 import com.pro.list_tick.shopping_list.repository.SharedShoppingListRepository;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
-import jakarta.validation.constraints.Email;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,13 +34,12 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
     private final SLCategoryRepository categoryRepository;
-    private final SLAccountRepository accountRepository;
     private final SharedShoppingListRepository sharedShoppingListRepository;
 
     public List<ShoppingListDTO> getAllByAccountId() {
         final var accountId = currentAccountService.getCurrentAccountId();
         var shoppingLists = shoppingListRepository.findAllByAccountId(accountId);
-        var sharedShoppingLists = sharedShoppingListRepository.findAllByAccountId(accountId);
+        var sharedShoppingLists = sharedShoppingListRepository.findAllByIdAccountId(accountId);
         List<ShoppingListDTO> dtoList = new ArrayList<>(shoppingLists.stream().map(ShoppingListMapper::toDTO).toList());
         dtoList.addAll(sharedShoppingLists.stream().map(SharedShoppingList::getShoppingList).map(ShoppingListMapper::toDTO).toList());
         return dtoList;

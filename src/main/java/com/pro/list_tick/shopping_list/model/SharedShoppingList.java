@@ -15,18 +15,15 @@ import lombok.Data;
 import java.util.UUID;
 
 @Entity
+@Table(name = "shared_shopping_list")
 @Data
-@Table(name = "account_shopping_list")
 public class SharedShoppingList {
 
     @EmbeddedId
     private SharedShoppingListId id;
 
-    @MapsId("account")
-    private UUID accountId;
-
     @ManyToOne
-    @MapsId("shoppingList")
+    @MapsId("shoppingListId")
     @JoinColumn(name = "shopping_list_id")
     private ShoppingList shoppingList;
 
@@ -36,12 +33,17 @@ public class SharedShoppingList {
     @Column(name = "cost_factor")
     private Integer costFactor;
 
+    public UUID getAccountId() {
+        return id != null ? id.getAccountId() : null;
+    }
+
     public void setShoppingListAndAccount(ShoppingList shoppingList, UUID accountId) {
+        if (this.id == null) {
+            this.id = new SharedShoppingListId();
+        }
+        this.id.setShoppingListId(shoppingList.getId());
+        this.id.setAccountId(accountId);
         this.shoppingList = shoppingList;
-        this.accountId = accountId;
-        this.id = new SharedShoppingListId();
-        this.id.setShoppingList(shoppingList.getId());
-        this.id.setAccount(accountId);
     }
 
 }

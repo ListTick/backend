@@ -18,8 +18,8 @@ import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "item")
+@Data
 public class Item {
 
     @Id

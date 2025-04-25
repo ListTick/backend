@@ -1,16 +1,10 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.account (
-    id UUID PRIMARY KEY,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE public.category (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     colour VARCHAR(9) NOT NULL,
-    account_id UUID,
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
+    account_id UUID NOT NULL
 );
 
 CREATE TABLE public.expense (
@@ -26,10 +20,9 @@ CREATE TABLE public.shopping_list (
     active BOOLEAN NOT NULL,
     creation_date TIMESTAMP NOT NULL,
     owner_cost_factor INTEGER NOT NULL,
-    category_id UUID NOT NULL,
     account_id UUID NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES public.category(id),
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
+    category_id UUID NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES public.category(id)
 );
 
 CREATE TABLE public.item (
@@ -43,11 +36,10 @@ CREATE TABLE public.item (
     FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list(id)
 );
 
-CREATE TABLE public.account_shopping_list (
-    cost_factor INTEGER NOT NULL,
-    shopping_list_id UUID NOT NULL,
+CREATE TABLE public.shared_shopping_list (
     account_id UUID NOT NULL,
+    shopping_list_id UUID NOT NULL,
+    cost_factor INTEGER NOT NULL,
     PRIMARY KEY (shopping_list_id, account_id),
-    FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list (id),
-    FOREIGN KEY (account_id) REFERENCES public.account(id)
+    FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list (id)
 );

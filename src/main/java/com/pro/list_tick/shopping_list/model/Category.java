@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "category")
+@Data
 public class Category {
 
     @Id
