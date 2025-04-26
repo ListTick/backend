@@ -2,6 +2,7 @@ package com.pro.list_tick.account.service;
 
 import com.pro.list_tick.account.repository.settings.AccountSettingsRepository;
 import com.pro.list_tick.account.repository.keycloak.KeycloakRepository;
+import com.pro.list_tick.shopping_list.exception.AccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,11 @@ public class AccountServiceImpl implements AccountService {
     private final AccountSettingsRepository accountSettingsRepository;
     private final KeycloakRepository keycloakRepository;
 
-    @Override
+    public static final String ACCOUNT_NOT_FOUND = "Account not found: %s";
+
     public UUID getUUIDbyEmail(String email) {
-        return null;
+        return keycloakRepository.findIdByEmail(email)
+                .orElseThrow(() -> new AccountException(String.format(ACCOUNT_NOT_FOUND, email)));
     }
 
 //    @Transactional

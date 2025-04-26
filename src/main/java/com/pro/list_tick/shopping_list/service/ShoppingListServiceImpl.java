@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.service;
 
+import com.pro.list_tick.shared.api.AccountAPI;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
@@ -31,6 +32,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     public static final String LIST_CONFLICT = "Shopping list not found: %s, for the user: %s";
 
     private final CurrentAccountService currentAccountService;
+    private final AccountAPI accountAPI;
 
     private final ShoppingListRepository shoppingListRepository;
     private final SLCategoryRepository categoryRepository;
@@ -90,7 +92,6 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
         return ShoppingListMapper.toDTO(savedShoppingList);
     }
-    //todo start from rest account service call
     @Transactional
     public ShoppingListDTO update(UUID id, ShoppingListDTO shoppingListDTO) {
         var optional = shoppingListRepository.findById(id);
@@ -139,8 +140,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     }
 
     private UUID getAccountId(String email) {
-        //todo write rest request to get the uuid from account service
-        return UUID.randomUUID();
+        return accountAPI.findIdByEmail(email);
     }
 
     private int calculateCostFactor(boolean isShared, List<AccountSharedWithDto> sharedWithAccounts) {

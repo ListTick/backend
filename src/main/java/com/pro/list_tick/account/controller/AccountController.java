@@ -17,7 +17,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping("/id/{email}")
+    @GetMapping("/{email}/id")
     public ResponseEntity<UUID> getUUIDbyEmail(@PathVariable String email) {
         final UUID uuid = accountService.getUUIDbyEmail(email);
         return ResponseEntity.ok(uuid);
