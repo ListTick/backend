@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.service;
 
 
+import com.pro.list_tick.shared.api.AccountAPI;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.CategoryDTO;
 import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     public static final String CATEGORY_NOT_FOUND = "Category not found: %s";
     public static final String CATEGORY_CONFLICT = "Category not found: %s, for the user: %s";
+
+    private final AccountAPI accountAPI;
 
     private final SLCategoryRepository categoryRepository;
     private final CurrentAccountService currentAccountService;
@@ -48,6 +52,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         var category = CategoryMapper.toModel(categoryInputDTO);
         category.setAccountId(accountId);
+        if (Objects.isNull(category.getColour())) {
+            category.setColour(accountAPI.getDefaultShoppingListCategoryColourById(accountId));
+        }
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
 

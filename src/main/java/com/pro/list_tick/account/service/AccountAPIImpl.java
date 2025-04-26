@@ -15,9 +15,64 @@ public class AccountAPIImpl implements AccountAPI {
     private final KeycloakRepository keycloakRepository;
 
     @Override
-    public UUID findIdByEmail(String email) {
+    public UUID getAccountIdByEmail(String email) {
         return keycloakRepository.findIdByEmail(email)
                 .orElseThrow(() -> new AccountException("Account not found: " + email));
+    }
+
+    @Override
+    public String getDefaultPomodoroDurationById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultPomodoroBreakDurationById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultPomodoroLongBreakDurationById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultPomodoroLongBreakIntervalById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultNotificationBreakReminderTimeById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getLongBreakEnabledById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultTaskTagColourById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultNoteTagColourById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultGoalCategoryColourById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultShoppingListCategoryColourById(UUID accountId) {
+        return "";
+    }
+
+    @Override
+    public String getDefaultBucketListCategoryColourById(UUID accountId) {
+        return "";
     }
 
 }

@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -24,12 +25,12 @@ public class Category {
     @UuidGenerator
     private UUID id;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
+    @NotBlank(message = "'name' cannot be blank")
+    @Size(min = 3, max = 255, message = "'name' must be between 3 and 255 characters")
     private String name;
 
-    @NotBlank(message = "Colour cannot be blank")
-    @Size(min = 3, max = 255, message = "Colour must be between 3 and 255 characters")
+    @NotBlank(message = "'colour' cannot be blank")
+    @Size(min = 7, max = 7, message = "'colour must be exactly 7 characters long")
     private String colour;
 
     @OneToMany(fetch = FetchType.LAZY,
@@ -37,7 +38,8 @@ public class Category {
             mappedBy = "category")
     private List<ShoppingList> shoppingLists;
 
-    @NotNull(message = "Account id cannot be null")
+    @NotNull(message = "'accountId' cannot be null")
+    @Column(name = "account_id")
     private UUID accountId;
 
     @Override

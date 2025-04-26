@@ -5,6 +5,8 @@ import com.pro.list_tick.shopping_list.dto.CategoryDTO;
 import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
 import com.pro.list_tick.shopping_list.model.Category;
 
+import java.util.Objects;
+
 public class CategoryMapper {
 
     private CategoryMapper() {
@@ -30,7 +32,9 @@ public class CategoryMapper {
     public static Category toModel(CategoryInputDTO categoryInputDTO) {
         Category category = new Category();
         category.setName(categoryInputDTO.getName());
-        category.setColour(categoryInputDTO.getColour());
+        if(Objects.nonNull(category.getColour())) {
+            category.setColour(categoryInputDTO.getColour());
+        }
         return category;
     }
 

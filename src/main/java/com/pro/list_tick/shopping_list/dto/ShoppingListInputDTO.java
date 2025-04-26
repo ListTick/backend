@@ -1,6 +1,5 @@
 package com.pro.list_tick.shopping_list.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,19 +12,15 @@ import java.util.UUID;
 @Data
 public class ShoppingListInputDTO {
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
+    @NotBlank(message = "'name' cannot be blank")
+    @Size(min = 3, max = 255, message = "'name' has to have between 3 and 255 characters")
     private String name;
 
-    @NotNull
+    @NotNull(message = "'categoryId' cannot be null")
     private UUID categoryId;
 
-    @NotNull
-    private UUID accountId;
-
-    @NotNull
-    @JsonProperty
-    private boolean isShared;
+    @NotNull(message = "'shared' cannot be null")
+    private Boolean shared;
 
     @Nullable
     private List<AccountSharedWithDto> sharedWithAccounts;

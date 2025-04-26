@@ -53,6 +53,7 @@ public class ShoppingList {
     private Category category;
 
     @NotNull(message = "Account id cannot be null")
+    @Column(name = "account_id")
     private UUID accountId;
 
     @OneToMany(fetch = FetchType.LAZY,

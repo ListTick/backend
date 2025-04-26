@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS public;
 CREATE TABLE public.category (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    colour VARCHAR(9) NOT NULL,
+    colour VARCHAR(7) NOT NULL,
     account_id UUID NOT NULL
 );
 

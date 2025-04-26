@@ -81,12 +81,19 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         shoppingList.setCategory(category);
         shoppingList.setItems(new ArrayList<>());
         shoppingList.setSharedShoppingLists(new ArrayList<>());
-        shoppingList.setOwnerCostFactor(calculateCostFactor(shoppingListInputDTO.isShared(), shoppingListInputDTO.getSharedWithAccounts()));
+        shoppingList.setOwnerCostFactor(calculateCostFactor(shoppingListInputDTO.getShared(), shoppingListInputDTO.getSharedWithAccounts()));
 
         var savedShoppingList = shoppingListRepository.save(shoppingList);
 
-        if (shoppingListInputDTO.isShared()) {
-            List<SharedShoppingList> sharedLists = createSharedLists(savedShoppingList, shoppingListInputDTO.getSharedWithAccounts());
+        if (shoppingListInputDTO.getShared()) {
+            if (shoppingListInputDTO.getSharedWithAccounts() == null
+                    || shoppingListInputDTO.getSharedWithAccounts().isEmpty()) {
+                throw new ShoppingListException("'sharedWithAccounts' cannot be null or empty while 'shared' is set to true");
+            }
+            List<SharedShoppingList> sharedLists = createSharedLists(
+                    savedShoppingList,
+                    shoppingListInputDTO.getSharedWithAccounts()
+            );
             savedShoppingList.getSharedShoppingLists().addAll(sharedLists);
         }
 
@@ -140,7 +147,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     }
 
     private UUID getAccountId(String email) {
-        return accountAPI.findIdByEmail(email);
+        return accountAPI.getAccountIdByEmail(email);
     }
 
     private int calculateCostFactor(boolean isShared, List<AccountSharedWithDto> sharedWithAccounts) {
