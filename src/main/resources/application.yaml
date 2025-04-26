@@ -34,7 +34,10 @@ springdoc:
     oauth:
       client-id: listtick-swagger
       use-pkce-with-authorization-code-grant: true
-      scopes: openid,profile,email
+      scopes:
+        - openid
+        - profile
+        - email
 
 keycloak:
   auth:
