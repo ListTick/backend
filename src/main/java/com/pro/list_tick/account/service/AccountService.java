@@ -1,5 +1,8 @@
 package com.pro.list_tick.account.service;
 
+import com.pro.list_tick.account.dto.AccountSettingsInputDto;
+import com.pro.list_tick.account.model.settings.AccountSettings;
+
 import java.util.UUID;
 
 public interface AccountService {
@@ -27,5 +30,11 @@ public interface AccountService {
     String getDefaultShoppingListCategoryColour();
 
     String getDefaultBucketListCategoryColour();
+
+    AccountSettings getAccountSettings();
+
+    AccountSettings updateAccountSettings();
+
+    AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto);
 
 }
