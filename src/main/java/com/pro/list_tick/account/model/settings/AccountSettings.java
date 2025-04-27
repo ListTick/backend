@@ -37,9 +37,9 @@ public class AccountSettings {
     @ColumnDefault("3")
     private Integer defaultNotificationBreakReminderTime;
 
-    @Column(name = "is_long_break_enabled")
+    @Column(name = "long_break_enabled")
     @ColumnDefault("true")
-    private Boolean isLongBreakEnabled;
+    private Boolean longBreakEnabled;
 
     @Column(name = "default_task_tag_colour", length = 7)
     @ColumnDefault("#494d50")

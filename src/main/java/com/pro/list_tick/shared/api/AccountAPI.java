@@ -6,26 +6,26 @@ public interface AccountAPI {
 
     UUID getAccountIdByEmail(String email);
 
-    String getDefaultPomodoroDurationById(UUID accountId);
+    Integer getDefaultPomodoroDuration();
 
-    String getDefaultPomodoroBreakDurationById(UUID accountId);
+    Integer getDefaultPomodoroBreakDuration();
 
-    String getDefaultPomodoroLongBreakDurationById(UUID accountId);
+    Integer getDefaultPomodoroLongBreakDuration();
 
-    String getDefaultPomodoroLongBreakIntervalById(UUID accountId);
+    Integer getDefaultPomodoroLongBreakInterval();
 
-    String getDefaultNotificationBreakReminderTimeById(UUID accountId);
+    Integer getDefaultNotificationBreakReminderTime();
 
-    String getLongBreakEnabledById(UUID accountId);
+    Boolean getLongBreakEnabled();
 
-    String getDefaultTaskTagColourById(UUID accountId);
+    String getDefaultTaskTagColour();
 
-    String getDefaultNoteTagColourById(UUID accountId);
+    String getDefaultNoteTagColour();
 
-    String getDefaultGoalCategoryColourById(UUID accountId);
+    String getDefaultGoalCategoryColour();
 
-    String getDefaultShoppingListCategoryColourById(UUID accountId);
+    String getDefaultShoppingListCategoryColour();
 
-    String getDefaultBucketListCategoryColourById(UUID accountId);
+    String getDefaultBucketListCategoryColour();
 
 }

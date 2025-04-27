@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
         var category = CategoryMapper.toModel(categoryInputDTO);
         category.setAccountId(accountId);
         if (Objects.isNull(category.getColour())) {
-            category.setColour(accountAPI.getDefaultShoppingListCategoryColourById(accountId));
+            category.setColour(accountAPI.getDefaultShoppingListCategoryColour());
         }
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
