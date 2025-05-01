@@ -1,10 +1,13 @@
 package com.pro.list_tick.account.service;
 
+import com.pro.list_tick.account.dto.AccountSettingsInputDto;
+import com.pro.list_tick.account.exception.AccountException;
+import com.pro.list_tick.account.model.settings.AccountSettings;
 import com.pro.list_tick.account.repository.settings.AccountSettingsRepository;
 import com.pro.list_tick.account.repository.keycloak.KeycloakRepository;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.exception.AccountException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final ApplicationEventPublisher publisher;
@@ -23,12 +27,15 @@ public class AccountServiceImpl implements AccountService {
     private final CurrentAccountService currentAccountService;
 
     public UUID getUUIDbyEmail(String email) {
+        log.debug("Getting an user id for the email: {}", email);
         return keycloakRepository.findIdByEmail(email)
                 .orElseThrow(() -> new AccountException(String.format(ACCOUNT_NOT_FOUND, email)));
     }
 
     public Integer getDefaultPomodoroDuration() {
         final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default pomodoro duration for the accountId: {}", accountId);
+
         return accountSettingsRepository.findDefaultPomodoroDuration(accountId)
                 .orElseThrow(() -> new AccountException(String.format(ACCOUNT_NOT_FOUND, accountId)));
     }
@@ -37,57 +44,62 @@ public class AccountServiceImpl implements AccountService {
         return 0;
     }
 
-    @Override
     public Integer getDefaultPomodoroLongBreakDuration() {
         return 0;
     }
 
-    @Override
     public Integer getDefaultPomodoroLongBreakInterval() {
         return 0;
     }
 
-    @Override
     public Integer getDefaultNotificationBreakReminderTime() {
         return 0;
     }
 
-    @Override
     public Boolean getLongBreakEnabled() {
         return null;
     }
 
-    @Override
     public String getDefaultTaskTagColour() {
         return "";
     }
 
-    @Override
     public String getDefaultNoteTagColour() {
         return "";
     }
 
-    @Override
     public String getDefaultGoalCategoryColour() {
         return "";
     }
 
-    @Override
     public String getDefaultShoppingListCategoryColour() {
         return "";
     }
 
-    @Override
     public String getDefaultBucketListCategoryColour() {
         return "";
     }
 
-//    @Transactional
-//    public void createAccount(AccountDto accountDto) {
-//        AccountSettings accountSettings = accountSettingsMapper.toEntity(accountDto);
-//        AccountSettings savedAccountSettings = accountSettingsRepository.save(accountSettings);
-//
-//        publisher.publishEvent(new AccountCreatedEvent(savedAccountSettings.getId()));
-//    }
+    public AccountSettings getAccountSettings() {
+        return null;
+    }
+
+    public AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto) {
+        return null;
+    }
+
+    public AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto) {
+        return null;
+    }
+
+    public void createAccountSettings(UUID accountId) {
+        log.debug("Creating account settings for the accountId: {}", accountId);
+        AccountSettings accountSettings = new AccountSettings();
+        accountSettings.setId(accountId);
+
+        log.debug("Saving account settings for the accountId: {}", accountId);
+        AccountSettings savedAccountSettings = accountSettingsRepository.save(accountSettings);
+        log.info("Inserted new account settings for the accountId: {}", savedAccountSettings.getId());
+    }
 
 }

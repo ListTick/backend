@@ -33,8 +33,10 @@ public interface AccountService {
 
     AccountSettings getAccountSettings();
 
-    AccountSettings updateAccountSettings();
+    AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto);
 
     AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto);
+
+    void createAccountSettings(UUID accountId);
 
 }

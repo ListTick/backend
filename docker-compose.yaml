@@ -15,5 +15,9 @@ services:
       KC_DB_URL: jdbc:postgresql://listtick-db:5432/keycloak
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: admin
+      KEYCLOAK_EVENTS_ENABLED: true
+      KEYCLOAK_EVENTS_LISTENERS: custom-registration-listener
+    volumes:
+      - ./build/libs/list-tick-0.0.1-SNAPSHOT.jar:/opt/keycloak/providers/list-tick-spi.jar
     networks:
       - listtick-network

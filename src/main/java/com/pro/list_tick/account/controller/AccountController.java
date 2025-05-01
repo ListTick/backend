@@ -1,5 +1,6 @@
 package com.pro.list_tick.account.controller;
 
+import com.pro.list_tick.account.dto.AccountSettingsInputDto;
 import com.pro.list_tick.account.model.settings.AccountSettings;
 import com.pro.list_tick.account.service.AccountService;
 import jakarta.validation.Valid;
@@ -26,13 +27,15 @@ public class AccountController {
     }
 
     @PutMapping
-    public ResponseEntity<AccountSettings> updateAccountSettings(@Valid @RequestBody AccountSettingsInputDto accountSettingsInputDto) {
-        final var settings = accountService.updateAccountSettings();
+    public ResponseEntity<AccountSettings> updateAccountSettings(
+            @Valid @RequestBody AccountSettingsInputDto accountSettingsInputDto) {
+        final var settings = accountService.updateAccountSettings(accountSettingsInputDto);
         return ResponseEntity.ok(settings);
     }
 
     @PatchMapping
-    public ResponseEntity<AccountSettings> updateAccountSettingsByFields(@RequestBody AccountSettingsInputDto accountSettingsInputDto) {
+    public ResponseEntity<AccountSettings> updateAccountSettingsByFields(
+            @RequestBody AccountSettingsInputDto accountSettingsInputDto) {
         final var settings = accountService.updateAccountSettingsByFields(accountSettingsInputDto);
         return ResponseEntity.ok(settings);
     }
