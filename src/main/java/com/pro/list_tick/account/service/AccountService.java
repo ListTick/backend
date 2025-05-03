@@ -37,6 +37,6 @@ public interface AccountService {
 
     AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto);
 
-    void createAccountSettings(UUID accountId);
+    void createAccountSettings(String accountId);
 
 }

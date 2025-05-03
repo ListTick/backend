@@ -92,14 +92,10 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
-    public void createAccountSettings(UUID accountId) {
-        log.debug("Creating account settings for the accountId: {}", accountId);
-        AccountSettings accountSettings = new AccountSettings();
-        accountSettings.setId(accountId);
-
-        log.debug("Saving account settings for the accountId: {}", accountId);
-        AccountSettings savedAccountSettings = accountSettingsRepository.save(accountSettings);
-        log.info("Inserted new account settings for the accountId: {}", savedAccountSettings.getId());
+    public void createAccountSettings(String accountId) {
+        log.debug("Saving default account settings for the accountId: {}", accountId);
+        accountSettingsRepository.saveWithDefaults(UUID.fromString(accountId));
+        log.info("Inserted new account settings for the accountId: {}", accountId);
     }
 
 }

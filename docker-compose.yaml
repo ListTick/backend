@@ -4,7 +4,9 @@ networks:
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: start-dev
     ports:
       - "8090:8080"
@@ -15,9 +17,7 @@ services:
       KC_DB_URL: jdbc:postgresql://listtick-db:5432/keycloak
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: admin
-      KEYCLOAK_EVENTS_ENABLED: true
-      KEYCLOAK_EVENTS_LISTENERS: custom-registration-listener
-    volumes:
-      - ./build/libs/list-tick-0.0.1-SNAPSHOT.jar:/opt/keycloak/providers/list-tick-spi.jar
+      KEYCLOAK_EVENTS_ENABLED: "true"
+      KC_SPI_EVENTS_LISTENER: "custom-registration-listener"
     networks:
       - listtick-network

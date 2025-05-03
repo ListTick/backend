@@ -45,3 +45,5 @@ keycloak:
     server:
       url: http://localhost:8090
   realm: listtick
+  event:
+    secret: "KEjG2q8P4nX9vM3tL5wY7bR1cV6hN0dS"

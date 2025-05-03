@@ -15,7 +15,8 @@ import java.util.UUID;
 public class AccountSettings {
 
     @Id
-    private UUID id;
+    @Column(name = "account_id")
+    private UUID accountId;
 
     @Column(name = "default_pomodoro_duration")
     @ColumnDefault("25")
