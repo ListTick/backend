@@ -13,8 +13,8 @@ import java.util.UUID;
 @Repository
 public interface SharedShoppingListRepository extends JpaRepository<SharedShoppingList, SharedShoppingListId> {
 
-    List<SharedShoppingList> findAllByAccountId(UUID userId);
+    List<SharedShoppingList> findAllByIdAccountId(UUID accountId);
 
-    @Query("SELECT ssl.account.id FROM SharedShoppingList ssl WHERE  ssl.shoppingList.id = :shoppingListId")
+    @Query("SELECT ssl.id.accountId FROM SharedShoppingList ssl WHERE  ssl.shoppingList.id = :shoppingListId")
     List<UUID> findAllAccountsById(@Param("shoppingListId")UUID shoppingListId);
 }

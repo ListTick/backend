@@ -1,13 +1,10 @@
-package com.pro.list_tick.account.service;
-
-import com.pro.list_tick.account.dto.AccountSettingsInputDto;
-import com.pro.list_tick.account.model.settings.AccountSettings;
+package com.pro.list_tick.shared.api;
 
 import java.util.UUID;
 
-public interface AccountService {
+public interface AccountAPI {
 
-    UUID getUUIDbyEmail(String email);
+    UUID getAccountIdByEmail(String email);
 
     Integer getDefaultPomodoroDuration();
 
@@ -30,13 +27,5 @@ public interface AccountService {
     String getDefaultShoppingListCategoryColour();
 
     String getDefaultBucketListCategoryColour();
-
-    AccountSettings getAccountSettings();
-
-    AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto);
-
-    AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto);
-
-    void createAccountSettings(String accountId);
 
 }

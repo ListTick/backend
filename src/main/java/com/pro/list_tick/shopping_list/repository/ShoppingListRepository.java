@@ -3,7 +3,6 @@ package com.pro.list_tick.shopping_list.repository;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,12 +14,11 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, UUID
 
     List<ShoppingList> findAllByAccountId(UUID id);
 
-    @Query("SELECT sl.account.id FROM ShoppingList sl WHERE sl.id = :shoppingListId")
-    UUID findUserIdById(@Param("shoppingListId")UUID shoppingListId);
-
     @Query("SELECT sl FROM ShoppingList sl LEFT JOIN FETCH sl.items WHERE sl.id = :id")
     Optional<ShoppingList> findByIdWithItems(UUID id);
 
     boolean existsByNameAndAccountId(String name, UUID accountId);
+
+    boolean existsByIdAndAccountId(UUID id, UUID accountId);
 
 }

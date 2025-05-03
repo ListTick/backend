@@ -25,7 +25,7 @@ sleep 5
 
 # Create all databases
 echo "Creating databases..."
-docker exec listtick-db psql -U postgres -c "CREATE DATABASE account"
+docker exec listtick-db psql -U postgres -c "CREATE DATABASE account_settings"
 docker exec listtick-db psql -U postgres -c "CREATE DATABASE bucket_list"
 docker exec listtick-db psql -U postgres -c "CREATE DATABASE note"
 docker exec listtick-db psql -U postgres -c "CREATE DATABASE notification"

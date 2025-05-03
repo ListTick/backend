@@ -1,19 +1,18 @@
 package com.pro.list_tick.shopping_list.service;
 
+import com.pro.list_tick.shared.api.AccountAPI;
+import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
-import com.pro.list_tick.shopping_list.exception.AccountException;
 import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.model.Category;
-import com.pro.list_tick.shopping_list.model.Account;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
-import com.pro.list_tick.shopping_list.repository.SLAccountRepository;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
 import com.pro.list_tick.shopping_list.repository.SharedShoppingListRepository;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
@@ -28,35 +27,41 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ShoppingListServiceImpl implements ShoppingListService {
+
     public static final String LIST_NOT_FOUND = "Shopping list not found: %s";
+    public static final String LIST_CONFLICT = "Shopping list not found: %s, for the user: %s";
+
+    private final CurrentAccountService currentAccountService;
+    private final AccountAPI accountAPI;
 
     private final ShoppingListRepository shoppingListRepository;
     private final SLCategoryRepository categoryRepository;
-    private final SLAccountRepository accountRepository;
     private final SharedShoppingListRepository sharedShoppingListRepository;
 
-    public List<ShoppingListDTO> getAll() {
-        var shoppingLists = shoppingListRepository.findAll();
-        return shoppingLists.stream()
-                .map(ShoppingListMapper::toDTO)
-                .toList();
-    }
-
-    public List<ShoppingListDTO> getAllByAccountId(UUID accountId) {
+    public List<ShoppingListDTO> getAllByAccountId() {
+        final var accountId = currentAccountService.getCurrentAccountId();
         var shoppingLists = shoppingListRepository.findAllByAccountId(accountId);
-        var sharedShoppingLists = sharedShoppingListRepository.findAllByAccountId(accountId);
+        var sharedShoppingLists = sharedShoppingListRepository.findAllByIdAccountId(accountId);
         List<ShoppingListDTO> dtoList = new ArrayList<>(shoppingLists.stream().map(ShoppingListMapper::toDTO).toList());
         dtoList.addAll(sharedShoppingLists.stream().map(SharedShoppingList::getShoppingList).map(ShoppingListMapper::toDTO).toList());
         return dtoList;
     }
 
     public ShoppingListDTO getById(UUID id) {
-        var shoppingList = shoppingListRepository.findById(id)
+        final var shoppingList = shoppingListRepository.findById(id)
                 .orElseThrow(() -> new ShoppingListException(String.format(LIST_NOT_FOUND, id)));
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!shoppingList.getAccountId().equals(accountId)) {
+            throw new ShoppingListException(String.format(LIST_CONFLICT, shoppingList.getId(), accountId));
+        }
         return ShoppingListMapper.toDTO(shoppingList);
     }
 
     public List<ItemDTO> getItemsByShoppingListId(UUID id) {
+        final var accountId = currentAccountService.getCurrentAccountId();
+        if (!shoppingListRepository.existsByIdAndAccountId(id, accountId)) {
+            throw new ShoppingListException(String.format(LIST_CONFLICT, id, accountId));
+        }
         var shoppingList = shoppingListRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new ShoppingListException(String.format(LIST_NOT_FOUND, id)));
         return shoppingList.getItems().stream().map(ItemMapper::toDTO).toList();
@@ -64,30 +69,36 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Transactional
     public ShoppingListDTO create(ShoppingListInputDTO shoppingListInputDTO) {
+        final var accountId = currentAccountService.getCurrentAccountId();
         var shoppingList = ShoppingListMapper.toModel(shoppingListInputDTO);
-        var owner = getAccount(shoppingListInputDTO.getAccountId());
         var category = getCategory(shoppingListInputDTO.getCategoryId());
 
-        if (shoppingListRepository.existsByNameAndAccountId(shoppingListInputDTO.getName(), owner.getId())) {
+        if (shoppingListRepository.existsByNameAndAccountId(shoppingListInputDTO.getName(), accountId)) {
             throw new ShoppingListException("Shopping list name already exists.");
         }
 
-        shoppingList.setAccount(owner);
+        shoppingList.setAccountId(accountId);
         shoppingList.setCategory(category);
         shoppingList.setItems(new ArrayList<>());
         shoppingList.setSharedShoppingLists(new ArrayList<>());
-        shoppingList.setOwnerCostFactor(calculateCostFactor(shoppingListInputDTO.isShared(), shoppingListInputDTO.getSharedWithAccounts()));
+        shoppingList.setOwnerCostFactor(calculateCostFactor(shoppingListInputDTO.getShared(), shoppingListInputDTO.getSharedWithAccounts()));
 
         var savedShoppingList = shoppingListRepository.save(shoppingList);
 
-        if (shoppingListInputDTO.isShared()) {
-            List<SharedShoppingList> sharedLists = createSharedLists(savedShoppingList, shoppingListInputDTO.getSharedWithAccounts());
+        if (shoppingListInputDTO.getShared()) {
+            if (shoppingListInputDTO.getSharedWithAccounts() == null
+                    || shoppingListInputDTO.getSharedWithAccounts().isEmpty()) {
+                throw new ShoppingListException("'sharedWithAccounts' cannot be null or empty while 'shared' is set to true");
+            }
+            List<SharedShoppingList> sharedLists = createSharedLists(
+                    savedShoppingList,
+                    shoppingListInputDTO.getSharedWithAccounts()
+            );
             savedShoppingList.getSharedShoppingLists().addAll(sharedLists);
         }
 
         return ShoppingListMapper.toDTO(savedShoppingList);
     }
-
     @Transactional
     public ShoppingListDTO update(UUID id, ShoppingListDTO shoppingListDTO) {
         var optional = shoppingListRepository.findById(id);
@@ -123,20 +134,20 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                 .orElseThrow(() -> new CategoryException(String.format("Category not found: %s", categoryId)));
     }
 
-    private Account getAccount(UUID accountId) {
-        return accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountException(String.format("Account not found: %s", accountId)));
-    }
-
     private List<SharedShoppingList> createSharedLists(ShoppingList shoppingList, List<AccountSharedWithDto> sharedWith) {
         return sharedWith.stream()
                 .map(accountSharedWithDto -> {
-                    Account account = getAccount(accountSharedWithDto.getUuid());
+                    final var email = accountSharedWithDto.getEmail();
+                    final var uuid = getAccountId(email);
                     SharedShoppingList shared = new SharedShoppingList();
-                    shared.setShoppingListAndAccount(shoppingList, account);
+                    shared.setShoppingListAndAccount(shoppingList, uuid);
                     shared.setCostFactor(accountSharedWithDto.getCostFactor());
                     return sharedShoppingListRepository.save(shared);
                 }).toList();
+    }
+
+    private UUID getAccountId(String email) {
+        return accountAPI.getAccountIdByEmail(email);
     }
 
     private int calculateCostFactor(boolean isShared, List<AccountSharedWithDto> sharedWithAccounts) {

@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "shopping_list")
+@Data
 public class ShoppingList {
 
     @Id
@@ -52,9 +52,9 @@ public class ShoppingList {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @NotNull(message = "Account id cannot be null")
+    @Column(name = "account_id")
+    private UUID accountId;
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE,

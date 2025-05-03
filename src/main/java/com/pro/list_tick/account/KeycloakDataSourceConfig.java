@@ -1,8 +1,8 @@
-package com.pro.list_tick.shopping_list;
+package com.pro.list_tick.account;
 
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -21,14 +21,14 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.pro.list_tick.shopping_list.repository",
-        entityManagerFactoryRef = "shoppingListEntityManagerFactory",
-        transactionManagerRef = "shoppingListTransactionManager"
+        basePackages = "com.pro.list_tick.account.repository.keycloak",
+        entityManagerFactoryRef = "keycloakEntityManagerFactory",
+        transactionManagerRef = "keycloakTransactionManager"
 )
 @RequiredArgsConstructor
-public class ShoppingListDataSourceConfig {
+public class KeycloakDataSourceConfig {
 
-    @Value("${datasource.database.shopping_list}")
+    @Value("${datasource.database.keycloak}")
     private String database;
 
     @Value("${datasource.user}")
@@ -45,32 +45,26 @@ public class ShoppingListDataSourceConfig {
 
     private final Environment environment;
 
-    @Bean(name = "shoppingListDataSource")
+    @Bean(name = "keycloakDataSource")
     public DataSource getDataSource() {
-        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        DataSourceBuilder<HikariDataSource> dataSourceBuilder =
+                (DataSourceBuilder<HikariDataSource>) DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(driver);
         dataSourceBuilder.url(database);
         dataSourceBuilder.username(user);
         dataSourceBuilder.password(password);
-        return dataSourceBuilder.build();
+
+        HikariDataSource dataSource = dataSourceBuilder.build();
+        dataSource.setReadOnly(true);
+        return dataSource;
     }
 
-    @Bean(name = "shoppingListFlyway")
-    public Flyway flyway(@Qualifier("shoppingListDataSource") DataSource dataSource) {
-        Flyway flyway = Flyway.configure()
-                .dataSource(dataSource)
-                .locations("classpath:db/shopping_list/migration")
-                .load();
-        flyway.migrate();
-        return flyway;
-    }
-
-    @Bean(name = "shoppingListEntityManagerFactory")
+    @Bean(name = "keycloakEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("shoppingListDataSource") DataSource dataSource) {
+            @Qualifier("keycloakDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
         entityManager.setDataSource(dataSource);
-        entityManager.setPackagesToScan("com.pro.list_tick.shopping_list.model");
+        entityManager.setPackagesToScan("com.pro.list_tick.account.model.keycloak");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         entityManager.setJpaVendorAdapter(vendorAdapter);
@@ -83,9 +77,9 @@ public class ShoppingListDataSourceConfig {
         return entityManager;
     }
 
-    @Bean(name = "shoppingListTransactionManager")
+    @Bean(name = "keycloakTransactionManager")
     public PlatformTransactionManager transactionManager(
-            @Qualifier("shoppingListEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+            @Qualifier("keycloakEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 

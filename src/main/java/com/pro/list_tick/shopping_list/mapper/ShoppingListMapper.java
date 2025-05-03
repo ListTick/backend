@@ -20,7 +20,7 @@ public class ShoppingListMapper {
         shoppingListDTO.setName(shoppingList.getName());
         shoppingListDTO.setCreationDate(shoppingList.getCreationDate());
         shoppingListDTO.setCategoryId(shoppingList.getCategory().getId());
-        shoppingListDTO.setAccountId(shoppingList.getAccount().getId());
+        shoppingListDTO.setAccountId(shoppingList.getAccountId());
         return shoppingListDTO;
     }
 
