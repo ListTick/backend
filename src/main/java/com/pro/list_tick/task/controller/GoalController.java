@@ -3,36 +3,46 @@ package com.pro.list_tick.task.controller;
 import com.pro.list_tick.task.dto.GoalRequestDto;
 import com.pro.list_tick.task.dto.GoalResponseDto;
 import com.pro.list_tick.task.service.GoalService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/goals")
+@RequestMapping("/api/goal")
 @RequiredArgsConstructor
 public class GoalController {
     private final GoalService goalService;
 
     @PostMapping
-    public void createGoal(GoalRequestDto goalRequestDto) {
-        goalService.createGoal(goalRequestDto);
+    public ResponseEntity<GoalResponseDto> createGoal(@RequestBody @Valid GoalRequestDto goalRequestDto) {
+        GoalResponseDto goalResponseDto = goalService.createGoal(goalRequestDto);
+
+        return ResponseEntity.ok(goalResponseDto);
     }
 
     @GetMapping
-    public List<GoalResponseDto> getAllGoals() {
-        return goalService.getAllGoals();
+    public ResponseEntity<List<GoalResponseDto>> getAllGoals() {
+        List<GoalResponseDto> goalResponseDto = goalService.getAllGoals();
+
+        return ResponseEntity.ok(goalResponseDto);
     }
 
     @GetMapping("/{id}")
-    public GoalResponseDto getGoalById(@PathVariable UUID id) {
-        return goalService.getGoalById(id);
+    public ResponseEntity<GoalResponseDto> getGoalById(@PathVariable UUID id) {
+        GoalResponseDto goalResponseDto = goalService.getGoalById(id);
+
+        return ResponseEntity.ok(goalResponseDto);
     }
 
     @PutMapping("/{id}")
-    public void updateGoal(@PathVariable UUID id, GoalRequestDto goalRequestDto) {
-        goalService.updateGoal(id, goalRequestDto);
+    public ResponseEntity<GoalResponseDto> updateGoal(@PathVariable UUID id, @RequestBody @Valid GoalRequestDto goalRequestDto) {
+        GoalResponseDto goalResponseDto = goalService.updateGoal(id, goalRequestDto);
+
+        return ResponseEntity.ok(goalResponseDto);
     }
 
     @DeleteMapping("/{id}")
