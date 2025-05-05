@@ -8,7 +8,9 @@ import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
 import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
     public static final String CATEGORY_NOT_FOUND = "Category not found: %s";
@@ -37,10 +40,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryDTO getById(UUID id) {
         final var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+                .orElseThrow(() -> new CategoryException(HttpStatus.BAD_REQUEST, String.format(CATEGORY_NOT_FOUND, id)));
         final var accountId = currentAccountService.getCurrentAccountId();
         if (!category.getAccountId().equals(accountId)) {
-            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+            throw new CategoryException(HttpStatus.CONFLICT, String.format(CATEGORY_CONFLICT, id, accountId));
         }
         return CategoryMapper.toDTO(category);
     }
@@ -48,7 +51,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO create(CategoryInputDTO categoryInputDTO) {
         final var accountId = currentAccountService.getCurrentAccountId();
         if (categoryRepository.existsByNameAndAccountId(categoryInputDTO.getName(), accountId)) {
-            throw new CategoryException("Category name already exists.");
+            throw new CategoryException(HttpStatus.CONFLICT, String.format(
+                    "Category name already exists: %s", categoryInputDTO.getName()));
         }
         var category = CategoryMapper.toModel(categoryInputDTO);
         category.setAccountId(accountId);
@@ -58,29 +62,33 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
 
-    public CategoryDTO update(UUID id, CategoryDTO categoryDTO) {
+    public CategoryDTO update(UUID id, CategoryInputDTO categoryInputDTO) {
         final var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+                .orElseThrow(() -> new CategoryException(HttpStatus.BAD_REQUEST, String.format(CATEGORY_NOT_FOUND, id)));
         final var accountId = currentAccountService.getCurrentAccountId();
         if (!category.getAccountId().equals(accountId)) {
-            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+            throw new CategoryException(HttpStatus.CONFLICT, String.format(CATEGORY_CONFLICT, id, accountId));
         }
-        category.setName(categoryDTO.getName());
-        category.setColour(categoryDTO.getColour());
+        category.setName(categoryInputDTO.getName());
+        category.setColour(categoryInputDTO.getColour());
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
 
     public CategoryDTO updateByFields(UUID id, CategoryInputDTO categoryInputDTO) {
         var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+                .orElseThrow(() -> new CategoryException(HttpStatus.BAD_REQUEST, String.format(CATEGORY_NOT_FOUND, id)));
         final var accountId = currentAccountService.getCurrentAccountId();
         if (!category.getAccountId().equals(accountId)) {
-            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+            throw new CategoryException(HttpStatus.CONFLICT, String.format(CATEGORY_CONFLICT, id, accountId));
         }
-        if (categoryInputDTO.getName() != null) {
+        if (Objects.nonNull(categoryInputDTO.getName())) {
+            if (categoryRepository.existsByNameAndAccountId(categoryInputDTO.getName(), accountId)) {
+                throw new CategoryException(HttpStatus.CONFLICT, String.format(
+                        "Category name already exists: %s", categoryInputDTO.getName()));
+            }
             category.setName(categoryInputDTO.getName());
         }
-        if (categoryInputDTO.getColour() != null) {
+        if (Objects.nonNull(categoryInputDTO.getColour())) {
             category.setColour(categoryInputDTO.getColour());
         }
         return CategoryMapper.toDTO(categoryRepository.save(category));
@@ -88,12 +96,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     public void delete(UUID id) {
         var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryException(String.format(CATEGORY_NOT_FOUND, id)));
+                .orElseThrow(() -> new CategoryException(HttpStatus.BAD_REQUEST, String.format(CATEGORY_NOT_FOUND, id)));
         final var accountId = currentAccountService.getCurrentAccountId();
         if (!category.getAccountId().equals(accountId)) {
-            throw new CategoryException(String.format(CATEGORY_CONFLICT, id, accountId));
+            throw new CategoryException(HttpStatus.CONFLICT, String.format(CATEGORY_CONFLICT, id, accountId));
         }
         categoryRepository.delete(category);
     }
 
 }
+
+//todo Add logs and exception handler

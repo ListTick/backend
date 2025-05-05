@@ -32,7 +32,7 @@ public class CategoryMapper {
     public static Category toModel(CategoryInputDTO categoryInputDTO) {
         Category category = new Category();
         category.setName(categoryInputDTO.getName());
-        if(Objects.nonNull(category.getColour())) {
+        if(Objects.nonNull(categoryInputDTO.getColour())) {
             category.setColour(categoryInputDTO.getColour());
         }
         return category;

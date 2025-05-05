@@ -8,9 +8,9 @@ import com.pro.list_tick.account.repository.keycloak.KeycloakRepository;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -18,18 +18,15 @@ import java.util.UUID;
 @Slf4j
 public class AccountServiceImpl implements AccountService {
 
-    private final ApplicationEventPublisher publisher;
     private final AccountSettingsRepository accountSettingsRepository;
     private final KeycloakRepository keycloakRepository;
-
-    public static final String ACCOUNT_NOT_FOUND = "Account not found: %s";
 
     private final CurrentAccountService currentAccountService;
 
     public UUID getUUIDbyEmail(String email) {
         log.debug("Getting an user id for the email: {}", email);
         return keycloakRepository.findIdByEmail(email)
-                .orElseThrow(() -> new AccountException(String.format(ACCOUNT_NOT_FOUND, email)));
+                .orElseThrow(() -> new AccountException(String.format("Account not found: %s", email)));
     }
 
     public Integer getDefaultPomodoroDuration() {
@@ -37,59 +34,169 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default pomodoro duration for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultPomodoroDuration(accountId)
-                .orElseThrow(() -> new AccountException(String.format(ACCOUNT_NOT_FOUND, accountId)));
+                .orElseThrow(() -> new AccountException(
+                        String.format("Default pomodoro duration not found for the account id: %s", accountId)));
     }
 
     public Integer getDefaultPomodoroBreakDuration() {
-        return 0;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default pomodoro break duration for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultPomodoroBreakDuration(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default pomodoro break duration not found for the account id: %s", accountId)));
     }
 
     public Integer getDefaultPomodoroLongBreakDuration() {
-        return 0;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default pomodoro long break duration for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultPomodoroLongBreakDuration(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default pomodoro long break duration not found for the account id: %s", accountId)));
     }
 
     public Integer getDefaultPomodoroLongBreakInterval() {
-        return 0;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default pomodoro long break interval for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultPomodoroLongBreakInterval(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default pomodoro long break interval not found for the account id: %s", accountId)));
     }
 
     public Integer getDefaultNotificationBreakReminderTime() {
-        return 0;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default notification break reminder time for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultNotificationBreakReminderTime(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default notification break reminder time not found for the account id: %s", accountId)));
     }
 
     public Boolean getLongBreakEnabled() {
-        return null;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a long break enabled for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findLongBreakEnabled(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Long break enabled not found for the account id: %s", accountId)));
     }
 
     public String getDefaultTaskTagColour() {
-        return "";
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default task tag colour for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultTaskTagColour(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default task tag colour not found for the account id: %s", accountId)));
     }
 
     public String getDefaultNoteTagColour() {
-        return "";
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default note tag colour for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultNoteTagColour(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default note tag colour not found for the account id: %s", accountId)));
     }
 
     public String getDefaultGoalCategoryColour() {
-        return "";
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default goal category colour for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultGoalCategoryColour(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default goal category colour not found for the account id: %s", accountId)));
     }
 
     public String getDefaultShoppingListCategoryColour() {
-        return "";
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default shopping list category colour for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultShoppingListCategoryColour(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default shopping list category colour not found for the account id: %s", accountId)));
     }
 
     public String getDefaultBucketListCategoryColour() {
-        return "";
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a default bucket list category colour for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findDefaultBucketListCategoryColour(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Default bucket list category colour not found for the account id: %s", accountId)));
     }
 
     public AccountSettings getAccountSettings() {
-        return null;
+        final UUID accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting account settings for the accountId: {}", accountId);
+
+        return accountSettingsRepository.findById(accountId)
+                .orElseThrow(() -> new AccountException(String.format(
+                        "Account settings not found for the accountId: %s", accountId)));
     }
 
     public AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto) {
-        return null;
+        AccountSettings accountSettings = getAccountSettings();
+        log.debug("Updating account settings for the accountId: {}", accountSettings.getAccountId());
+
+        accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());
+        accountSettings.setDefaultPomodoroBreakDuration(accountSettingsInputDto.getDefaultPomodoroBreakDuration());
+        accountSettings.setDefaultPomodoroLongBreakInterval(accountSettingsInputDto.getDefaultPomodoroLongBreakInterval());
+        accountSettings.setDefaultPomodoroLongBreakDuration(accountSettingsInputDto.getDefaultPomodoroLongBreakDuration());
+        accountSettings.setDefaultNotificationBreakReminderTime(accountSettingsInputDto.getDefaultNotificationBreakReminderTime());
+        accountSettings.setLongBreakEnabled(accountSettingsInputDto.getLongBreakEnabled());
+        accountSettings.setDefaultTaskTagColour(accountSettingsInputDto.getDefaultTaskTagColour());
+        accountSettings.setDefaultNoteTagColour(accountSettingsInputDto.getDefaultNoteTagColour());
+        accountSettings.setDefaultShoppingListCategoryColour(accountSettingsInputDto.getDefaultShoppingListCategoryColour());
+        accountSettings.setDefaultBucketListCategoryColour(accountSettingsInputDto.getDefaultBucketListCategoryColour());
+        accountSettings.setDefaultGoalCategoryColour(accountSettingsInputDto.getDefaultGoalCategoryColour());
+
+        log.debug("Saving the updated account settings for the accountId: {}", accountSettings.getAccountId());
+        return accountSettingsRepository.save(accountSettings);
     }
 
     public AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto) {
-        return null;
+        AccountSettings accountSettings = getAccountSettings();
+        log.debug("Updating fields in the account settings for the accountId: {}", accountSettings.getAccountId());
+
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroDuration())) {
+            accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroBreakDuration())) {
+            accountSettings.setDefaultPomodoroBreakDuration(accountSettingsInputDto.getDefaultPomodoroBreakDuration());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroLongBreakInterval())) {
+            accountSettings.setDefaultPomodoroLongBreakInterval(accountSettingsInputDto.getDefaultPomodoroLongBreakInterval());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroLongBreakDuration())) {
+            accountSettings.setDefaultPomodoroLongBreakDuration(accountSettingsInputDto.getDefaultPomodoroLongBreakDuration());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultNotificationBreakReminderTime())) {
+            accountSettings.setDefaultNotificationBreakReminderTime(accountSettingsInputDto.getDefaultNotificationBreakReminderTime());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getLongBreakEnabled())) {
+            accountSettings.setLongBreakEnabled(accountSettingsInputDto.getLongBreakEnabled());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultTaskTagColour())) {
+            accountSettings.setDefaultTaskTagColour(accountSettingsInputDto.getDefaultTaskTagColour());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultNoteTagColour())) {
+            accountSettings.setDefaultNoteTagColour(accountSettingsInputDto.getDefaultNoteTagColour());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultShoppingListCategoryColour())) {
+            accountSettings.setDefaultShoppingListCategoryColour(accountSettingsInputDto.getDefaultShoppingListCategoryColour());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultBucketListCategoryColour())) {
+            accountSettings.setDefaultBucketListCategoryColour(accountSettingsInputDto.getDefaultBucketListCategoryColour());
+        }
+        if (Objects.nonNull(accountSettingsInputDto.getDefaultGoalCategoryColour())) {
+            accountSettings.setDefaultGoalCategoryColour(accountSettingsInputDto.getDefaultGoalCategoryColour());
+        }
+
+        log.debug("Saving the updated account settings fields for the accountId: {}", accountSettings.getAccountId());
+        return accountSettingsRepository.save(accountSettings);
     }
 
     public void createAccountSettings(String accountId) {
