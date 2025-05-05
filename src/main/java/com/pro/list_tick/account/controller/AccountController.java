@@ -4,11 +4,11 @@ import com.pro.list_tick.account.dto.AccountSettingsCreateRequest;
 import com.pro.list_tick.account.dto.AccountSettingsInputDto;
 import com.pro.list_tick.account.model.settings.AccountSettings;
 import com.pro.list_tick.account.service.AccountService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +36,7 @@ public class AccountController {
     }
 
     @PutMapping
+    @Transactional(transactionManager = "accountSettingsTransactionManager")
     public ResponseEntity<AccountSettings> updateAccountSettings(
             @Valid @RequestBody AccountSettingsInputDto accountSettingsInputDto) {
         log.debug(String.format(requestLogTemplate),
@@ -45,6 +46,7 @@ public class AccountController {
     }
 
     @PatchMapping
+    @Transactional(transactionManager = "accountSettingsTransactionManager")
     public ResponseEntity<AccountSettings> updateAccountSettingsByFields(
             @RequestBody AccountSettingsInputDto accountSettingsInputDto) {
         log.debug(String.format(requestLogTemplate),
@@ -54,8 +56,8 @@ public class AccountController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<Void> createAccountSetting(@RequestBody AccountSettingsCreateRequest request) {
+    @Transactional(transactionManager = "accountSettingsTransactionManager")
+    public ResponseEntity<Void> createAccountSetting(@Valid @RequestBody AccountSettingsCreateRequest request) {
         log.debug(String.format(requestLogTemplate),
                 "POST", request);
         accountService.createAccountSettings(request.getAccountId());

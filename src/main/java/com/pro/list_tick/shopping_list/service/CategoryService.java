@@ -11,7 +11,7 @@ public interface CategoryService {
     List<CategoryDTO> getAllByAccountId();
     CategoryDTO getById(UUID id);
     CategoryDTO create(CategoryInputDTO categoryInputDTO);
-    CategoryDTO update(UUID id, CategoryDTO categoryDTO);
+    CategoryDTO update(UUID id, CategoryInputDTO categoryInputDTO);
     CategoryDTO updateByFields(UUID id, CategoryInputDTO categoryInputDTO);
     void delete(UUID id);
 
