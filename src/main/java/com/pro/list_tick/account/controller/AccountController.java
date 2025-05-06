@@ -24,13 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
-
     private final String requestLogTemplate = "Received request, method: {}, context path: /api/account, body {}";
 
     @GetMapping
     public ResponseEntity<AccountSettings> getAccountSettings() {
         log.debug(String.format(requestLogTemplate),
-                "GET", "empty");
+                "GET", "");
         final var settings = accountService.getAccountSettings();
         return ResponseEntity.ok(settings);
     }
