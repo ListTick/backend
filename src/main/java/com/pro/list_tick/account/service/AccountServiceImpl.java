@@ -139,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto) {
         AccountSettings accountSettings = getAccountSettings();
-        log.debug("Updating account settings for the accountId: {}", accountSettings.getAccountId());
+        log.info("Updating account settings for the accountId: {}", accountSettings.getAccountId());
 
         accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());
         accountSettings.setDefaultPomodoroBreakDuration(accountSettingsInputDto.getDefaultPomodoroBreakDuration());
@@ -159,7 +159,7 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto) {
         AccountSettings accountSettings = getAccountSettings();
-        log.debug("Updating fields in the account settings for the accountId: {}", accountSettings.getAccountId());
+        log.info("Updating fields in the account settings for the accountId: {}", accountSettings.getAccountId());
 
         if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroDuration())) {
             accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());
