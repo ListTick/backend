@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface KeycloakRepository extends JpaRepository<KeycloakUser, UUID> {
+public interface KeycloakRepository extends JpaRepository<KeycloakUser, String> {
 
-    @Query("SELECT ku.uuid FROM KeycloakUser ku")
-    Optional<UUID> findIdByEmail(String email);
+    @Query("SELECT ku.id FROM KeycloakUser ku WHERE ku.email = :email")
+    Optional<String> findIdByEmail(String email);
 
 }

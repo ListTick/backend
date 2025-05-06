@@ -10,7 +10,7 @@ public class ShoppingListException extends RuntimeException{
 
     private final HttpStatus status;
 
-    public ShoppingListException(String message, HttpStatus status) {
+    public ShoppingListException(HttpStatus status, String message) {
         super(message);
         this.status = status;
     }
