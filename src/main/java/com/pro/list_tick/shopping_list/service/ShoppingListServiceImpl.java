@@ -6,6 +6,7 @@ import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
+import com.pro.list_tick.shopping_list.dto.ShoppingListUpdateDTO;
 import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -122,7 +124,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         return ShoppingListMapper.toDTO(savedShoppingList);
     }
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ShoppingListDTO update(UUID id, ShoppingListDTO shoppingListDTO) {
+    public ShoppingListDTO update(UUID id, ShoppingListUpdateDTO shoppingListUpdateDTO) {
         log.info("Updating the shopping list: {}", id);
         var optional = shoppingListRepository.findById(id);
         var shoppingList = optional
@@ -131,13 +133,14 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                     log.error(errorMessage);
                     return new ShoppingListException(HttpStatus.NOT_FOUND, errorMessage);
                 });
-        shoppingList.setName(shoppingListDTO.getName());
-        shoppingList.setActive(shoppingListDTO.getActive());
+        shoppingList.setName(shoppingListUpdateDTO.getName());
+        shoppingList.setActive(shoppingListUpdateDTO.getActive());
+        shoppingList.setCategory(getCategory(shoppingListUpdateDTO.getCategoryId()));
         return ShoppingListMapper.toDTO(shoppingListRepository.save(shoppingList));
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ShoppingListDTO updateByFields(UUID id, ShoppingListDTO shoppingListDTO) {
+    public ShoppingListDTO updateByFields(UUID id, ShoppingListUpdateDTO shoppingListUpdateDTO) {
         log.info("Updating the shopping list by fields: {}", id);
         var optional = shoppingListRepository.findById(id);
         var shoppingList = optional
@@ -146,12 +149,17 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                     log.error(errorMessage);
                     return new ShoppingListException(HttpStatus.NOT_FOUND, errorMessage);
                 });
-        if (shoppingListDTO.getName() != null) {
-            shoppingList.setName(shoppingListDTO.getName());
+        if (Objects.nonNull(shoppingListUpdateDTO.getName())) {
+            shoppingList.setName(shoppingListUpdateDTO.getName());
         }
-        if (shoppingListDTO.getActive() != null) {
-            shoppingList.setActive(shoppingListDTO.getActive());
+        if (Objects.nonNull(shoppingListUpdateDTO.getActive())) {
+            shoppingList.setActive(shoppingListUpdateDTO.getActive());
         }
+        if (Objects.nonNull(shoppingListUpdateDTO.getCategoryId())) {
+            var category = getCategory(shoppingListUpdateDTO.getCategoryId());
+            shoppingList.setCategory(category);
+        }
+
         return ShoppingListMapper.toDTO(shoppingListRepository.save(shoppingList));
     }
 

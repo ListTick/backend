@@ -18,6 +18,7 @@ CREATE TABLE public.shopping_list (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     active BOOLEAN NOT NULL,
+    shared BOOLEAN NOT NULL,
     creation_date TIMESTAMP NOT NULL,
     owner_cost_factor INTEGER NOT NULL,
     account_id UUID NOT NULL,

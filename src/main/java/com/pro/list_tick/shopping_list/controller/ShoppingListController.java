@@ -3,11 +3,13 @@ package com.pro.list_tick.shopping_list.controller;
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
+import com.pro.list_tick.shopping_list.dto.ShoppingListUpdateDTO;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,10 +27,11 @@ import java.util.UUID;
 @RequestMapping("/api/shopping-lists")
 @AllArgsConstructor
 @Slf4j
+@Validated
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
-    private final String requestLogTemplate = "Received request, method: {}, context path: /api/shopping-list/{}, body {}";
+    private final String requestLogTemplate = "Received request, method: {}, context path: /api/shopping-lists/{}, body {}";
 
     @GetMapping
     public ResponseEntity<List<ShoppingListDTO>> getAllByAccountId() {
@@ -64,19 +67,19 @@ public class ShoppingListController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ShoppingListDTO> update(@PathVariable UUID id,
-                                                  @Valid @RequestBody ShoppingListDTO shoppingListDTO) {
+                                                  @Valid @RequestBody ShoppingListUpdateDTO shoppingListUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", id, shoppingListDTO);
-        var shoppingList = shoppingListService.update(id, shoppingListDTO);
+                "PUT", id, shoppingListUpdateDTO);
+        var shoppingList = shoppingListService.update(id, shoppingListUpdateDTO);
         return ResponseEntity.ok(shoppingList);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ShoppingListDTO> updateByFields(@PathVariable UUID id,
-                                                          @RequestBody ShoppingListDTO shoppingListDTO) {
+                                                          @RequestBody ShoppingListUpdateDTO shoppingListUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", id, shoppingListDTO);
-        var shoppingList = shoppingListService.updateByFields(id, shoppingListDTO);
+                "PATCH", id, shoppingListUpdateDTO);
+        var shoppingList = shoppingListService.updateByFields(id, shoppingListUpdateDTO);
         return ResponseEntity.ok(shoppingList);
     }
 

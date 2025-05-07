@@ -21,14 +21,6 @@ public class CategoryMapper {
         return categoryDTO;
     }
 
-    public static Category toModel(CategoryDTO categoryDTO) {
-        Category category = new Category();
-        category.setId(categoryDTO.getId());
-        category.setName(categoryDTO.getName());
-        category.setColour(categoryDTO.getColour());
-        return category;
-    }
-
     public static Category toModel(CategoryInputDTO categoryInputDTO) {
         Category category = new Category();
         category.setName(categoryInputDTO.getName());
