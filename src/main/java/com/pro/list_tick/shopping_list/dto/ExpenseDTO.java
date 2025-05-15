@@ -1,37 +1,22 @@
-package com.pro.list_tick.shopping_list.model;
+package com.pro.list_tick.shopping_list.dto;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import com.pro.list_tick.shopping_list.model.CurrencyCode;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "expense")
 @Data
-public class Expense {
+public class ExpenseDTO {
 
-    @Id
-    @UuidGenerator
     private UUID id;
-
-    @Column(name = "account_id")
-    private UUID accountId;
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount cannot be negative")
@@ -45,9 +30,7 @@ public class Expense {
     @NotNull(message = "Reimbursed cannot be null")
     private Boolean reimbursed;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "expense")
-    private List<Item> items;
+    @Nullable
+    private List<ItemNameDTO> items;
 
 }

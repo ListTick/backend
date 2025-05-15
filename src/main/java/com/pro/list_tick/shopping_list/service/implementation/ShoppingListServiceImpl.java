@@ -1,4 +1,4 @@
-package com.pro.list_tick.shopping_list.service;
+package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.api.AccountAPI;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
@@ -17,6 +17,7 @@ import com.pro.list_tick.shopping_list.model.ShoppingList;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
 import com.pro.list_tick.shopping_list.repository.SharedShoppingListRepository;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
+import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
