@@ -7,12 +7,11 @@ import java.util.UUID;
 
 public interface ItemService {
 
-    List<ItemDTO> getAllByAccountId();
     List<ItemDTO> getAllByShoppingListId(UUID shoppingListId);
     ItemDTO getById(UUID id);
     ItemDTO create(ItemDTO itemDTO);
-    ItemDTO update(ItemDTO itemDTO);
-    ItemDTO updateByFields(ItemDTO itemDTO);
+    ItemDTO update(UUID id, ItemDTO itemDTO);
+    ItemDTO updateByFields(UUID id, ItemDTO itemDTO);
     void delete(UUID id);
 
 }
