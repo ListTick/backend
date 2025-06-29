@@ -19,7 +19,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
             "SELECT t " +
             "FROM Task t " +
             "WHERE t.accountId = :accountId " +
-            "AND (t.isDeleted = false)"
+            "AND (t.isDeleted = false)" +
+            "ORDER BY t.createdAt ASC"
     )
     List<Task> findAllNotDeletedByAccountId(UUID accountId);
 
@@ -27,7 +28,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
             "SELECT t " +
             "FROM Task t " +
             "WHERE t.accountId = :accountId " +
-            "AND (t.isDeleted = true)"
+            "AND (t.isDeleted = true)" +
+            "ORDER BY t.createdAt DESC"
     )
     Page<Task> findAllArchivedByAccountId(UUID accountId, Pageable pageable);
 
