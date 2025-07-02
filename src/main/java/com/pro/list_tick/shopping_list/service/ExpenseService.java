@@ -10,8 +10,8 @@ public interface ExpenseService {
     List<ExpenseDTO> getAllByAccountId();
     ExpenseDTO getById(UUID id);
     ExpenseDTO create(ExpenseDTO expenseDTO);
-    ExpenseDTO update(ExpenseDTO expenseDTO);
-    ExpenseDTO updateByFields(ExpenseDTO expenseDTO);
+    ExpenseDTO update(UUID id, ExpenseDTO expenseDTO);
+    ExpenseDTO updateByFields(UUID id, ExpenseDTO expenseDTO);
     void delete(UUID id);
 
 }

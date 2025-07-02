@@ -30,13 +30,6 @@ public class ItemController {
     private final ItemService itemService;
     private final String requestLogTemplate = "Received request, method: {}, context path: /api/items{}, body {}";
 
-    @GetMapping
-    public ResponseEntity<List<ItemDTO>> getAllByAccountId() {
-        log.debug(String.format(requestLogTemplate),
-                "GET", "", "");
-        final var items = itemService.getAllByAccountId();
-        return ResponseEntity.ok(items);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ItemDTO> getById(@PathVariable UUID id) {
@@ -44,6 +37,14 @@ public class ItemController {
                 "GET", id, "");
         final var item = itemService.getById(id);
         return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("shopping-list/{id}")
+    public ResponseEntity<List<ItemDTO>> getAllByShoppingListId(@PathVariable UUID id) {
+        log.debug(String.format(requestLogTemplate),
+            "GET", "shopping-list " + id, "");
+        final var items = itemService.getAllByShoppingListId(id);
+        return ResponseEntity.ok(items);
     }
 
     @PostMapping
@@ -55,18 +56,20 @@ public class ItemController {
     }
 
     @PutMapping
-    public ResponseEntity<ItemDTO> updateItem(@Valid @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id,
+                                              @Valid @RequestBody ItemDTO itemDTO) {
         log.debug(String.format(requestLogTemplate),
                 "PUT", "", itemDTO);
-        final var item = itemService.update(itemDTO);
+        final var item = itemService.update(id, itemDTO);
         return ResponseEntity.ok(item);
     }
 
     @PatchMapping
-    public ResponseEntity<ItemDTO> updateItemByFields(@RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemDTO> updateItemByFields(@PathVariable UUID id,
+                                                      @RequestBody ItemDTO itemDTO) {
         log.debug(String.format(requestLogTemplate),
                 "PATCH", "", itemDTO);
-        final var item = itemService.update(itemDTO);
+        final var item = itemService.updateByFields(id, itemDTO);
         return ResponseEntity.ok(item);
     }
 

@@ -47,26 +47,28 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDTO> createItem(@RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expenseDTO) {
         log.debug(String.format(requestLogTemplate),
                 "POST", "", expenseDTO);
         final var expense = expenseService.create(expenseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(expense);
     }
 
-    @PutMapping
-    public ResponseEntity<ExpenseDTO> updateItem(@Valid @RequestBody ExpenseDTO expenseDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseDTO> updateExpense(@PathVariable UUID id,
+                                                    @Valid @RequestBody ExpenseDTO expenseDTO) {
         log.debug(String.format(requestLogTemplate),
                 "PUT", "", expenseDTO);
-        final var expense = expenseService.update(expenseDTO);
+        final var expense = expenseService.update(id, expenseDTO);
         return ResponseEntity.ok(expense);
     }
 
-    @PatchMapping
-    public ResponseEntity<ExpenseDTO> updateItemByFields(@RequestBody ExpenseDTO expenseDTO) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<ExpenseDTO> updateExpenseByFields(@PathVariable UUID id,
+                                                            @RequestBody ExpenseDTO expenseDTO) {
         log.debug(String.format(requestLogTemplate),
                 "PATCH", "", expenseDTO);
-        final var item = expenseService.update(expenseDTO);
+        final var item = expenseService.update(id, expenseDTO);
         return ResponseEntity.ok(item);
     }
 

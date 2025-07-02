@@ -16,6 +16,7 @@ import java.util.UUID;
 @Data
 public class ExpenseDTO {
 
+    @Nullable
     private UUID id;
 
     @NotNull(message = "Amount cannot be null")
