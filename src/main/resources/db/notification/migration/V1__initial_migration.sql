@@ -1,11 +1,11 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.account (
+CREATE TABLE IF NOT EXISTS public.account (
      id UUID PRIMARY KEY,
      last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE public.notification (
+CREATE TABLE IF NOT EXISTS public.notification (
      id UUID PRIMARY KEY,
      account_id UUID NOT NULL,
      object_class VARCHAR(255),

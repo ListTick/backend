@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.account_settings (
+CREATE TABLE IF NOT EXISTS public.account_settings (
     account_id UUID PRIMARY KEY,
     default_pomodoro_duration INT DEFAULT 25,
     default_pomodoro_break_duration INT DEFAULT 5,
