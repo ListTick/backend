@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDTO(item);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ItemDTO create(ItemDTO itemDTO) {
         var accountId = accountService.getCurrentAccountId();
         Item item = ItemMapper.toModel(itemDTO);
@@ -53,6 +55,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDTO(savedItem);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ItemDTO update(UUID id, ItemDTO itemDTO) {
         var accountId = accountService.getCurrentAccountId();
         var item = getItem(id);
@@ -65,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDTO(itemRepository.save(item));
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ItemDTO updateByFields(UUID id, ItemDTO itemDTO) {
         var accountId = accountService.getCurrentAccountId();
         var item = getItem(id);
@@ -83,6 +87,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDTO(itemRepository.save(item));
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public void delete(UUID id) {
         var accountId = accountService.getCurrentAccountId();
         var item = getItem(id);

@@ -4,13 +4,17 @@ import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.ExpenseDTO;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
+import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.model.Expense;
+import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ExpenseRepository;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
+import com.pro.list_tick.shopping_list.service.ItemService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +26,8 @@ import java.util.UUID;
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+
+    private final ItemService itemService;
     private final CurrentAccountService currentAccountService;
 
     public List<ExpenseDTO> getAllByAccountId() {
@@ -44,15 +50,25 @@ public class ExpenseServiceImpl implements ExpenseService {
         return ExpenseMapper.toDto(expense);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ExpenseDTO create(ExpenseDTO expenseDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Creating the expense: {}", expenseDTO.getAmount());
         Expense expense = ExpenseMapper.toModel(expenseDTO);
         validateExpenseAccess(accountId, expense.getAccountId());
 
-        return ExpenseMapper.toDto(expenseRepository.save(expense));
+        if (Objects.nonNull(expenseDTO.getItems()) &&
+            !expenseDTO.getItems().isEmpty()) {
+            expenseDTO.getItems().forEach(itemNameDTO -> {
+                Item item = ItemMapper.toModel(itemService.getById(itemNameDTO.getId()));
+                expense.getItems().add(item);
+            });
+        }
+
+        return ExpenseMapper.toDtoWithItems(expenseRepository.save(expense));
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ExpenseDTO update(UUID id, ExpenseDTO expenseDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Updating expense: {}", id);
@@ -68,6 +84,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         return ExpenseMapper.toDto(expenseRepository.save(expense));
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public ExpenseDTO updateByFields(UUID id, ExpenseDTO expenseDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Updating expense: {}", id);
@@ -89,6 +106,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       return ExpenseMapper.toDto(expenseRepository.save(expense));
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public void delete(UUID id) {
         log.debug("Deleting the expense: {}", id);
         var accountId = currentAccountService.getCurrentAccountId();

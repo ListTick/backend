@@ -1,6 +1,9 @@
 package com.pro.list_tick.shopping_list.mapper;
 
+import java.util.Objects;
+
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
+import com.pro.list_tick.shopping_list.dto.ItemNameDTO;
 import com.pro.list_tick.shopping_list.model.Item;
 
 public class ItemMapper {
@@ -26,6 +29,16 @@ public class ItemMapper {
         item.setValue(itemDTO.getValue());
         item.setActive(itemDTO.getActive());
         return item;
+    }
+
+    public static ItemNameDTO toItemNameDto(Item item) {
+        ItemNameDTO itemNameDTO = new ItemNameDTO();
+        itemNameDTO.setId(item.getId());
+        itemNameDTO.setName(item.getName());
+        if (Objects.nonNull(item.getValue())) {
+            itemNameDTO.setValue(item.getValue());
+        }
+        return itemNameDTO;
     }
 
 }

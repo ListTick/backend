@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.mapper;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import com.pro.list_tick.shopping_list.dto.ExpenseDTO;
@@ -17,6 +18,7 @@ public class ExpenseMapper {
     expense.setAmount(expenseDTO.getAmount());
     expense.setCurrency(expenseDTO.getCurrency());
     expense.setReimbursed(expenseDTO.getReimbursed());
+    expense.setItems(new ArrayList<>());
     return expense;
   }
 
@@ -28,6 +30,19 @@ public class ExpenseMapper {
     expenseDTO.setAmount(expense.getAmount());
     expenseDTO.setCurrency(expense.getCurrency());
     expenseDTO.setReimbursed(expense.getReimbursed());
+    return expenseDTO;
+  }
+
+  public static ExpenseDTO toDtoWithItems(Expense expense) {
+    ExpenseDTO expenseDTO = toDto(expense);
+    if (Objects.nonNull(expense.getItems()) &&
+        !expense.getItems().isEmpty()) {
+      var itemDtos = expense.getItems()
+          .stream()
+          .map(ItemMapper::toItemNameDto)
+          .toList();
+      expenseDTO.setItems(itemDtos);
+    }
     return expenseDTO;
   }
 
