@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
 import com.pro.list_tick.shopping_list.dto.ItemDTO;
+import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class ItemController {
         log.debug(String.format(requestLogTemplate),
                 "GET", id, "");
         final var item = itemService.getById(id);
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(ItemMapper.toDTO(item));
     }
 
     @GetMapping("shopping-list/{id}")

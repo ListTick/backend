@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
-    @Query("SELECT e.accountId FROM Expense e JOIN ShoppingList ")
+    @Query("select e from Expense e join ShoppingList")
     List<Expense> findAllByAccountId(UUID accountId);
 
 }

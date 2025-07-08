@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,10 +27,24 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final AccountAPI accountAPI;
     private final CurrentAccountService currentAccountService;
+
     private final SLCategoryRepository categoryRepository;
 
+    public Category getById(UUID id) {
+        var accountId = currentAccountService.getCurrentAccountId();
+        log.debug("Getting a shopping list category by the accountId: {}", accountId);
 
-    public List<CategoryDTO> getAllByAccountId() {
+        var category = categoryRepository.findById(id)
+            .orElseThrow(() -> {
+                String errMessage = String.format("Category not found: %s", id);
+                log.error(errMessage);
+                return new CategoryException(HttpStatus.BAD_REQUEST, errMessage);
+            });
+        validateOwnership(category, accountId);
+        return category;
+    }
+
+    public List<CategoryDTO> getAllDTOByAccountId() {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Getting all shopping list categories by the accountId: {}", accountId);
 
@@ -39,99 +54,82 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
     }
 
-    public CategoryDTO getById(UUID id) {
-        var accountId = currentAccountService.getCurrentAccountId();
-        log.debug("Getting a shopping list category by the accountId: {}", accountId);
-
-        var category = getCategory(id);
-        checkCategoryOwnership(category, accountId);
-        return CategoryMapper.toDTO(category);
-    }
-
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public CategoryDTO create(CategoryInputDTO categoryInputDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
-        log.info("Creating a shopping list category for the accountId: {}, category name: {}",
+        log.debug("Creating a shopping list category for the accountId: {}, category name: {}",
                 accountId, categoryInputDTO.getName());
 
-        if (categoryRepository.existsByNameAndAccountId(categoryInputDTO.getName(), accountId)) {
-            log.error("Category name already exists for the accountId: {}, category name: {}",
-                    accountId, categoryInputDTO.getName());
-            throw new CategoryException(HttpStatus.CONFLICT, String.format(
-                    "Category name already exists: %s", categoryInputDTO.getName()));
-        }
+        validateName(accountId, categoryInputDTO.getName());
         var category = CategoryMapper.toModel(categoryInputDTO);
         category.setAccountId(accountId);
         if (Objects.isNull(category.getColour())) {
             category.setColour(accountAPI.getDefaultShoppingListCategoryColour());
         }
 
-        log.debug("Saving the shopping list category for the accountId: {}, category name: {}",
-                accountId, categoryInputDTO.getName());
-        return CategoryMapper.toDTO(categoryRepository.save(category));
+        var savedCategory = categoryRepository.save(category);
+        log.info("The category has been created: {}", savedCategory.getId());
+        return CategoryMapper.toDTO(savedCategory);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public CategoryDTO update(UUID id, CategoryInputDTO categoryInputDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
-        log.info("Updating the category: {}, for the accountId: {}", id, accountId);
+        log.debug("Updating the category: {}, for the accountId: {}", id, accountId);
 
-        var category = getCategory(id);
-        checkCategoryOwnership(category, accountId);
+        var category = getById(id);
         category.setName(categoryInputDTO.getName());
         category.setColour(categoryInputDTO.getColour());
 
-        log.debug("Saving the updated shopping list category: {}, accountId: {}",
-                id, accountId);
-        return CategoryMapper.toDTO(categoryRepository.save(category));
+        var savedCategory = categoryRepository.save(category);
+        log.info("The category has been updated: {}", savedCategory.getId());
+        return CategoryMapper.toDTO(savedCategory);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public CategoryDTO updateByFields(UUID id, CategoryInputDTO categoryInputDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
-        log.info("Updating by fields the category: {}, for the accountId: {}", id, accountId);
+        log.debug("Updating by fields the category: {}, for the accountId: {}", id, accountId);
 
-        var category = getCategory(id);
-        checkCategoryOwnership(category, accountId);
+        var category = getById(id);
         if (Objects.nonNull(categoryInputDTO.getName())) {
-            if (categoryRepository.existsByNameAndAccountId(categoryInputDTO.getName(), accountId)) {
-                log.error("Category name already exists for the accountId: {}, category name: {}",
-                        accountId, categoryInputDTO.getName());
-                throw new CategoryException(HttpStatus.CONFLICT, String.format(
-                        "Category name already exists: %s", categoryInputDTO.getName()));
-            }
+            validateName(accountId, categoryInputDTO.getName());
             category.setName(categoryInputDTO.getName());
         }
         if (Objects.nonNull(categoryInputDTO.getColour())) {
             category.setColour(categoryInputDTO.getColour());
         }
 
-        log.debug("Saving the updated by fields shopping list category: {}, accountId: {}",
-                id, accountId);
-        return CategoryMapper.toDTO(categoryRepository.save(category));
+        var savedCategory = categoryRepository.save(category);
+        log.info("The category has been updated by fields: {}", savedCategory.getId());
+        return CategoryMapper.toDTO(savedCategory);
     }
 
+    @Transactional(transactionManager = "shoppingListTransactionManager")
     public void delete(UUID id) {
-        var accountId = currentAccountService.getCurrentAccountId();
-        log.info("Deleting the shopping list category: {}, for the accountId: {}", id, accountId);
+        log.debug("Deleting the shopping list category: {}", id);
 
-        var category = getCategory(id);
-        checkCategoryOwnership(category, accountId);
+        var category = getById(id);
         categoryRepository.delete(category);
-        log.info("Shopping list category has been deleted: {}, for the accountId: {}", id, accountId);
+        log.info("Shopping list category has been deleted: {}", id);
     }
 
-    private Category getCategory(UUID id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Category not found: {}", id);
-                    return new CategoryException(HttpStatus.BAD_REQUEST, String.format(
-                            "Category not found: %s", id));
-                });
-    }
-
-    private void checkCategoryOwnership(Category category, UUID accountId) {
+    private void validateOwnership(Category category, UUID accountId) {
         if (!category.getAccountId().equals(accountId)) {
-            log.error("Category not found: {}, for the user: {}", category.getId(), accountId);
-            throw new CategoryException(HttpStatus.CONFLICT, String.format(
-                    "Category not found: %s, for the user: %s", category.getId(), accountId));
+            String errMessage = String.format("Category not found: %s, for the user: %s",
+                category.getId(), accountId);
+            log.error(errMessage);
+            throw new CategoryException(HttpStatus.CONFLICT, errMessage);
+        }
+    }
+
+    private void validateName(UUID accountId, String name) {
+        if (categoryRepository.existsByNameAndAccountId(name, accountId)) {
+            String errMessage = String.format(
+                "Category name already exists for the accountId: %s, category name: %s",
+                accountId, name);
+            log.error(errMessage);
+            throw new CategoryException(HttpStatus.CONFLICT, errMessage);
         }
     }
 

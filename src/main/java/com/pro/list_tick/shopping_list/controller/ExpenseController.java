@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
 import com.pro.list_tick.shopping_list.dto.ExpenseDTO;
+import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,7 @@ public class ExpenseController {
         log.debug(String.format(requestLogTemplate),
                 "GET", id, "");
         final var expense = expenseService.getById(id);
-        return ResponseEntity.ok(expense);
+        return ResponseEntity.ok(ExpenseMapper.toDto(expense));
     }
 
     @PostMapping

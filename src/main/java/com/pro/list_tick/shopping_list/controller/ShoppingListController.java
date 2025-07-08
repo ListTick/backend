@@ -4,6 +4,7 @@ import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListUpdateDTO;
+import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -37,8 +38,8 @@ public class ShoppingListController {
     public ResponseEntity<List<ShoppingListDTO>> getAllByAccountId() {
         log.debug(String.format(requestLogTemplate),
                 "GET", "", "");
-        var shoppingLists = shoppingListService.getAllByAccountId();
-        return ResponseEntity.ok(shoppingLists);
+        var shoppingListDTOs = shoppingListService.getAllDTOByAccountId();
+        return ResponseEntity.ok(shoppingListDTOs);
     }
 
     @GetMapping("/{id}")
@@ -46,7 +47,7 @@ public class ShoppingListController {
         log.debug(String.format(requestLogTemplate),
                 "GET", id, "");
         var shoppingLists = shoppingListService.getById(id);
-        return ResponseEntity.ok(shoppingLists);
+        return ResponseEntity.ok(ShoppingListMapper.toDTO(shoppingLists));
     }
 
     @GetMapping("/{id}/items")

@@ -69,4 +69,9 @@ public class ShoppingList {
             mappedBy = "shoppingList")
     private List<Item> items;
 
+    @OneToMany(fetch = FetchType.LAZY,
+        cascade = CascadeType.REMOVE,
+        mappedBy = "shoppingList")
+    private List<Expense> expenses;
+
 }

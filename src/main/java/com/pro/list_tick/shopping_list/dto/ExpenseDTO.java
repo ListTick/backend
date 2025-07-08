@@ -31,6 +31,9 @@ public class ExpenseDTO {
     @NotNull(message = "Reimbursed cannot be null")
     private Boolean reimbursed;
 
+    @NotBlank(message = "Shopping list id cannot be blank")
+    private UUID shoppingListId;
+
     @Nullable
     private List<ItemNameDTO> items;
 

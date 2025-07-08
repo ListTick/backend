@@ -14,7 +14,9 @@ public class ExpenseMapper {
 
   public static Expense toModel(ExpenseDTO expenseDTO) {
     Expense expense = new Expense();
-    expense.setId(expenseDTO.getId());
+    if (Objects.nonNull(expense.getId())) {
+      expense.setId(expenseDTO.getId());
+    }
     expense.setAmount(expenseDTO.getAmount());
     expense.setCurrency(expenseDTO.getCurrency());
     expense.setReimbursed(expenseDTO.getReimbursed());
@@ -30,6 +32,7 @@ public class ExpenseMapper {
     expenseDTO.setAmount(expense.getAmount());
     expenseDTO.setCurrency(expense.getCurrency());
     expenseDTO.setReimbursed(expense.getReimbursed());
+    expenseDTO.setShoppingListId(expense.getShoppingList().getId());
     return expenseDTO;
   }
 
@@ -37,11 +40,11 @@ public class ExpenseMapper {
     ExpenseDTO expenseDTO = toDto(expense);
     if (Objects.nonNull(expense.getItems()) &&
         !expense.getItems().isEmpty()) {
-      var itemDtos = expense.getItems()
+      var itemDTOs = expense.getItems()
           .stream()
           .map(ItemMapper::toItemNameDto)
           .toList();
-      expenseDTO.setItems(itemDtos);
+      expenseDTO.setItems(itemDTOs);
     }
     return expenseDTO;
   }

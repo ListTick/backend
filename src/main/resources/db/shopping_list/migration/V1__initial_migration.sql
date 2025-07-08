@@ -7,13 +7,6 @@ CREATE TABLE IF NOT EXISTS public.category (
     account_id UUID NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS public.expense (
-    id UUID PRIMARY KEY,
-    amount MONEY NOT NULL,
-    currency VARCHAR(3) NOT NULL,
-    reimbursed BOOLEAN NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS public.shopping_list (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -24,6 +17,15 @@ CREATE TABLE IF NOT EXISTS public.shopping_list (
     account_id UUID NOT NULL,
     category_id UUID NOT NULL,
     FOREIGN KEY (category_id) REFERENCES public.category(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.expense (
+    id UUID PRIMARY KEY,
+    amount MONEY NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    reimbursed BOOLEAN NOT NULL,
+    shopping_list_id UUID,
+    FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.item (
