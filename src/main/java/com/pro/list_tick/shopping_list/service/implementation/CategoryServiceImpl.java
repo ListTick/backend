@@ -61,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
                 accountId, categoryInputDTO.getName());
 
         validateName(accountId, categoryInputDTO.getName());
+        validateColour(categoryInputDTO);
         var category = CategoryMapper.toModel(categoryInputDTO);
         category.setAccountId(accountId);
         if (Objects.isNull(category.getColour())) {
@@ -78,8 +79,15 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Updating the category: {}, for the accountId: {}", id, accountId);
 
         var category = getById(id);
+        validateName(accountId, categoryInputDTO.getName());
+        validateColour(categoryInputDTO);
+
         category.setName(categoryInputDTO.getName());
-        category.setColour(categoryInputDTO.getColour());
+        if (Objects.isNull(categoryInputDTO.getColour())) {
+            category.setColour(accountAPI.getDefaultShoppingListCategoryColour());
+        } else {
+            category.setColour(categoryInputDTO.getColour());
+        }
 
         var savedCategory = categoryRepository.save(category);
         log.info("The category has been updated: {}", savedCategory.getId());
@@ -97,6 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
             category.setName(categoryInputDTO.getName());
         }
         if (Objects.nonNull(categoryInputDTO.getColour())) {
+            validateColour(categoryInputDTO);
             category.setColour(categoryInputDTO.getColour());
         }
 
@@ -133,6 +142,10 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-}
+    private void validateColour(CategoryInputDTO categoryInputDTO) {
+        if (Objects.nonNull(categoryInputDTO.getColour()) && categoryInputDTO.getColour().length() != 7) {
+            throw new CategoryException("Category colour, if specified, must be exactly 7 characters long");
+        }
+    }
 
-//todo Add exception handler
+}

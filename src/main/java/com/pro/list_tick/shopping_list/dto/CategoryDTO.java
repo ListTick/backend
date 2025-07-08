@@ -16,7 +16,7 @@ public class CategoryDTO {
     private String name;
 
     @NotBlank(message = "Colour cannot be blank")
-    @Size(min = 3, max = 255, message = "Colour must be between 3 and 255 characters")
+    @Size(min = 7, max = 7, message = "'colour must be exactly 7 characters long")
     private String colour;
 
 }

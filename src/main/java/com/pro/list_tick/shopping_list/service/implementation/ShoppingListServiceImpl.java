@@ -2,7 +2,6 @@ package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
-import com.pro.list_tick.shopping_list.dto.ItemDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListUpdateDTO;
@@ -12,7 +11,6 @@ import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
 import com.pro.list_tick.shopping_list.service.CategoryService;
-import com.pro.list_tick.shopping_list.service.ItemService;
 import com.pro.list_tick.shopping_list.service.SharedShoppingListService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
@@ -35,7 +33,6 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     private final CurrentAccountService currentAccountService;
     private final CategoryService categoryService;
-    private final ItemService itemService;
     private final SharedShoppingListService sharedShoppingListService;
 
     public ShoppingList getById(UUID id) {
@@ -66,10 +63,6 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             .map(ShoppingListMapper::toDTO)
             .toList());
         return dtoList;
-    }
-
-    public List<ItemDTO> getItemsByShoppingListId(UUID id) {
-        return itemService.getAllByShoppingListId(id);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
