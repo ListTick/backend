@@ -6,6 +6,7 @@ import com.pro.list_tick.task.dto.TaskRequestDto;
 import com.pro.list_tick.task.dto.TaskResponseDto;
 import com.pro.list_tick.task.mapper.TaskMapper;
 import com.pro.list_tick.task.model.Task;
+import com.pro.list_tick.task.repository.TagRepository;
 import com.pro.list_tick.task.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,17 @@ import java.util.UUID;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final CurrentAccountService currentAccountService;
+    private final TagRepository tagRepository;
 
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
+
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
+
+        if (taskRequestDto.tagId() != null) {
+            tagRepository.findById(taskRequestDto.tagId()).ifPresent(task::setTag);
+        }
 
         taskRepository.save(task);
 
@@ -38,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskResponseDto> getTasks(String tag) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
         List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
+        //todo: add tag
 
         return tasks.stream().map(TaskMapper::toDto).toList();
     }
@@ -72,6 +80,10 @@ public class TaskServiceImpl implements TaskService {
         task.setDueDate(taskRequestDto.dueDate());
         task.setCompleted(taskRequestDto.isCompleted());
         task.setDeleted(taskRequestDto.isDeleted());
+
+        if (taskRequestDto.tagId() != null) {
+            tagRepository.findById(taskRequestDto.tagId()).ifPresent(task::setTag);
+        }
 
         taskRepository.save(task);
         return TaskMapper.toDto(task);

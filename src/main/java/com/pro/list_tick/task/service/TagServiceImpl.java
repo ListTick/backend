@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -41,7 +42,10 @@ public class TagServiceImpl implements TagService {
     public TagResponseDto updateTag(TagRequestDto tagRequestDto, UUID tagId) {
         Tag tag = getTagById(tagId);
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
+
+        if (!Objects.equals(tagRequestDto.name(),tag.getName())) {
+            checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
+        }
 
         tag.setName(tagRequestDto.name());
         tag.setColor(tagRequestDto.color());

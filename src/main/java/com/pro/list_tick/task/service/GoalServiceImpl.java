@@ -35,15 +35,17 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
-    public void createGoal(GoalRequestDto goalRequestDto) {
+    public GoalResponseDto createGoal(GoalRequestDto goalRequestDto) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
         Goal goal = GoalMapper.toEntity(goalRequestDto, currentAccountId);
 
         goalRepository.save(goal);
+
+        return GoalMapper.toDto(goal);
     }
 
     @Override
-    public void updateGoal(UUID id, GoalRequestDto goalRequestDto) {
+    public GoalResponseDto updateGoal(UUID id, GoalRequestDto goalRequestDto) {
         Goal goal = goalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Goal not found with id: " + id)); //TODO custom exception
 
@@ -54,6 +56,8 @@ public class GoalServiceImpl implements GoalService {
         goal.setRealizationDate(goalRequestDto.realizationDate());
 
         goalRepository.save(goal);
+
+        return GoalMapper.toDto(goal);
     }
 
     @Override

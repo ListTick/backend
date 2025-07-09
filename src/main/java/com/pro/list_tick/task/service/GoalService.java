@@ -10,7 +10,7 @@ public interface GoalService {
 
      List<GoalResponseDto> getAllGoals();
      GoalResponseDto getGoalById(UUID id);
-     void createGoal(GoalRequestDto goalRequestDto);
-     void updateGoal(UUID id, GoalRequestDto goalRequestDto);
+     GoalResponseDto createGoal(GoalRequestDto goalRequestDto);
+     GoalResponseDto updateGoal(UUID id, GoalRequestDto goalRequestDto);
      void deleteGoal(UUID id);
 }
