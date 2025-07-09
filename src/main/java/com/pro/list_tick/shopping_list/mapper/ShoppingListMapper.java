@@ -17,6 +17,7 @@ public class ShoppingListMapper {
         ShoppingListDTO shoppingListDTO = new ShoppingListDTO();
         shoppingListDTO.setId(shoppingList.getId());
         shoppingListDTO.setActive(shoppingList.getActive());
+        shoppingListDTO.setShared(shoppingList.getShared());
         shoppingListDTO.setName(shoppingList.getName());
         shoppingListDTO.setCreationDate(shoppingList.getCreationDate());
         shoppingListDTO.setCategoryId(shoppingList.getCategory().getId());
@@ -24,19 +25,11 @@ public class ShoppingListMapper {
         return shoppingListDTO;
     }
 
-    public static ShoppingList toModel(ShoppingListDTO shoppingListDTO) {
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setId(shoppingListDTO.getId());
-        shoppingList.setActive(shoppingListDTO.getActive());
-        shoppingList.setName(shoppingListDTO.getName());
-        shoppingList.setCreationDate(shoppingListDTO.getCreationDate());
-        return shoppingList;
-    }
-
     public static ShoppingList toModel(ShoppingListInputDTO shoppingListInputDTO) {
         ShoppingList shoppingList = new ShoppingList();
         shoppingList.setName(shoppingListInputDTO.getName());
         shoppingList.setActive(Boolean.TRUE);
+        shoppingList.setShared(shoppingListInputDTO.getShared());
         shoppingList.setCreationDate(LocalDate.now());
         return shoppingList;
     }

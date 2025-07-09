@@ -5,15 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-
-import java.util.UUID;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "user_entity")
 public class KeycloakUser {
 
     @Id
-    private UUID uuid;
+    @Size(min = 36, max = 36, message = "Id must have exactly 36 characters.")
+    private String id;
 
     @Email
     private String email;

@@ -9,25 +9,17 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ItemDTO {
+public class ItemNameDTO {
 
+    @NotBlank(message = "Id cannot be blank")
     private UUID id;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
+    @Nullable
+    @Size(min = 3, max = 255, message = "Name has to have 3-255 characters")
     private String name;
 
     @Nullable
     @Positive(message = "Value cannot be negative")
     private Double value;
-
-    @Nullable
-    private Boolean active;
-
-    @Nullable
-    private UUID expenseId;
-
-    @NotBlank(message = "ShoppingListId cannot be blank")
-    private UUID shoppingListId;
 
 }

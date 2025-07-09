@@ -35,8 +35,11 @@ public class ShoppingList {
     @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
     private String name;
 
-    @NotNull(message = "Active status cannot be null")
+    @NotNull(message = "Active cannot be null")
     private Boolean active;
+
+    @NotNull(message = "Shared cannot be null")
+    private Boolean shared;
 
     @PastOrPresent(message = "Creation date cannot be in the future")
     @Column(name = "creation_date")
@@ -65,5 +68,10 @@ public class ShoppingList {
             cascade = CascadeType.REMOVE,
             mappedBy = "shoppingList")
     private List<Item> items;
+
+    @OneToMany(fetch = FetchType.LAZY,
+        cascade = CascadeType.REMOVE,
+        mappedBy = "shoppingList")
+    private List<Expense> expenses;
 
 }

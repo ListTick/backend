@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -27,8 +28,7 @@ public class Item {
     private UUID id;
 
     @NotBlank(message = "Name cannot be blank")
-    @Min(value = 3, message = "Name has to have at least 3 characters long")
-    @Max(value = 255, message = "Name cannot be more than 255 characters long")
+    @Size(min = 3, max = 255, message = "Name has to have 3-255 characters")
     private String name;
 
     @Nullable
@@ -38,6 +38,7 @@ public class Item {
     @NotNull(message = "Active field cannot be null")
     private Boolean active;
 
+    @Nullable
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "expense_id")
     private Expense expense;

@@ -1,23 +1,17 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.category (
+CREATE TABLE IF NOT EXISTS public.category (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     colour VARCHAR(7) NOT NULL,
     account_id UUID NOT NULL
 );
 
-CREATE TABLE public.expense (
-    id UUID PRIMARY KEY,
-    amount MONEY NOT NULL,
-    currency VARCHAR(3) NOT NULL,
-    reimbursed BOOLEAN NOT NULL
-);
-
-CREATE TABLE public.shopping_list (
+CREATE TABLE IF NOT EXISTS public.shopping_list (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     active BOOLEAN NOT NULL,
+    shared BOOLEAN NOT NULL,
     creation_date TIMESTAMP NOT NULL,
     owner_cost_factor INTEGER NOT NULL,
     account_id UUID NOT NULL,
@@ -25,7 +19,16 @@ CREATE TABLE public.shopping_list (
     FOREIGN KEY (category_id) REFERENCES public.category(id)
 );
 
-CREATE TABLE public.item (
+CREATE TABLE IF NOT EXISTS public.expense (
+    id UUID PRIMARY KEY,
+    amount MONEY NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    reimbursed BOOLEAN NOT NULL,
+    shopping_list_id UUID,
+    FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.item (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     value DECIMAL NULL,
@@ -36,7 +39,7 @@ CREATE TABLE public.item (
     FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list(id)
 );
 
-CREATE TABLE public.shared_shopping_list (
+CREATE TABLE IF NOT EXISTS public.shared_shopping_list (
     account_id UUID NOT NULL,
     shopping_list_id UUID NOT NULL,
     cost_factor INTEGER NOT NULL,

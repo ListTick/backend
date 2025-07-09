@@ -8,6 +8,7 @@ import com.pro.list_tick.account.repository.keycloak.KeycloakRepository;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -25,8 +26,13 @@ public class AccountServiceImpl implements AccountService {
 
     public UUID getUUIDbyEmail(String email) {
         log.debug("Getting an user id for the email: {}", email);
-        return keycloakRepository.findIdByEmail(email)
-                .orElseThrow(() -> new AccountException(String.format("Account not found: %s", email)));
+        String id = keycloakRepository.findIdByEmail(email)
+                .orElseThrow(() -> {
+                    var errorMessage = String.format("Account not found with the email: %s", email);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
+        return UUID.fromString(id);
     }
 
     public Integer getDefaultPomodoroDuration() {
@@ -34,8 +40,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default pomodoro duration for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultPomodoroDuration(accountId)
-                .orElseThrow(() -> new AccountException(
-                        String.format("Default pomodoro duration not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default pomodoro duration not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public Integer getDefaultPomodoroBreakDuration() {
@@ -43,8 +53,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default pomodoro break duration for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultPomodoroBreakDuration(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default pomodoro break duration not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default pomodoro break duration not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public Integer getDefaultPomodoroLongBreakDuration() {
@@ -52,8 +66,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default pomodoro long break duration for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultPomodoroLongBreakDuration(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default pomodoro long break duration not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default pomodoro long break duration not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public Integer getDefaultPomodoroLongBreakInterval() {
@@ -61,8 +79,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default pomodoro long break interval for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultPomodoroLongBreakInterval(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default pomodoro long break interval not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default pomodoro long break interval not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public Integer getDefaultNotificationBreakReminderTime() {
@@ -70,8 +92,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default notification break reminder time for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultNotificationBreakReminderTime(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default notification break reminder time not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default notification break reminder time not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public Boolean getLongBreakEnabled() {
@@ -79,8 +105,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a long break enabled for the accountId: {}", accountId);
 
         return accountSettingsRepository.findLongBreakEnabled(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Long break enabled not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Long break enabled not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public String getDefaultTaskTagColour() {
@@ -88,8 +118,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default task tag colour for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultTaskTagColour(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default task tag colour not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default task tag colour not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public String getDefaultNoteTagColour() {
@@ -97,8 +131,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default note tag colour for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultNoteTagColour(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default note tag colour not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default note tag colour not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public String getDefaultGoalCategoryColour() {
@@ -106,8 +144,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default goal category colour for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultGoalCategoryColour(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default goal category colour not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default goal category colour not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public String getDefaultShoppingListCategoryColour() {
@@ -115,8 +157,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default shopping list category colour for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultShoppingListCategoryColour(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default shopping list category colour not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default shopping list category colour not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public String getDefaultBucketListCategoryColour() {
@@ -124,8 +170,12 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting a default bucket list category colour for the accountId: {}", accountId);
 
         return accountSettingsRepository.findDefaultBucketListCategoryColour(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Default bucket list category colour not found for the account id: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Default bucket list category colour not found for the account id: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public AccountSettings getAccountSettings() {
@@ -133,13 +183,17 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Getting account settings for the accountId: {}", accountId);
 
         return accountSettingsRepository.findById(accountId)
-                .orElseThrow(() -> new AccountException(String.format(
-                        "Account settings not found for the accountId: %s", accountId)));
+                .orElseThrow(() -> {
+                    var errorMessage = String.format(
+                            "Account settings not found for the accountId: %s", accountId);
+                    log.error(errorMessage);
+                    return new AccountException(HttpStatus.NOT_FOUND, errorMessage);
+                });
     }
 
     public AccountSettings updateAccountSettings(AccountSettingsInputDto accountSettingsInputDto) {
         AccountSettings accountSettings = getAccountSettings();
-        log.debug("Updating account settings for the accountId: {}", accountSettings.getAccountId());
+        log.info("Updating account settings for the accountId: {}", accountSettings.getAccountId());
 
         accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());
         accountSettings.setDefaultPomodoroBreakDuration(accountSettingsInputDto.getDefaultPomodoroBreakDuration());
@@ -159,7 +213,7 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountSettings updateAccountSettingsByFields(AccountSettingsInputDto accountSettingsInputDto) {
         AccountSettings accountSettings = getAccountSettings();
-        log.debug("Updating fields in the account settings for the accountId: {}", accountSettings.getAccountId());
+        log.info("Updating fields in the account settings for the accountId: {}", accountSettings.getAccountId());
 
         if (Objects.nonNull(accountSettingsInputDto.getDefaultPomodoroDuration())) {
             accountSettings.setDefaultPomodoroDuration(accountSettingsInputDto.getDefaultPomodoroDuration());

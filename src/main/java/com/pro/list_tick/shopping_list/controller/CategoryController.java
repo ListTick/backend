@@ -2,10 +2,13 @@ package com.pro.list_tick.shopping_list.controller;
 
 import com.pro.list_tick.shopping_list.dto.CategoryDTO;
 import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
+import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
 import com.pro.list_tick.shopping_list.service.CategoryService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,25 +24,35 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/shopping-lists/categories")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Slf4j
+@Validated
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private static final String REQUEST_LOG_TEMPLATE =
+        "Received request, method: {}, context path: /api/shopping-lists/categories{}, body {}";
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllByAccountId() {
-        final var categories = categoryService.getAllByAccountId();
-        return ResponseEntity.ok(categories);
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "GET", "", "");
+        final var categoryDTOs = categoryService.getAllDTOByAccountId();
+        return ResponseEntity.ok(categoryDTOs);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getById(@PathVariable UUID id) {
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "GET", id, "");
         var category = categoryService.getById(id);
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(CategoryMapper.toDTO(category));
     }
 
     @PostMapping
     public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "POST", "", categoryInputDTO);
         var category = categoryService.create(categoryInputDTO);
         return ResponseEntity.status(201).body(category);
     }
@@ -47,19 +60,25 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> update(@PathVariable UUID id,
                                                       @Valid @RequestBody CategoryInputDTO categoryInputDTO) {
-        var category = categoryService.update(id, categoryInputDTO);
-        return ResponseEntity.ok(category);
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "PUT", id, categoryInputDTO);
+        var categoryDTO = categoryService.update(id, categoryInputDTO);
+        return ResponseEntity.ok(categoryDTO);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateByFields(@PathVariable UUID id,
                                                               @RequestBody CategoryInputDTO categoryInputDTO) {
-        var category = categoryService.updateByFields(id, categoryInputDTO);
-        return ResponseEntity.ok(category);
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "PATCH", id, categoryInputDTO);
+        var categoryDTO = categoryService.updateByFields(id, categoryInputDTO);
+        return ResponseEntity.ok(categoryDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        log.debug(String.format(REQUEST_LOG_TEMPLATE),
+                "DELETE", id, "");
         categoryService.delete(id);
         return ResponseEntity.ok().build();
     }

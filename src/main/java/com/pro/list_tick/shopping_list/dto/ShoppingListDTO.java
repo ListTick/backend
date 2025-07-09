@@ -21,13 +21,16 @@ public class ShoppingListDTO {
     @NotNull(message = "Active status cannot be null")
     private Boolean active;
 
+    @NotNull(message = "Shared status cannot be null")
+    private Boolean shared;
+
     @PastOrPresent(message = "Creation date cannot be in the future")
     private LocalDate creationDate;
 
-    @NotNull
+    @NotNull(message = "CategoryId cannot be null")
     private UUID categoryId;
 
-    @NotNull
+    @NotNull(message = "AccountId cannot be null")
     private UUID accountId;
 
 }

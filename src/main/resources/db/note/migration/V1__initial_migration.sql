@@ -1,11 +1,11 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.account (
+CREATE TABLE IF NOT EXISTS public.account (
     id UUID PRIMARY KEY,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE public.category (
+CREATE TABLE IF NOT EXISTS public.category (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     colour VARCHAR(9) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE public.category (
     FOREIGN KEY (account_id) REFERENCES public.account(id)
 );
 
-CREATE TABLE public.note
+CREATE TABLE IF NOT EXISTS public.note
 (
     id UUID PRIMARY KEY,
     account_id UUID NOT NULL,

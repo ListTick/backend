@@ -1,11 +1,11 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE public.account (
+CREATE TABLE IF NOT EXISTS public.account (
     id UUID PRIMARY KEY,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE public.goal (
+CREATE TABLE IF NOT EXISTS public.goal (
     id UUID PRIMARY KEY,
     name VARCHAR(255),
     description VARCHAR(512),
@@ -16,14 +16,14 @@ CREATE TABLE public.goal (
     account_id UUID NOT NULL
 );
 
-CREATE TABLE public.tag (
+CREATE TABLE IF NOT EXISTS public.tag (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     color VARCHAR(7),
     account_id UUID NOT NULL
 );
 
-CREATE TABLE public.task (
+CREATE TABLE IF NOT EXISTS public.task (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(1024),

@@ -1,32 +1,22 @@
-package com.pro.list_tick.shopping_list.model;
+package com.pro.list_tick.shopping_list.dto;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
+import com.pro.list_tick.shopping_list.model.CurrencyCode;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "expense")
 @Data
-public class Expense {
+public class ExpenseDTO {
 
-    @Id
-    @UuidGenerator
+    @Nullable
     private UUID id;
 
     @NotNull(message = "Amount cannot be null")
@@ -41,13 +31,10 @@ public class Expense {
     @NotNull(message = "Reimbursed cannot be null")
     private Boolean reimbursed;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_list_id")
-    private ShoppingList shoppingList;
+    @NotBlank(message = "Shopping list id cannot be blank")
+    private UUID shoppingListId;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "expense")
-    private List<Item> items;
+    @Nullable
+    private List<ItemNameDTO> items;
 
 }
