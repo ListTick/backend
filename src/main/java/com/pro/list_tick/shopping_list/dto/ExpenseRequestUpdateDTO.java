@@ -1,10 +1,6 @@
 package com.pro.list_tick.shopping_list.dto;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.pro.list_tick.shopping_list.model.CurrencyCode;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public record ExpenseRequestDTO (
+public record ExpenseRequestUpdateDTO(
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount cannot be negative")
@@ -24,13 +20,7 @@ public record ExpenseRequestDTO (
     CurrencyCode currency,
 
     @NotNull(message = "Reimbursed cannot be null")
-    Boolean reimbursed,
-
-    @NotBlank(message = "Shopping list id cannot be blank")
-    UUID shoppingListId,
-
-    @Nullable
-    List<UUID> items
+    Boolean reimbursed
 
 ) {
 }

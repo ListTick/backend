@@ -24,7 +24,7 @@ public class ItemMapper {
         Item item = new Item();
         item.setName(itemRequestDTO.name());
         item.setValue(Objects.nonNull(itemRequestDTO.value()) ? itemRequestDTO.value() : null);
-        item.setActive(itemRequestDTO.active());
+        item.setActive(Boolean.TRUE);
         return item;
     }
 

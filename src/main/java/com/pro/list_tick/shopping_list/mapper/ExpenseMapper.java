@@ -1,7 +1,6 @@
 package com.pro.list_tick.shopping_list.mapper;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
@@ -16,9 +15,6 @@ public class ExpenseMapper {
 
   public static Expense toModel(ExpenseRequestDTO expenseRequestDTO) {
     Expense expense = new Expense();
-    if (Objects.nonNull(expense.getId())) {
-      expense.setId(expenseRequestDTO.id());
-    }
     expense.setAmount(expenseRequestDTO.amount());
     expense.setCurrency(expenseRequestDTO.currency());
     expense.setReimbursed(expenseRequestDTO.reimbursed());

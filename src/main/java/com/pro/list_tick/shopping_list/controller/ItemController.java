@@ -41,7 +41,7 @@ public class ItemController {
         return ResponseEntity.ok(ItemMapper.toResponseDTO(item));
     }
 
-    @GetMapping("shopping-list/{id}")
+    @GetMapping("/shopping-list/{id}")
     public ResponseEntity<List<ItemResponseDTO>> getAllByShoppingListId(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
             "GET", "shopping-list " + id, "");
@@ -57,22 +57,30 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ItemResponseDTO> updateItem(@PathVariable UUID id,
                                                      @Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", "", itemRequestDTO);
+                "PUT", id, itemRequestDTO);
         final var item = itemService.update(id, itemRequestDTO);
         return ResponseEntity.ok(item);
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}")
     public ResponseEntity<ItemResponseDTO> updateItemByFields(@PathVariable UUID id,
                                                              @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", "", itemRequestDTO);
+                "PATCH", id, itemRequestDTO);
         final var item = itemService.updateByFields(id, itemRequestDTO);
         return ResponseEntity.ok(item);
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateItem(@PathVariable UUID id) {
+        log.debug(String.format(requestLogTemplate),
+            "PATCH", id + "/deactivate", "");
+        itemService.deactivate(id);
+        return ResponseEntity.ok().build();
     }
 
 }

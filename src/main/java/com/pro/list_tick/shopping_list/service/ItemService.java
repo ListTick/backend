@@ -14,6 +14,6 @@ public interface ItemService {
     ItemResponseDTO create(ItemRequestDTO itemRequestDTO);
     ItemResponseDTO update(UUID id, ItemRequestDTO itemRequestDTO);
     ItemResponseDTO updateByFields(UUID id, ItemRequestDTO itemRequestDTO);
-    void delete(UUID id);
+    void deactivate(UUID id);
 
 }

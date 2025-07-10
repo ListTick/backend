@@ -2,6 +2,7 @@ package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
 import com.pro.list_tick.shopping_list.exception.ItemException;
@@ -80,16 +81,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ExpenseResponseDTO update(UUID id, ExpenseRequestDTO expenseRequestDTO) {
+    public ExpenseResponseDTO update(UUID id, ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug("Updating expense: {}", id);
-        Expense expense = expenseRepository.findById(id)
-            .orElseThrow(() -> new ExpenseException(HttpStatus.NOT_FOUND,
-                String.format("Couldn't find the expense: %s", id)));
-        validateExpenseAccess(expense);
+        Expense expense = getById(id);
 
-        expense.setCurrency(expenseRequestDTO.currency());
-        expense.setAmount(expenseRequestDTO.amount());
-        expense.setReimbursed(expenseRequestDTO.reimbursed());
+        expense.setCurrency(expenseRequestUpdateDTO.currency());
+        expense.setAmount(expenseRequestUpdateDTO.amount());
+        expense.setReimbursed(expenseRequestUpdateDTO.reimbursed());
 
         var savedExpense = expenseRepository.save(expense);
         log.info("The expense has been updated: {}", savedExpense.getId());
@@ -97,21 +95,18 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ExpenseResponseDTO updateByFields(UUID id, ExpenseRequestDTO expenseRequestDTO) {
+    public ExpenseResponseDTO updateByFields(UUID id, ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug("Updating expense by fields: {}", id);
-        Expense expense = expenseRepository.findById(id)
-            .orElseThrow(() -> new ExpenseException(HttpStatus.NOT_FOUND,
-                String.format("Couldn't find the expense: %s", id)));
-        validateExpenseAccess(expense);
+        Expense expense = getById(id);
 
-      if (Objects.nonNull(expenseRequestDTO.currency())) {
-        expense.setCurrency(expenseRequestDTO.currency());
+      if (Objects.nonNull(expenseRequestUpdateDTO.currency())) {
+        expense.setCurrency(expenseRequestUpdateDTO.currency());
       }
-      if (Objects.nonNull(expenseRequestDTO.amount())) {
-        expense.setAmount(expenseRequestDTO.amount());
+      if (Objects.nonNull(expenseRequestUpdateDTO.amount())) {
+        expense.setAmount(expenseRequestUpdateDTO.amount());
       }
-      if (Objects.nonNull(expenseRequestDTO.reimbursed())) {
-        expense.setReimbursed(expenseRequestDTO.reimbursed());
+      if (Objects.nonNull(expenseRequestUpdateDTO.reimbursed())) {
+        expense.setReimbursed(expenseRequestUpdateDTO.reimbursed());
       }
 
       var savedExpense = expenseRepository.save(expense);
@@ -122,12 +117,20 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public void delete(UUID id) {
         log.debug("Deleting the expense: {}", id);
-        Expense expense = expenseRepository.findById(id)
-            .orElseThrow(() -> new ExpenseException(HttpStatus.NOT_FOUND,
-                String.format("Couldn't find the expense: %s", id)));
-        validateExpenseAccess(expense);
+        Expense expense = getById(id);
+
         expenseRepository.delete(expense);
         log.info("The expense has been deleted: {}", expense);
+    }
+
+    @Transactional(transactionManager = "shoppingListTransactionManager")
+    public void reimburse(UUID id) {
+        log.debug("Reimbursing the expense: {}", id);
+        Expense expense = getById(id);
+        expense.setReimbursed(Boolean.TRUE);
+
+        expenseRepository.save(expense);
+        log.info("The expense has been reimbursed: {}", expense);
     }
 
     private void validateExpenseAccess(Expense expense) {

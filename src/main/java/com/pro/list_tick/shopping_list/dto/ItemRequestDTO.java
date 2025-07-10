@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public record ItemRequestDTO (
 
-    UUID id,
-
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
     String name,
@@ -18,12 +16,6 @@ public record ItemRequestDTO (
     @Nullable
     @Positive(message = "Value cannot be negative")
     Double value,
-
-    @Nullable
-    Boolean active,
-
-    @Nullable
-    UUID expenseId,
 
     @NotBlank(message = "ShoppingListId cannot be blank")
     UUID shoppingListId

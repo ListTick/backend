@@ -1,12 +1,9 @@
 package com.pro.list_tick.shopping_list.controller;
 
-import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
-import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListResponseDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
-import com.pro.list_tick.shopping_list.service.ItemService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -34,7 +31,6 @@ import java.util.UUID;
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
-    private final ItemService itemService;
     private final String requestLogTemplate = "Received request, method: {}, context path: /api/shopping-lists/{}, body {}";
 
     @GetMapping
@@ -51,14 +47,6 @@ public class ShoppingListController {
                 "GET", id, "");
         var shoppingLists = shoppingListService.getById(id);
         return ResponseEntity.ok(ShoppingListMapper.toResponseDTO(shoppingLists));
-    }
-
-    @GetMapping("/{id}/items")
-    public ResponseEntity<List<ItemResponseDTO>> getItemsByShoppingListId(@PathVariable UUID id) {
-        log.debug(String.format(requestLogTemplate),
-                "GET", id + "/items", "");
-        var items = itemService.getAllByShoppingListId(id);
-        return ResponseEntity.ok(items);
     }
 
     @PostMapping

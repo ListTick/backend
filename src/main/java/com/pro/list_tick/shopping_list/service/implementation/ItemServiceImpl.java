@@ -5,7 +5,6 @@ import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ItemException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
-import com.pro.list_tick.shopping_list.model.Expense;
 import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ItemRepository;
 import com.pro.list_tick.shopping_list.service.ItemService;
@@ -67,7 +66,6 @@ public class ItemServiceImpl implements ItemService {
 
         item.setName(itemRequestDTO.name());
         item.setValue(itemRequestDTO.value());
-        item.setActive(itemRequestDTO.active());
 
         var savedItem = itemRepository.save(item);
         log.info("The item: {}, has been updated", savedItem.getId());
@@ -85,9 +83,6 @@ public class ItemServiceImpl implements ItemService {
         if (Objects.nonNull(itemRequestDTO.value())) {
             item.setValue(itemRequestDTO.value());
         }
-        if (Objects.nonNull(itemRequestDTO.active())) {
-            item.setActive(itemRequestDTO.active());
-        }
 
         var savedItem = itemRepository.save(item);
         log.info("The item: {}, has been updated by fields", savedItem.getId());
@@ -95,15 +90,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public void delete(UUID id) {
-        log.debug("Deleting the item: {}", id);
+    public void deactivate(UUID id) {
+        log.debug("Deactivating the item: {}", id);
         var item = getById(id);
-        itemRepository.delete(item);
-        log.info("The item: {}, has been deleted", id);
-    }
 
-    public void addExpenseAndDeactivate(Expense expense, Item item) {
-        //todo
+        item.setActive(Boolean.FALSE);
+
+        itemRepository.save(item);
+        log.info("The item: {}, has been deactivated", id);
     }
 
     private void validateItemAccess(Item item) {

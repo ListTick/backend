@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
@@ -58,20 +59,28 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable UUID id,
-                                                            @Valid @RequestBody ExpenseRequestDTO expenseRequestDTO) {
+                                                            @Valid @RequestBody ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", "", expenseRequestDTO);
-        final var expense = expenseService.update(id, expenseRequestDTO);
+                "PUT", "", expenseRequestUpdateDTO);
+        final var expense = expenseService.update(id, expenseRequestUpdateDTO);
         return ResponseEntity.ok(expense);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ExpenseResponseDTO> updateExpenseByFields(@PathVariable UUID id,
-                                                                    @RequestBody ExpenseRequestDTO expenseRequestDTO) {
+                                                                    @RequestBody ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", "", expenseRequestDTO);
-        final var item = expenseService.update(id, expenseRequestDTO);
+                "PATCH", "", expenseRequestUpdateDTO);
+        final var item = expenseService.updateByFields(id, expenseRequestUpdateDTO);
         return ResponseEntity.ok(item);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ExpenseResponseDTO> reimburse(@PathVariable UUID id) {
+        log.debug(String.format(requestLogTemplate),
+            "PATCH", id + "/reimburse", "");
+        expenseService.reimburse(id);
+        return ResponseEntity.ok().build();
     }
 
 }
