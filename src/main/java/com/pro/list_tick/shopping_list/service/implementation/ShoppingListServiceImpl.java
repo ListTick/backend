@@ -1,10 +1,10 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
-import com.pro.list_tick.shopping_list.dto.ShoppingListDTO;
-import com.pro.list_tick.shopping_list.dto.ShoppingListInputDTO;
-import com.pro.list_tick.shopping_list.dto.ShoppingListUpdateDTO;
+import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
+import com.pro.list_tick.shopping_list.dto.ShoppingListResponseDTO;
+import com.pro.list_tick.shopping_list.dto.ShoppingListRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ShoppingListRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
@@ -49,82 +49,85 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         return shoppingList;
     }
 
-    public List<ShoppingListDTO> getAllDTOByAccountId() {
+    public List<ShoppingListResponseDTO> getAllDTOByAccountId() {
         final var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Getting all shopping lists for the accountId: {}", accountId);
 
         var shoppingLists = shoppingListRepository.findAllByAccountId(accountId);
         var sharedShoppingLists = sharedShoppingListService.getAllByAccountId(accountId);
-        List<ShoppingListDTO> dtoList = new ArrayList<>(shoppingLists.stream()
-            .map(ShoppingListMapper::toDTO)
+        List<ShoppingListResponseDTO> dtoList = new ArrayList<>(shoppingLists.stream()
+            .map(ShoppingListMapper::toResponseDTO)
             .toList());
         dtoList.addAll(sharedShoppingLists.stream()
             .map(SharedShoppingList::getShoppingList)
-            .map(ShoppingListMapper::toDTO)
+            .map(ShoppingListMapper::toResponseDTO)
             .toList());
         return dtoList;
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ShoppingListDTO create(ShoppingListInputDTO shoppingListInputDTO) {
+    public ShoppingListResponseDTO create(ShoppingListRequestDTO shoppingListRequestDTO) {
         final var accountId = currentAccountService.getCurrentAccountId();
         log.info("Creating a shopping list for the account id: {}, name: {}",
-            accountId, shoppingListInputDTO.getName());
+            accountId, shoppingListRequestDTO.name());
 
-        var shoppingList = ShoppingListMapper.toModel(shoppingListInputDTO);
-        var category = categoryService.getById(shoppingListInputDTO.getCategoryId());
+        var shoppingList = ShoppingListMapper.toModel(shoppingListRequestDTO);
+        var category = categoryService.getById(shoppingListRequestDTO.categoryId());
 
-        if (shoppingListRepository.existsByNameAndAccountId(shoppingListInputDTO.getName(), accountId)) {
+        if (shoppingListRepository.existsByNameAndAccountId(shoppingListRequestDTO.name(), accountId)) {
             throw new ShoppingListException(HttpStatus.CONFLICT,
-                String.format("Shopping list name already exists: %s", shoppingListInputDTO.getName()));
+                String.format("Shopping list name already exists: %s", shoppingListRequestDTO.name()));
         }
 
         shoppingList.setAccountId(accountId);
         shoppingList.setCategory(category);
         shoppingList.setItems(new ArrayList<>());
         shoppingList.setSharedShoppingLists(new ArrayList<>());
-        shoppingList.setOwnerCostFactor(calculateCostFactor(shoppingListInputDTO.getShared(), shoppingListInputDTO.getSharedWithAccounts()));
+        shoppingList.setOwnerCostFactor(calculateCostFactor(
+            shoppingListRequestDTO.shared(),
+            shoppingListRequestDTO.sharedWithAccounts())
+        );
 
         var savedShoppingList = shoppingListRepository.save(shoppingList);
 
-        if (shoppingListInputDTO.getShared()) {
+        if (shoppingListRequestDTO.shared()) {
             List<SharedShoppingList> sharedLists = sharedShoppingListService
-                .createSharedShoppingLists(savedShoppingList, shoppingListInputDTO.getSharedWithAccounts());
+                .createSharedShoppingLists(savedShoppingList, shoppingListRequestDTO.sharedWithAccounts());
             savedShoppingList.getSharedShoppingLists().addAll(sharedLists);
         }
 
         log.info("Shopping list has been created: {}, accountId: {}, name: {}",
                 savedShoppingList.getId(), savedShoppingList.getAccountId(), savedShoppingList.getName()
         );
-        return ShoppingListMapper.toDTO(savedShoppingList);
+        return ShoppingListMapper.toResponseDTO(savedShoppingList);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ShoppingListDTO update(UUID id, ShoppingListUpdateDTO shoppingListUpdateDTO) {
+    public ShoppingListResponseDTO update(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
         log.info("Updating the shopping list: {}", id);
         var shoppingList = getById(id);
-        shoppingList.setName(shoppingListUpdateDTO.getName());
-        shoppingList.setActive(shoppingListUpdateDTO.getActive());
-        shoppingList.setCategory(categoryService.getById(shoppingListUpdateDTO.getCategoryId()));
-        return ShoppingListMapper.toDTO(shoppingListRepository.save(shoppingList));
+        shoppingList.setName(shoppingListRequestUpdateDTO.name());
+        shoppingList.setActive(shoppingListRequestUpdateDTO.active());
+        shoppingList.setCategory(categoryService.getById(shoppingListRequestUpdateDTO.categoryId()));
+        return ShoppingListMapper.toResponseDTO(shoppingListRepository.save(shoppingList));
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ShoppingListDTO updateByFields(UUID id, ShoppingListUpdateDTO shoppingListUpdateDTO) {
+    public ShoppingListResponseDTO updateByFields(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
         log.info("Updating the shopping list by fields: {}", id);
         var shoppingList = getById(id);
-        if (Objects.nonNull(shoppingListUpdateDTO.getName())) {
-            shoppingList.setName(shoppingListUpdateDTO.getName());
+        if (Objects.nonNull(shoppingListRequestUpdateDTO.name())) {
+            shoppingList.setName(shoppingListRequestUpdateDTO.name());
         }
-        if (Objects.nonNull(shoppingListUpdateDTO.getActive())) {
-            shoppingList.setActive(shoppingListUpdateDTO.getActive());
+        if (Objects.nonNull(shoppingListRequestUpdateDTO.active())) {
+            shoppingList.setActive(shoppingListRequestUpdateDTO.active());
         }
-        if (Objects.nonNull(shoppingListUpdateDTO.getCategoryId())) {
-            var category = categoryService.getById(shoppingListUpdateDTO.getCategoryId());
+        if (Objects.nonNull(shoppingListRequestUpdateDTO.categoryId())) {
+            var category = categoryService.getById(shoppingListRequestUpdateDTO.categoryId());
             shoppingList.setCategory(category);
         }
 
-        return ShoppingListMapper.toDTO(shoppingListRepository.save(shoppingList));
+        return ShoppingListMapper.toResponseDTO(shoppingListRepository.save(shoppingList));
     }
 
     public void delete(UUID id) {
@@ -150,13 +153,13 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         return accountIds.stream().anyMatch(id -> id.equals(accountId));
     }
 
-    private int calculateCostFactor(boolean isShared, List<AccountSharedWithDto> sharedWithAccounts) {
+    private int calculateCostFactor(boolean isShared, List<AccountSharedWithRequestDto> sharedWithAccounts) {
         log.debug("Calculating a cost factor for: {}", sharedWithAccounts);
         if (!isShared) {
             return 100;
         } else {
             int totalCostFactor = sharedWithAccounts.stream()
-                    .mapToInt(AccountSharedWithDto::getCostFactor)
+                    .mapToInt(AccountSharedWithRequestDto::costFactor)
                     .sum();
             if (totalCostFactor > 100) {
                 var errorMessage = "Total cost factor cannot exceed 100.";

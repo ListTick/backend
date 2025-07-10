@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
-import com.pro.list_tick.shopping_list.dto.ItemDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.service.ItemService;
 import jakarta.validation.Valid;
@@ -33,15 +34,15 @@ public class ItemController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<ItemResponseDTO> getById(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
                 "GET", id, "");
         final var item = itemService.getById(id);
-        return ResponseEntity.ok(ItemMapper.toDTO(item));
+        return ResponseEntity.ok(ItemMapper.toResponseDTO(item));
     }
 
     @GetMapping("shopping-list/{id}")
-    public ResponseEntity<List<ItemDTO>> getAllByShoppingListId(@PathVariable UUID id) {
+    public ResponseEntity<List<ItemResponseDTO>> getAllByShoppingListId(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
             "GET", "shopping-list " + id, "");
         final var items = itemService.getAllByShoppingListId(id);
@@ -49,28 +50,28 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDTO> createItem(@RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "POST", "", itemDTO);
-        final var item = itemService.create(itemDTO);
+                "POST", "", itemRequestDTO);
+        final var item = itemService.create(itemRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @PutMapping
-    public ResponseEntity<ItemDTO> updateItem(@PathVariable UUID id,
-                                              @Valid @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemResponseDTO> updateItem(@PathVariable UUID id,
+                                                     @Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", "", itemDTO);
-        final var item = itemService.update(id, itemDTO);
+                "PUT", "", itemRequestDTO);
+        final var item = itemService.update(id, itemRequestDTO);
         return ResponseEntity.ok(item);
     }
 
     @PatchMapping
-    public ResponseEntity<ItemDTO> updateItemByFields(@PathVariable UUID id,
-                                                      @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemResponseDTO> updateItemByFields(@PathVariable UUID id,
+                                                             @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", "", itemDTO);
-        final var item = itemService.updateByFields(id, itemDTO);
+                "PATCH", "", itemRequestDTO);
+        final var item = itemService.updateByFields(id, itemRequestDTO);
         return ResponseEntity.ok(item);
     }
 

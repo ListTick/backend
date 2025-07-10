@@ -3,8 +3,8 @@ package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.api.AccountAPI;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.dto.CategoryDTO;
-import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
+import com.pro.list_tick.shopping_list.dto.CategoryResponseDTO;
+import com.pro.list_tick.shopping_list.dto.CategoryRequestDTO;
 import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
 import com.pro.list_tick.shopping_list.model.Category;
@@ -44,25 +44,25 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
-    public List<CategoryDTO> getAllDTOByAccountId() {
+    public List<CategoryResponseDTO> getAllDTOByAccountId() {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Getting all shopping list categories by the accountId: {}", accountId);
 
         var categories = categoryRepository.findAllByAccountId(accountId);
         return categories.stream()
-                .map(CategoryMapper::toDTO)
+                .map(CategoryMapper::toResponseDTO)
                 .toList();
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public CategoryDTO create(CategoryInputDTO categoryInputDTO) {
+    public CategoryResponseDTO create(CategoryRequestDTO categoryRequestDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Creating a shopping list category for the accountId: {}, category name: {}",
-                accountId, categoryInputDTO.getName());
+                accountId, categoryRequestDTO.name());
 
-        validateName(accountId, categoryInputDTO.getName());
-        validateColour(categoryInputDTO);
-        var category = CategoryMapper.toModel(categoryInputDTO);
+        validateName(accountId, categoryRequestDTO.name());
+        validateColour(categoryRequestDTO);
+        var category = CategoryMapper.toModel(categoryRequestDTO);
         category.setAccountId(accountId);
         if (Objects.isNull(category.getColour())) {
             category.setColour(accountAPI.getDefaultShoppingListCategoryColour());
@@ -70,48 +70,48 @@ public class CategoryServiceImpl implements CategoryService {
 
         var savedCategory = categoryRepository.save(category);
         log.info("The category has been created: {}", savedCategory.getId());
-        return CategoryMapper.toDTO(savedCategory);
+        return CategoryMapper.toResponseDTO(savedCategory);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public CategoryDTO update(UUID id, CategoryInputDTO categoryInputDTO) {
+    public CategoryResponseDTO update(UUID id, CategoryRequestDTO categoryRequestDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Updating the category: {}, for the accountId: {}", id, accountId);
 
         var category = getById(id);
-        validateName(accountId, categoryInputDTO.getName());
-        validateColour(categoryInputDTO);
+        validateName(accountId, categoryRequestDTO.name());
+        validateColour(categoryRequestDTO);
 
-        category.setName(categoryInputDTO.getName());
-        if (Objects.isNull(categoryInputDTO.getColour())) {
+        category.setName(categoryRequestDTO.name());
+        if (Objects.isNull(categoryRequestDTO.colour())) {
             category.setColour(accountAPI.getDefaultShoppingListCategoryColour());
         } else {
-            category.setColour(categoryInputDTO.getColour());
+            category.setColour(categoryRequestDTO.colour());
         }
 
         var savedCategory = categoryRepository.save(category);
         log.info("The category has been updated: {}", savedCategory.getId());
-        return CategoryMapper.toDTO(savedCategory);
+        return CategoryMapper.toResponseDTO(savedCategory);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public CategoryDTO updateByFields(UUID id, CategoryInputDTO categoryInputDTO) {
+    public CategoryResponseDTO updateByFields(UUID id, CategoryRequestDTO categoryRequestDTO) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Updating by fields the category: {}, for the accountId: {}", id, accountId);
 
         var category = getById(id);
-        if (Objects.nonNull(categoryInputDTO.getName())) {
-            validateName(accountId, categoryInputDTO.getName());
-            category.setName(categoryInputDTO.getName());
+        if (Objects.nonNull(categoryRequestDTO.name())) {
+            validateName(accountId, categoryRequestDTO.name());
+            category.setName(categoryRequestDTO.name());
         }
-        if (Objects.nonNull(categoryInputDTO.getColour())) {
-            validateColour(categoryInputDTO);
-            category.setColour(categoryInputDTO.getColour());
+        if (Objects.nonNull(categoryRequestDTO.colour())) {
+            validateColour(categoryRequestDTO);
+            category.setColour(categoryRequestDTO.colour());
         }
 
         var savedCategory = categoryRepository.save(category);
         log.info("The category has been updated by fields: {}", savedCategory.getId());
-        return CategoryMapper.toDTO(savedCategory);
+        return CategoryMapper.toResponseDTO(savedCategory);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
@@ -142,8 +142,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private void validateColour(CategoryInputDTO categoryInputDTO) {
-        if (Objects.nonNull(categoryInputDTO.getColour()) && categoryInputDTO.getColour().length() != 7) {
+    private void validateColour(CategoryRequestDTO categoryRequestDTO) {
+        if (Objects.nonNull(categoryRequestDTO.colour()) && categoryRequestDTO.colour().length() != 7) {
             throw new CategoryException("Category colour, if specified, must be exactly 7 characters long");
         }
     }

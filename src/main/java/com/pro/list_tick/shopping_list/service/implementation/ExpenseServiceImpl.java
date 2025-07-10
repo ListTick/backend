@@ -1,7 +1,8 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.dto.ExpenseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
 import com.pro.list_tick.shopping_list.exception.ItemException;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
@@ -45,27 +46,27 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expense;
     }
 
-    public List<ExpenseDTO> getAllByAccountId() {
+    public List<ExpenseResponseDTO> getAllByAccountId() {
         var accountId = accountService.getCurrentAccountId();
         log.debug("Getting all expenses for the account id: {}", accountId);
 
         return expenseRepository.findAllByAccountId(accountId)
             .stream()
-            .map(ExpenseMapper::toDto)
+            .map(ExpenseMapper::toResponseDto)
             .toList();
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ExpenseDTO create(ExpenseDTO expenseDTO) {
-        log.debug("Creating the expense: {}", expenseDTO.getAmount());
-        Expense expense = ExpenseMapper.toModel(expenseDTO);
-        var shoppingList = shoppingListService.getById(expenseDTO.getShoppingListId());
+    public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO) {
+        log.debug("Creating the expense: {}", expenseRequestDTO.amount());
+        Expense expense = ExpenseMapper.toModel(expenseRequestDTO);
+        var shoppingList = shoppingListService.getById(expenseRequestDTO.shoppingListId());
         expense.setShoppingList(shoppingList);
 
-        var itemNameDTOS = Optional.ofNullable(expenseDTO.getItems())
+        var itemIds = Optional.ofNullable(expenseRequestDTO.items())
             .orElse(Collections.emptyList());
-        itemNameDTOS.forEach(itemNameDTO -> {
-            Item item = itemService.getById(itemNameDTO.getId());
+        itemIds.forEach(id -> {
+            Item item = itemService.getById(id);
             if (shoppingList.getId().equals(item.getShoppingList().getId())) {
                 expense.getItems().add(item);
             } else {
@@ -75,47 +76,47 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         var savedExpense = expenseRepository.save(expense);
         log.info("The expense has been created: {}", savedExpense.getId());
-        return ExpenseMapper.toDtoWithItems(savedExpense);
+        return ExpenseMapper.toResponseDto(savedExpense);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ExpenseDTO update(UUID id, ExpenseDTO expenseDTO) {
+    public ExpenseResponseDTO update(UUID id, ExpenseRequestDTO expenseRequestDTO) {
         log.debug("Updating expense: {}", id);
         Expense expense = expenseRepository.findById(id)
             .orElseThrow(() -> new ExpenseException(HttpStatus.NOT_FOUND,
                 String.format("Couldn't find the expense: %s", id)));
         validateExpenseAccess(expense);
 
-        expense.setCurrency(expenseDTO.getCurrency());
-        expense.setAmount(expenseDTO.getAmount());
-        expense.setReimbursed(expenseDTO.getReimbursed());
+        expense.setCurrency(expenseRequestDTO.currency());
+        expense.setAmount(expenseRequestDTO.amount());
+        expense.setReimbursed(expenseRequestDTO.reimbursed());
 
         var savedExpense = expenseRepository.save(expense);
         log.info("The expense has been updated: {}", savedExpense.getId());
-        return ExpenseMapper.toDto(savedExpense);
+        return ExpenseMapper.toResponseDto(savedExpense);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ExpenseDTO updateByFields(UUID id, ExpenseDTO expenseDTO) {
+    public ExpenseResponseDTO updateByFields(UUID id, ExpenseRequestDTO expenseRequestDTO) {
         log.debug("Updating expense by fields: {}", id);
         Expense expense = expenseRepository.findById(id)
             .orElseThrow(() -> new ExpenseException(HttpStatus.NOT_FOUND,
                 String.format("Couldn't find the expense: %s", id)));
         validateExpenseAccess(expense);
 
-      if (Objects.nonNull(expenseDTO.getCurrency())) {
-        expense.setCurrency(expenseDTO.getCurrency());
+      if (Objects.nonNull(expenseRequestDTO.currency())) {
+        expense.setCurrency(expenseRequestDTO.currency());
       }
-      if (Objects.nonNull(expenseDTO.getAmount())) {
-        expense.setAmount(expenseDTO.getAmount());
+      if (Objects.nonNull(expenseRequestDTO.amount())) {
+        expense.setAmount(expenseRequestDTO.amount());
       }
-      if (Objects.nonNull(expenseDTO.getReimbursed())) {
-        expense.setReimbursed(expenseDTO.getReimbursed());
+      if (Objects.nonNull(expenseRequestDTO.reimbursed())) {
+        expense.setReimbursed(expenseRequestDTO.reimbursed());
       }
 
       var savedExpense = expenseRepository.save(expense);
       log.info("The expense has been updated by fields: {}", savedExpense.getId());
-      return ExpenseMapper.toDto(savedExpense);
+      return ExpenseMapper.toResponseDto(savedExpense);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")

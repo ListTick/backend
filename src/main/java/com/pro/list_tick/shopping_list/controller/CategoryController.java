@@ -1,7 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
-import com.pro.list_tick.shopping_list.dto.CategoryDTO;
-import com.pro.list_tick.shopping_list.dto.CategoryInputDTO;
+import com.pro.list_tick.shopping_list.dto.CategoryResponseDTO;
+import com.pro.list_tick.shopping_list.dto.CategoryRequestDTO;
 import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
 import com.pro.list_tick.shopping_list.service.CategoryService;
 import jakarta.validation.Valid;
@@ -34,7 +34,7 @@ public class CategoryController {
         "Received request, method: {}, context path: /api/shopping-lists/categories{}, body {}";
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllByAccountId() {
+    public ResponseEntity<List<CategoryResponseDTO>> getAllByAccountId() {
         log.debug(String.format(REQUEST_LOG_TEMPLATE),
                 "GET", "", "");
         final var categoryDTOs = categoryService.getAllDTOByAccountId();
@@ -42,36 +42,36 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<CategoryResponseDTO> getById(@PathVariable UUID id) {
         log.debug(String.format(REQUEST_LOG_TEMPLATE),
                 "GET", id, "");
         var category = categoryService.getById(id);
-        return ResponseEntity.ok(CategoryMapper.toDTO(category));
+        return ResponseEntity.ok(CategoryMapper.toResponseDTO(category));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
+    public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         log.debug(String.format(REQUEST_LOG_TEMPLATE),
-                "POST", "", categoryInputDTO);
-        var category = categoryService.create(categoryInputDTO);
+                "POST", "", categoryRequestDTO);
+        var category = categoryService.create(categoryRequestDTO);
         return ResponseEntity.status(201).body(category);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable UUID id,
-                                                      @Valid @RequestBody CategoryInputDTO categoryInputDTO) {
+    public ResponseEntity<CategoryResponseDTO> update(@PathVariable UUID id,
+                                                      @Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         log.debug(String.format(REQUEST_LOG_TEMPLATE),
-                "PUT", id, categoryInputDTO);
-        var categoryDTO = categoryService.update(id, categoryInputDTO);
+                "PUT", id, categoryRequestDTO);
+        var categoryDTO = categoryService.update(id, categoryRequestDTO);
         return ResponseEntity.ok(categoryDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateByFields(@PathVariable UUID id,
-                                                              @RequestBody CategoryInputDTO categoryInputDTO) {
+    public ResponseEntity<CategoryResponseDTO> updateByFields(@PathVariable UUID id,
+                                                              @RequestBody CategoryRequestDTO categoryRequestDTO) {
         log.debug(String.format(REQUEST_LOG_TEMPLATE),
-                "PATCH", id, categoryInputDTO);
-        var categoryDTO = categoryService.updateByFields(id, categoryInputDTO);
+                "PATCH", id, categoryRequestDTO);
+        var categoryDTO = categoryService.updateByFields(id, categoryRequestDTO);
         return ResponseEntity.ok(categoryDTO);
     }
 

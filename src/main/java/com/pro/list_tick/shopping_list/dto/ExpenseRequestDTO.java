@@ -1,5 +1,8 @@
 package com.pro.list_tick.shopping_list.dto;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.pro.list_tick.shopping_list.model.CurrencyCode;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EnumType;
@@ -8,33 +11,29 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
-import java.util.List;
-import java.util.UUID;
-
-@Data
-public class ExpenseDTO {
+public record ExpenseRequestDTO (
 
     @Nullable
-    private UUID id;
+    UUID id,
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount cannot be negative")
-    private Double amount;
+    Double amount,
 
     @NotBlank(message = "Currency cannot be blank")
     @Size(min = 3, max = 3, message = "Currency has to be 3 characters long")
     @Enumerated(EnumType.STRING)
-    private CurrencyCode currency;
+    CurrencyCode currency,
 
     @NotNull(message = "Reimbursed cannot be null")
-    private Boolean reimbursed;
+    Boolean reimbursed,
 
     @NotBlank(message = "Shopping list id cannot be blank")
-    private UUID shoppingListId;
+    UUID shoppingListId,
 
     @Nullable
-    private List<ItemNameDTO> items;
+    List<UUID> items
 
+) {
 }
