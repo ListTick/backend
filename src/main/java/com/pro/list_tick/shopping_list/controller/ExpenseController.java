@@ -75,7 +75,7 @@ public class ExpenseController {
         return ResponseEntity.ok(item);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/reimburse")
     public ResponseEntity<ExpenseResponseDTO> reimburse(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
             "PATCH", id + "/reimburse", "");

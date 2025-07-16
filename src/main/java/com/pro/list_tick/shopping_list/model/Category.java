@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +39,7 @@ public class Category {
             mappedBy = "category")
     private List<ShoppingList> shoppingLists;
 
-    @NotNull(message = "'accountId' cannot be null")
+    @Nullable // for one shared category across the whole system
     @Column(name = "account_id")
     private UUID accountId;
 

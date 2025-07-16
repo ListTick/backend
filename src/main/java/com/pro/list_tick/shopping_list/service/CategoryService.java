@@ -15,5 +15,5 @@ public interface CategoryService {
     CategoryResponseDTO update(UUID id, CategoryRequestDTO categoryRequestDTO);
     CategoryResponseDTO updateByFields(UUID id, CategoryRequestDTO categoryRequestDTO);
     void delete(UUID id);
-
+    Category getSharedCategory();
 }

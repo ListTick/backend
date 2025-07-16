@@ -30,14 +30,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final SLCategoryRepository categoryRepository;
 
+    private static final UUID SHARED_CATEGORY_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+
     public Category getById(UUID id) {
         var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Getting a shopping list category by the accountId: {}", accountId);
 
         var category = categoryRepository.findById(id)
             .orElseThrow(() -> {
-                String errMessage = String.format("Category not found: %s", id);
-                log.error(errMessage);
+                String errMessage = "Category not found";
+                log.error("{}: {}", errMessage, id);
                 return new CategoryException(HttpStatus.BAD_REQUEST, errMessage);
             });
         validateOwnership(category, accountId);
@@ -49,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Getting all shopping list categories by the accountId: {}", accountId);
 
         var categories = categoryRepository.findAllByAccountId(accountId);
+        categories.add(getSharedCategory());
         return categories.stream()
                 .map(CategoryMapper::toResponseDTO)
                 .toList();
@@ -124,21 +127,25 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Shopping list category has been deleted: {}", id);
     }
 
+    public Category getSharedCategory() {
+        return getById(SHARED_CATEGORY_ID);
+    }
+
     private void validateOwnership(Category category, UUID accountId) {
+        if (category.getId().equals(SHARED_CATEGORY_ID)) {
+            return;
+        }
         if (!category.getAccountId().equals(accountId)) {
-            String errMessage = String.format("Category not found: %s, for the user: %s",
-                category.getId(), accountId);
-            log.error(errMessage);
+            String errMessage = "Access denied";
+            log.error("{} {}: {}", errMessage, ",categoryId: ",category.getId());
             throw new CategoryException(HttpStatus.CONFLICT, errMessage);
         }
     }
 
     private void validateName(UUID accountId, String name) {
         if (categoryRepository.existsByNameAndAccountId(name, accountId)) {
-            String errMessage = String.format(
-                "Category name already exists for the accountId: %s, category name: %s",
-                accountId, name);
-            log.error(errMessage);
+            String errMessage = "Category name already exists";
+          log.error("{} :{}", errMessage, name);
             throw new CategoryException(HttpStatus.CONFLICT, errMessage);
         }
     }

@@ -143,7 +143,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     public Boolean validateAccess(UUID accountId, ShoppingList shoppingList) {
         log.debug("Validating the shopping list access: {}", shoppingList.getId());
 
-        return !accountId.equals(shoppingList.getAccountId());
+        return accountId.equals(shoppingList.getAccountId());
     }
 
     public Boolean validateSharedAccess(UUID accountId, ShoppingList shoppingList) {

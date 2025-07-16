@@ -14,7 +14,7 @@ public record ShoppingListRequestDTO(
     @Size(min = 3, max = 255, message = "'name' has to have between 3 and 255 characters")
     String name,
 
-    @NotNull(message = "'active' cannot be null")
+    @Nullable
     Boolean active,
 
     @NotNull(message = "'categoryId' cannot be null")
