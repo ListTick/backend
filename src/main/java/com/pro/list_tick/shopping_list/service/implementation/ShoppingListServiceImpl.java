@@ -38,13 +38,13 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     public ShoppingList getById(UUID id) {
         log.debug("Getting the shopping list: {}", id);
         final var shoppingList = shoppingListRepository.findById(id)
-            .orElseThrow(() -> new ShoppingListException(String.format("Shopping list not found: %s", id)));
+            .orElseThrow(() -> new ShoppingListException(HttpStatus.NOT_FOUND, "Shopping list not found"));
 
         final var accountId = currentAccountService.getCurrentAccountId();
         if (!validateAccess(accountId, shoppingList) &&
             !validateSharedAccess(accountId, shoppingList)) {
-            throw new ShoppingListException(HttpStatus.FORBIDDEN,
-                String.format("User doesn't have an access to the shopping list: %s", shoppingList.getId()));
+            log.error("User doesn't have access to the shopping list: {}", shoppingList.getId());
+            throw new ShoppingListException(HttpStatus.FORBIDDEN, "Access denied");
         }
         return shoppingList;
     }
@@ -75,8 +75,8 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         var category = categoryService.getById(shoppingListRequestDTO.categoryId());
 
         if (shoppingListRepository.existsByNameAndAccountId(shoppingListRequestDTO.name(), accountId)) {
-            throw new ShoppingListException(HttpStatus.CONFLICT,
-                String.format("Shopping list name already exists: %s", shoppingListRequestDTO.name()));
+            log.error("Shopping list name already exists: {}", shoppingListRequestDTO.name());
+            throw new ShoppingListException(HttpStatus.CONFLICT, "Name already exists");
         }
 
         shoppingList.setAccountId(accountId);

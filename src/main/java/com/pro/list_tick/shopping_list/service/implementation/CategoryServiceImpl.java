@@ -122,7 +122,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Deleting the shopping list category: {}", id);
 
         var category = getById(id);
-        //todo validate if the category is empty
+
         categoryRepository.delete(category);
         log.info("Shopping list category has been deleted: {}", id);
     }
