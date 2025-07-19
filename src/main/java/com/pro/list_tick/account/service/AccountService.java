@@ -9,6 +9,8 @@ public interface AccountService {
 
     UUID getUUIDbyEmail(String email);
 
+    String getEmailByUUID(UUID accountId);
+
     Integer getDefaultPomodoroDuration();
 
     Integer getDefaultPomodoroBreakDuration();

@@ -13,5 +13,6 @@ public interface SharedShoppingListService {
   List<UUID> getAllAccountsByShoppingListId(UUID shoppingListId);
   List<SharedShoppingList> createSharedShoppingLists(ShoppingList shoppingList,
                                                      List<AccountSharedWithRequestDto> sharedWithAccounts);
+  String getEmail(UUID accountId);
 
 }

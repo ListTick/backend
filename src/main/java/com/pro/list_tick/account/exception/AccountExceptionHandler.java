@@ -13,8 +13,8 @@ public class AccountExceptionHandler {
     @ExceptionHandler(AccountException.class)
     public ResponseEntity<ErrorEntity> handleAccountException(AccountException ex) {
         log.error(ex.toString());
-        var error = new ErrorEntity(ex.getStatus(), ex.getMessage());
-        return ResponseEntity.status(ex.getStatus()).body(error);
+        var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
+        return ResponseEntity.status(ex.getHttpStatus()).body(error);
     }
 
     @ExceptionHandler(Exception.class)

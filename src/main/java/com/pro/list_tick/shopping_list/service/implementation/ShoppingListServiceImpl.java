@@ -2,6 +2,7 @@ package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
+import com.pro.list_tick.shopping_list.dto.AccountSharedWithResponseDto;
 import com.pro.list_tick.shopping_list.dto.ShoppingListResponseDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListRequestUpdateDTO;
@@ -56,11 +57,21 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         var shoppingLists = shoppingListRepository.findAllByAccountId(accountId);
         var sharedShoppingLists = sharedShoppingListService.getAllByAccountId(accountId);
         List<ShoppingListResponseDTO> dtoList = new ArrayList<>(shoppingLists.stream()
-            .map(ShoppingListMapper::toResponseDTO)
+            .map(list -> {
+                if (list.getShared()) {
+                    var sharedWithAccounts = getSharedWithAccounts(list);
+                    return ShoppingListMapper.toResponseDTO(list, sharedWithAccounts);
+                } else {
+                    return ShoppingListMapper.toResponseDTO(list);
+                }
+            })
             .toList());
         dtoList.addAll(sharedShoppingLists.stream()
             .map(SharedShoppingList::getShoppingList)
-            .map(ShoppingListMapper::toResponseDTO)
+            .map(list -> {
+                var sharedWithAccounts = getSharedWithAccounts(list);
+                return ShoppingListMapper.toResponseDTO(list, sharedWithAccounts);
+            })
             .toList());
         return dtoList;
     }
@@ -74,10 +85,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         var shoppingList = ShoppingListMapper.toModel(shoppingListRequestDTO);
         var category = categoryService.getById(shoppingListRequestDTO.categoryId());
 
-        if (shoppingListRepository.existsByNameAndAccountId(shoppingListRequestDTO.name(), accountId)) {
-            log.error("Shopping list name already exists: {}", shoppingListRequestDTO.name());
-            throw new ShoppingListException(HttpStatus.CONFLICT, "Name already exists");
-        }
+        validateName(shoppingListRequestDTO.name(), accountId);
 
         shoppingList.setAccountId(accountId);
         shoppingList.setCategory(category);
@@ -99,24 +107,43 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         log.info("Shopping list has been created: {}, accountId: {}, name: {}",
                 savedShoppingList.getId(), savedShoppingList.getAccountId(), savedShoppingList.getName()
         );
+
+        if (savedShoppingList.getShared()) {
+            var sharedWithDto = getSharedWithAccounts(savedShoppingList);
+            return ShoppingListMapper.toResponseDTO(savedShoppingList, sharedWithDto);
+        }
+
         return ShoppingListMapper.toResponseDTO(savedShoppingList);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ShoppingListResponseDTO update(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
+        var accountId = currentAccountService.getCurrentAccountId();
         log.info("Updating the shopping list: {}", id);
         var shoppingList = getById(id);
+
+        validateName(shoppingListRequestUpdateDTO.name(), accountId);
         shoppingList.setName(shoppingListRequestUpdateDTO.name());
+
         shoppingList.setActive(shoppingListRequestUpdateDTO.active());
         shoppingList.setCategory(categoryService.getById(shoppingListRequestUpdateDTO.categoryId()));
         return ShoppingListMapper.toResponseDTO(shoppingListRepository.save(shoppingList));
     }
 
+    private void validateName(String shoppingListRequestUpdateDTO, UUID accountId) {
+        if (shoppingListRepository.existsByNameAndAccountId(shoppingListRequestUpdateDTO, accountId)) {
+            log.error("Shopping list name already exists: {}", shoppingListRequestUpdateDTO);
+            throw new ShoppingListException(HttpStatus.CONFLICT, "Name already exists");
+        }
+    }
+
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ShoppingListResponseDTO updateByFields(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
+        var accountId = currentAccountService.getCurrentAccountId();
         log.info("Updating the shopping list by fields: {}", id);
         var shoppingList = getById(id);
         if (Objects.nonNull(shoppingListRequestUpdateDTO.name())) {
+            validateName(shoppingListRequestUpdateDTO.name(), accountId);
             shoppingList.setName(shoppingListRequestUpdateDTO.name());
         }
         if (Objects.nonNull(shoppingListRequestUpdateDTO.active())) {
@@ -168,6 +195,29 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             }
             return 100 - totalCostFactor;
         }
+    }
+
+    private List<AccountSharedWithResponseDto> getSharedWithAccounts(ShoppingList shoppingList) {
+        var accountId = currentAccountService.getCurrentAccountId();
+        return shoppingList.getSharedShoppingLists()
+            .stream()
+            .map(list -> {
+                if (!list.getAccountId().equals(accountId)) {
+                    var email = sharedShoppingListService.getEmail(list.getAccountId());
+                    return new AccountSharedWithResponseDto(
+                        email,
+                        list.getCostFactor()
+                    );
+                } else {
+                    var email = sharedShoppingListService.getEmail(shoppingList.getAccountId());
+                    var costFactor = shoppingList.getOwnerCostFactor();
+                    return new AccountSharedWithResponseDto(
+                        email,
+                        costFactor
+                    );
+                }
+            })
+            .toList();
     }
 
 }

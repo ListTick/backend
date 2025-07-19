@@ -59,7 +59,7 @@ public class ShoppingList {
     @Column(name = "account_id")
     private UUID accountId;
 
-    @OneToMany(fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE,
             mappedBy = "shoppingList")
     private List<SharedShoppingList> sharedShoppingLists;

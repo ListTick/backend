@@ -18,6 +18,11 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
+    public String getEmailByAccountId(UUID accountId) {
+        return accountService.getEmailByUUID(accountId);
+    }
+
+    @Override
     public Integer getDefaultPomodoroDuration() {
         return accountService.getDefaultPomodoroDuration();
     }

@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -26,12 +25,12 @@ public class Category {
     @UuidGenerator
     private UUID id;
 
-    @NotBlank(message = "'name' cannot be blank")
-    @Size(min = 3, max = 255, message = "'name' must be between 3 and 255 characters")
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
     private String name;
 
-    @NotBlank(message = "'colour' cannot be blank")
-    @Size(min = 7, max = 7, message = "'colour must be exactly 7 characters long")
+    @NotBlank(message = "Colour cannot be blank")
+    @Size(min = 7, max = 7, message = "Colour must be exactly 7 characters long")
     private String colour;
 
     @OneToMany(fetch = FetchType.LAZY,

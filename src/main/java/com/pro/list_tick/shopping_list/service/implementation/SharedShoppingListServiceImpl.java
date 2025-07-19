@@ -45,12 +45,20 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
         .map(accountSharedWithRequestDto -> {
           final var email = accountSharedWithRequestDto.email();
           final var accountId = accountAPI.getAccountIdByEmail(email);
+          if (shoppingList.getAccountId().equals(accountId)) {
+            var errorMessage = "Shopping list cannot be shared with the owner\'s own account";
+            log.error("{} - accountId: {}", errorMessage, accountId);
+            throw new ShoppingListException(HttpStatus.CONFLICT, errorMessage);
+          }
           SharedShoppingList shared = new SharedShoppingList();
           shared.setShoppingListAndAccount(shoppingList, accountId);
           shared.setCostFactor(accountSharedWithRequestDto.costFactor());
           return sharedShoppingListRepository.save(shared);
         }).toList();
+  }
 
+  public String getEmail(UUID accountId) {
+    return accountAPI.getEmailByAccountId(accountId);
   }
 
 }

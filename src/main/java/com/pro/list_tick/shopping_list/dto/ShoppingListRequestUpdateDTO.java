@@ -8,14 +8,14 @@ import java.util.UUID;
 
 public record ShoppingListRequestUpdateDTO (
 
-    @NotBlank(message = "'name' cannot be blank")
-    @Size(min = 3, max = 255, message = "'name' has to have between 3 and 255 characters")
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 3, max = 255, message = "Name has to have between 3 and 255 characters")
     String name,
 
-    @NotNull(message = "'active' cannot be null")
+    @NotNull(message = "Active cannot be null")
     Boolean active,
 
-    @NotNull(message = "'categoryId' cannot be null")
+    @NotNull(message = "Category cannot be null")
     UUID categoryId
 
 ) {

@@ -9,16 +9,16 @@ import org.springframework.http.HttpStatus;
 @ToString(callSuper = true)
 public class AccountException extends RuntimeException {
 
-    private final HttpStatus status;
+    private final HttpStatus httpStatus;
 
-    public AccountException(HttpStatus status, String message) {
+    public AccountException(HttpStatus httpStatus, String message) {
         super(message);
-        this.status = status;
+        this.httpStatus = httpStatus;
     }
 
     public AccountException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.httpStatus = HttpStatus.BAD_REQUEST;
     }
 
 }

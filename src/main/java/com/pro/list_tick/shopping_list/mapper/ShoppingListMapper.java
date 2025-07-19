@@ -1,11 +1,14 @@
 package com.pro.list_tick.shopping_list.mapper;
 
 
+import com.pro.list_tick.shopping_list.dto.AccountSharedWithResponseDto;
 import com.pro.list_tick.shopping_list.dto.ShoppingListResponseDTO;
 import com.pro.list_tick.shopping_list.dto.ShoppingListRequestDTO;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShoppingListMapper {
 
@@ -21,8 +24,23 @@ public class ShoppingListMapper {
           shoppingList.getShared(),
           shoppingList.getCreationDate(),
           CategoryMapper.toResponseDTO(shoppingList.getCategory()),
-          shoppingList.getAccountId()
+          shoppingList.getAccountId(),
+          new ArrayList<>()
       );
+    }
+
+    public static ShoppingListResponseDTO toResponseDTO(
+        ShoppingList shoppingList, List<AccountSharedWithResponseDto> accountSharedWithResponsesDto) {
+        return new ShoppingListResponseDTO(
+            shoppingList.getId(),
+            shoppingList.getName(),
+            shoppingList.getActive(),
+            shoppingList.getShared(),
+            shoppingList.getCreationDate(),
+            CategoryMapper.toResponseDTO(shoppingList.getCategory()),
+            shoppingList.getAccountId(),
+            accountSharedWithResponsesDto
+        );
     }
 
     public static ShoppingList toModel(ShoppingListRequestDTO shoppingListRequestDTO) {
