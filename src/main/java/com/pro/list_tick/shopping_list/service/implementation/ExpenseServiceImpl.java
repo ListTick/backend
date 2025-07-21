@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -63,19 +64,17 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense expense = ExpenseMapper.toModel(expenseRequestDTO);
         var shoppingList = shoppingListService.getById(expenseRequestDTO.shoppingListId());
         expense.setShoppingList(shoppingList);
+        var savedExpense = expenseRepository.save(expense);
 
         var itemIds = Optional.ofNullable(expenseRequestDTO.items())
             .orElse(Collections.emptyList());
+        List<Item> items = new ArrayList<>();
         itemIds.forEach(id -> {
-            Item item = itemService.getById(id);
-            if (shoppingList.getId().equals(item.getShoppingList().getId())) {
-                expense.getItems().add(item);
-            } else {
-                throw new ItemException(HttpStatus.BAD_REQUEST, "Items have to be assign to one shopping list");
-            }
+            var item = itemService.addExpense(id, expense);
+            items.add(item);
         });
+        savedExpense.setItems(items);
 
-        var savedExpense = expenseRepository.save(expense);
         log.info("The expense has been created: {}", savedExpense.getId());
         return ExpenseMapper.toResponseDto(savedExpense);
     }

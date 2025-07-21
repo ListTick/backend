@@ -33,15 +33,13 @@ public class Expense {
     @Positive(message = "Amount cannot be negative")
     private Double amount;
 
-    @NotBlank(message = "Currency cannot be blank")
-    @Size(min = 3, max = 3, message = "Currency has to be 3 characters long")
     @Enumerated(EnumType.STRING)
     private CurrencyCode currency;
 
     @NotNull(message = "Reimbursed cannot be null")
     private Boolean reimbursed;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "shopping_list_id")
     private ShoppingList shoppingList;
 
@@ -49,5 +47,15 @@ public class Expense {
             cascade = CascadeType.ALL,
             mappedBy = "expense")
     private List<Item> items;
+
+    @Override
+    public String toString() {
+        return "Expense{" +
+            "id=" + id +
+            ", amount=" + amount +
+            ", currency='" + currency + '\'' +
+            ", reimbursed=" + reimbursed +
+            '}';
+    }
 
 }

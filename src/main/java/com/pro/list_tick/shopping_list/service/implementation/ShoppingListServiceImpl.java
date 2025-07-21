@@ -54,8 +54,8 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         final var accountId = currentAccountService.getCurrentAccountId();
         log.debug("Getting all shopping lists for the accountId: {}", accountId);
 
-        var shoppingLists = shoppingListRepository.findAllByAccountId(accountId);
-        var sharedShoppingLists = sharedShoppingListService.getAllByAccountId(accountId);
+        var shoppingLists = shoppingListRepository.findAllActiveByAccountId(accountId);
+        var sharedShoppingLists = sharedShoppingListService.findAllActiveByAccountId(accountId);
         List<ShoppingListResponseDTO> dtoList = new ArrayList<>(shoppingLists.stream()
             .map(list -> {
                 if (list.getShared()) {

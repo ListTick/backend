@@ -46,4 +46,12 @@ public class SharedShoppingList {
         this.shoppingList = shoppingList;
     }
 
+    @Override
+    public String toString() {
+        return "SharedShoppingList{" +
+            "id=" + id +
+            ", costFactor=" + costFactor +
+            '}';
+    }
+
 }

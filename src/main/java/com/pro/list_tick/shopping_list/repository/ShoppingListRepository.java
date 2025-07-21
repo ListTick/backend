@@ -14,6 +14,9 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, UUID
 
     List<ShoppingList> findAllByAccountId(UUID id);
 
+    @Query("SELECT sl from ShoppingList sl WHERE sl.accountId = :id AND sl.active IS TRUE")
+    List<ShoppingList> findAllActiveByAccountId(UUID id);
+
     @Query("SELECT sl FROM ShoppingList sl LEFT JOIN FETCH sl.items WHERE sl.id = :id")
     Optional<ShoppingList> findByIdWithItems(UUID id);
 

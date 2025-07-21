@@ -1,7 +1,5 @@
 package com.pro.list_tick.shopping_list.dto;
 
-import java.util.UUID;
-
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Size;
 
@@ -12,7 +10,10 @@ public record ItemRequestUpdateDTO(
     String name,
 
     @Nullable
-    UUID expenseId
+    Double value,
+
+    @Nullable
+    Boolean active
 
 ) {
 }

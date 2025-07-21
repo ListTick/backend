@@ -2,9 +2,11 @@ package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ItemException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
+import com.pro.list_tick.shopping_list.model.Expense;
 import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ItemRepository;
 import com.pro.list_tick.shopping_list.service.ItemService;
@@ -43,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDTO> getAllByShoppingListId(UUID shoppingListId) {
         log.debug("Getting items by shopping list id: {}", shoppingListId);
         var shoppingList = shoppingListService.getById(shoppingListId); //validates the shopping list access
-        var items = itemRepository.findAllByShoppingListId(shoppingList.getId());
+        var items = itemRepository.findAllActiveByShoppingListId(shoppingList.getId());
         return items.stream().map(ItemMapper::toResponseDTO).toList();
     }
 
@@ -60,12 +62,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ItemResponseDTO update(UUID id, ItemRequestDTO itemRequestDTO) {
+    public ItemResponseDTO update(UUID id, ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug("Updating the item: {}", id);
         var item = getById(id);
 
-        item.setName(itemRequestDTO.name());
-        item.setValue(itemRequestDTO.value());
+        item.setName(itemRequestUpdateDTO.name());
+        item.setValue(itemRequestUpdateDTO.value());
+        item.setActive(itemRequestUpdateDTO.active());
 
         var savedItem = itemRepository.save(item);
         log.info("The item: {}, has been updated", savedItem.getId());
@@ -73,15 +76,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ItemResponseDTO updateByFields(UUID id, ItemRequestDTO itemRequestDTO) {
+    public ItemResponseDTO updateByFields(UUID id, ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug("Updating the item by fields: {}", id);
         var item = getById(id);
 
-        if (Objects.nonNull(itemRequestDTO.name())) {
-            item.setName(itemRequestDTO.name());
+        if (Objects.nonNull(itemRequestUpdateDTO.name())) {
+            item.setName(itemRequestUpdateDTO.name());
         }
-        if (Objects.nonNull(itemRequestDTO.value())) {
-            item.setValue(itemRequestDTO.value());
+        if (Objects.nonNull(itemRequestUpdateDTO.value())) {
+            item.setValue(itemRequestUpdateDTO.value());
+        }
+        if (Objects.nonNull(itemRequestUpdateDTO.active())) {
+            item.setActive(itemRequestUpdateDTO.active());
         }
 
         var savedItem = itemRepository.save(item);
@@ -98,6 +104,17 @@ public class ItemServiceImpl implements ItemService {
 
         itemRepository.save(item);
         log.info("The item: {}, has been deactivated", id);
+    }
+
+    public Item addExpense(UUID id, Expense expense) {
+        log.debug("Adding expense: {} the item: {}", expense.getId(), id);
+        var item = getById(id);
+
+        item.setExpense(expense);
+
+        var savedItem = itemRepository.save(item);
+        log.info("Added expense: {} to the item: {}", expense.getId(), savedItem.getId());
+        return savedItem;
     }
 
     private void validateItemAccess(Item item) {

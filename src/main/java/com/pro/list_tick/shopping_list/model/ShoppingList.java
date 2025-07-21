@@ -74,4 +74,18 @@ public class ShoppingList {
         mappedBy = "shoppingList")
     private List<Expense> expenses;
 
+    @Override
+    public String toString() {
+        return "ShoppingList{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", active=" + active +
+            ", shared=" + shared +
+            ", creationDate=" + creationDate +
+            ", ownerCostFactor=" + ownerCostFactor +
+            ", category=" + (category != null ? category.getId() : null) +
+            ", accountId=" + accountId +
+            '}';
+    }
+
 }

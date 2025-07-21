@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -38,13 +36,22 @@ public class Item {
     @NotNull(message = "Active field cannot be null")
     private Boolean active;
 
-    @Nullable
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "expense_id")
     private Expense expense;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "shopping_list_id")
     private ShoppingList shoppingList;
+
+    @Override
+    public String toString() {
+        return "Item{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", value=" + value +
+            ", active=" + active +
+            '}';
+    }
 
 }

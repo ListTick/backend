@@ -23,8 +23,8 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
   private final AccountAPI accountAPI;
   private final SharedShoppingListRepository sharedShoppingListRepository;
 
-  public List<SharedShoppingList> getAllByAccountId(UUID accountId) {
-    return sharedShoppingListRepository.findAllByIdAccountId(accountId);
+  public List<SharedShoppingList> findAllActiveByAccountId(UUID accountId) {
+    return sharedShoppingListRepository.findAllActiveByIdAccountId(accountId);
   }
 
   public List<UUID> getAllAccountsByShoppingListId(UUID shoppingListId) {

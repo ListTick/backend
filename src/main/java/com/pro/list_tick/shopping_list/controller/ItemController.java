@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.controller;
 
 import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.service.ItemService;
@@ -59,19 +60,19 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ItemResponseDTO> updateItem(@PathVariable UUID id,
-                                                     @Valid @RequestBody ItemRequestDTO itemRequestDTO) {
+                                                     @Valid @RequestBody ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", id, itemRequestDTO);
-        final var item = itemService.update(id, itemRequestDTO);
+                "PUT", id, itemRequestUpdateDTO);
+        final var item = itemService.update(id, itemRequestUpdateDTO);
         return ResponseEntity.ok(item);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ItemResponseDTO> updateItemByFields(@PathVariable UUID id,
-                                                             @RequestBody ItemRequestDTO itemRequestDTO) {
+                                                             @RequestBody ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", id, itemRequestDTO);
-        final var item = itemService.updateByFields(id, itemRequestDTO);
+                "PATCH", id, itemRequestUpdateDTO);
+        final var item = itemService.updateByFields(id, itemRequestUpdateDTO);
         return ResponseEntity.ok(item);
     }
 

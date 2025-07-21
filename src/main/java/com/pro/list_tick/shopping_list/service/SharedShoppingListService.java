@@ -9,7 +9,7 @@ import com.pro.list_tick.shopping_list.model.ShoppingList;
 
 public interface SharedShoppingListService {
 
-  List<SharedShoppingList> getAllByAccountId(UUID accountId);
+  List<SharedShoppingList> findAllActiveByAccountId(UUID accountId);
   List<UUID> getAllAccountsByShoppingListId(UUID shoppingListId);
   List<SharedShoppingList> createSharedShoppingLists(ShoppingList shoppingList,
                                                      List<AccountSharedWithRequestDto> sharedWithAccounts);

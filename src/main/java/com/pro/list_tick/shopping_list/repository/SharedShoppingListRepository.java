@@ -15,6 +15,9 @@ public interface SharedShoppingListRepository extends JpaRepository<SharedShoppi
 
     List<SharedShoppingList> findAllByIdAccountId(UUID accountId);
 
+    @Query("SELECT ssl FROM SharedShoppingList ssl WHERE ssl.id.accountId = :accountId AND ssl.shoppingList.active IS TRUE")
+    List<SharedShoppingList> findAllActiveByIdAccountId(UUID accountId);
+
     @Query("SELECT ssl.id.accountId FROM SharedShoppingList ssl WHERE  ssl.shoppingList.id = :shoppingListId")
     List<UUID> findAllAccountsById(@Param("shoppingListId")UUID shoppingListId);
 }
