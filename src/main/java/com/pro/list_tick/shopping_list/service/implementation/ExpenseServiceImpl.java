@@ -4,13 +4,15 @@ import com.pro.list_tick.shared.current_user.CurrentAccountService;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
-import com.pro.list_tick.shopping_list.exception.ItemException;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
 import com.pro.list_tick.shopping_list.model.Expense;
+import com.pro.list_tick.shopping_list.model.ExpenseShare;
 import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ExpenseRepository;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
+import com.pro.list_tick.shopping_list.service.ExpenseShareService;
 import com.pro.list_tick.shopping_list.service.ItemService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
@@ -36,6 +38,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ItemService itemService;
     private final ShoppingListService shoppingListService;
     private final CurrentAccountService accountService;
+    private final ExpenseShareService expenseShareService;
 
 
     public Expense getById(UUID id) {
@@ -52,10 +55,25 @@ public class ExpenseServiceImpl implements ExpenseService {
         var accountId = accountService.getCurrentAccountId();
         log.debug("Getting all expenses for the account id: {}", accountId);
 
-        return expenseRepository.findAllByAccountId(accountId)
+        return expenseRepository.findAllByAccountIdWithItems(accountId)
             .stream()
             .map(ExpenseMapper::toResponseDto)
             .toList();
+    }
+
+    public List<ExpenseShareResponseDto> getAllSharedByAccountId(String reimbursed) {
+        var accountId = accountService.getCurrentAccountId();
+        log.debug("Getting all shared expenses for the account id: {}", accountId);
+
+        List<ExpenseShare> shares;
+        if (Objects.nonNull(reimbursed)) {
+            shares = expenseShareService.findAllExpenseSharesByAccountIdAndReimbursed(accountId,
+                Boolean.valueOf(reimbursed));
+        } else {
+            shares = expenseShareService.findAllExpenseSharesByAccountId(accountId);
+        }
+
+        return shares.stream().map(ExpenseMapper::toResponseDto).toList();
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
@@ -74,6 +92,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             items.add(item);
         });
         savedExpense.setItems(items);
+
+        if (shoppingList.getShared()) {
+            var shares = expenseShareService.createExpenseShares(expense, shoppingList);
+            savedExpense.setExpenseShares(shares);
+        }
 
         log.info("The expense has been created: {}", savedExpense.getId());
         return ExpenseMapper.toResponseDto(savedExpense);

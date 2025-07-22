@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public record ExpenseRequestDTO (
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount cannot be negative")
-    Double amount,
+    BigDecimal amount,
 
     @NotBlank(message = "Currency cannot be blank")
     @Size(min = 3, max = 3, message = "Currency has to be 3 characters long")

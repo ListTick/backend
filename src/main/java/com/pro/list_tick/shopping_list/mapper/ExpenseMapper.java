@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.model.Expense;
+import com.pro.list_tick.shopping_list.model.ExpenseShare;
 
 public class ExpenseMapper {
 
@@ -32,6 +34,17 @@ public class ExpenseMapper {
         expense.getItems().stream()
             .map(ItemMapper::toResponseDTO)
             .collect(Collectors.toList())
+    );
+  }
+
+  public static ExpenseShareResponseDto toResponseDto(ExpenseShare expenseShare) {
+    return new ExpenseShareResponseDto(
+        expenseShare.getId(),
+        expenseShare.getAmount(),
+        expenseShare.getCurrency(),
+        expenseShare.getReimbursed(),
+        expenseShare.getAccountId(),
+        expenseShare.getExpense().getId()
     );
   }
 

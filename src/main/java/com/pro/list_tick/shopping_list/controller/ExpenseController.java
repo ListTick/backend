@@ -3,6 +3,7 @@ package com.pro.list_tick.shopping_list.controller;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,6 +41,15 @@ public class ExpenseController {
                 "GET", "", "");
         final var expenses = expenseService.getAllByAccountId();
         return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("/shared")
+    public ResponseEntity<List<ExpenseShareResponseDto>> getAllSharedByAccountId(
+        @RequestParam(required = false) String reimbursed) {
+        log.debug(String.format(requestLogTemplate),
+            "GET", "/shared", "");
+        final var shares = expenseService.getAllSharedByAccountId(reimbursed);
+        return ResponseEntity.ok(shares);
     }
 
     @GetMapping("/{id}")
