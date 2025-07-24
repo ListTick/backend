@@ -11,7 +11,10 @@ import java.util.UUID;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, UUID> {
 
-  @Query("select i from Item i where i.shoppingList.id = :shoppingListId")
+  @Query("SELECT i FROM Item i WHERE i.shoppingList.id = :shoppingListId")
   List<Item> findAllByShoppingListId(UUID shoppingListId);
+
+  @Query("SELECT i FROM Item i WHERE i.shoppingList.id = :shoppingListId AND i.active IS TRUE")
+  List<Item> findAllActiveByShoppingListId(UUID shoppingListId);
 
 }

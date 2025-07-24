@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.pro.list_tick.shared.api.AccountAPI;
-import com.pro.list_tick.shopping_list.dto.AccountSharedWithDto;
+import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
@@ -23,8 +23,8 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
   private final AccountAPI accountAPI;
   private final SharedShoppingListRepository sharedShoppingListRepository;
 
-  public List<SharedShoppingList> getAllByAccountId(UUID accountId) {
-    return sharedShoppingListRepository.findAllByIdAccountId(accountId);
+  public List<SharedShoppingList> findAllActiveByAccountId(UUID accountId) {
+    return sharedShoppingListRepository.findAllActiveByIdAccountId(accountId);
   }
 
   public List<UUID> getAllAccountsByShoppingListId(UUID shoppingListId) {
@@ -32,7 +32,7 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
   }
 
   public List<SharedShoppingList> createSharedShoppingLists(ShoppingList shoppingList,
-                                                            List<AccountSharedWithDto> sharedWithAccounts) {
+                                                            List<AccountSharedWithRequestDto> sharedWithAccounts) {
     if (sharedWithAccounts == null || sharedWithAccounts.isEmpty()) {
       var errorMessage = "'sharedWithAccounts' cannot be null or empty while 'shared' is set to true";
       log.error(errorMessage);
@@ -42,15 +42,23 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
     log.debug("Creating shared lists for: {}", sharedWithAccounts);
 
     return sharedWithAccounts.stream()
-        .map(accountSharedWithDto -> {
-          final var email = accountSharedWithDto.getEmail();
+        .map(accountSharedWithRequestDto -> {
+          final var email = accountSharedWithRequestDto.email();
           final var accountId = accountAPI.getAccountIdByEmail(email);
+          if (shoppingList.getAccountId().equals(accountId)) {
+            var errorMessage = "Shopping list cannot be shared with the owner\'s own account";
+            log.error("{} - accountId: {}", errorMessage, accountId);
+            throw new ShoppingListException(HttpStatus.CONFLICT, errorMessage);
+          }
           SharedShoppingList shared = new SharedShoppingList();
           shared.setShoppingListAndAccount(shoppingList, accountId);
-          shared.setCostFactor(accountSharedWithDto.getCostFactor());
+          shared.setCostFactor(accountSharedWithRequestDto.costFactor());
           return sharedShoppingListRepository.save(shared);
         }).toList();
+  }
 
+  public String getEmail(UUID accountId) {
+    return accountAPI.getEmailByAccountId(accountId);
   }
 
 }

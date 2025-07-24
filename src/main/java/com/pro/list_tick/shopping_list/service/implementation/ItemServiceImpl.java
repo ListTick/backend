@@ -1,9 +1,12 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.dto.ItemDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
+import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ItemException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
+import com.pro.list_tick.shopping_list.model.Expense;
 import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ItemRepository;
 import com.pro.list_tick.shopping_list.service.ItemService;
@@ -39,65 +42,79 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    public List<ItemDTO> getAllByShoppingListId(UUID shoppingListId) {
+    public List<ItemResponseDTO> getAllByShoppingListId(UUID shoppingListId) {
         log.debug("Getting items by shopping list id: {}", shoppingListId);
         var shoppingList = shoppingListService.getById(shoppingListId); //validates the shopping list access
-        var items = itemRepository.findAllByShoppingListId(shoppingList.getId());
-        return items.stream().map(ItemMapper::toDTO).toList();
+        var items = itemRepository.findAllActiveByShoppingListId(shoppingList.getId());
+        return items.stream().map(ItemMapper::toResponseDTO).toList();
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ItemDTO create(ItemDTO itemDTO) {
-        log.debug("Creating the item: {}", itemDTO);
-        Item item = ItemMapper.toModel(itemDTO);
-        var shoppingList = shoppingListService.getById(itemDTO.getShoppingListId());
+    public ItemResponseDTO create(ItemRequestDTO itemRequestDTO) {
+        log.debug("Creating the item: {}", itemRequestDTO);
+        Item item = ItemMapper.toModel(itemRequestDTO);
+        var shoppingList = shoppingListService.getById(itemRequestDTO.shoppingListId());
         item.setShoppingList(shoppingList);
         var savedItem = itemRepository.save(item);
 
         log.info("The item: {}, has been created", savedItem.getId());
-        return ItemMapper.toDTO(savedItem);
+        return ItemMapper.toResponseDTO(savedItem);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ItemDTO update(UUID id, ItemDTO itemDTO) {
+    public ItemResponseDTO update(UUID id, ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug("Updating the item: {}", id);
         var item = getById(id);
 
-        item.setName(itemDTO.getName());
-        item.setValue(itemDTO.getValue());
-        item.setActive(itemDTO.getActive());
+        item.setName(itemRequestUpdateDTO.name());
+        item.setValue(itemRequestUpdateDTO.value());
+        item.setActive(itemRequestUpdateDTO.active());
 
         var savedItem = itemRepository.save(item);
         log.info("The item: {}, has been updated", savedItem.getId());
-        return ItemMapper.toDTO(savedItem);
+        return ItemMapper.toResponseDTO(savedItem);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public ItemDTO updateByFields(UUID id, ItemDTO itemDTO) {
+    public ItemResponseDTO updateByFields(UUID id, ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug("Updating the item by fields: {}", id);
         var item = getById(id);
 
-        if (Objects.nonNull(itemDTO.getName())) {
-            item.setName(itemDTO.getName());
+        if (Objects.nonNull(itemRequestUpdateDTO.name())) {
+            item.setName(itemRequestUpdateDTO.name());
         }
-        if (Objects.nonNull(itemDTO.getValue())) {
-            item.setValue(itemDTO.getValue());
+        if (Objects.nonNull(itemRequestUpdateDTO.value())) {
+            item.setValue(itemRequestUpdateDTO.value());
         }
-        if (Objects.nonNull(itemDTO.getActive())) {
-            item.setActive(itemDTO.getActive());
+        if (Objects.nonNull(itemRequestUpdateDTO.active())) {
+            item.setActive(itemRequestUpdateDTO.active());
         }
 
         var savedItem = itemRepository.save(item);
         log.info("The item: {}, has been updated by fields", savedItem.getId());
-        return ItemMapper.toDTO(savedItem);
+        return ItemMapper.toResponseDTO(savedItem);
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public void delete(UUID id) {
-        log.debug("Deleting the item: {}", id);
+    public void deactivate(UUID id) {
+        log.debug("Deactivating the item: {}", id);
         var item = getById(id);
-        itemRepository.delete(item);
-        log.info("The item: {}, has been deleted", id);
+
+        item.setActive(Boolean.FALSE);
+
+        itemRepository.save(item);
+        log.info("The item: {}, has been deactivated", id);
+    }
+
+    public Item addExpense(UUID id, Expense expense) {
+        log.debug("Adding expense: {} the item: {}", expense.getId(), id);
+        var item = getById(id);
+
+        item.setExpense(expense);
+
+        var savedItem = itemRepository.save(item);
+        log.info("Added expense: {} to the item: {}", expense.getId(), savedItem.getId());
+        return savedItem;
     }
 
     private void validateItemAccess(Item item) {

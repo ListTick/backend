@@ -2,8 +2,8 @@ package com.pro.list_tick.shopping_list.mapper;
 
 import java.util.Objects;
 
-import com.pro.list_tick.shopping_list.dto.ItemDTO;
-import com.pro.list_tick.shopping_list.dto.ItemNameDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.model.Item;
 
 public class ItemMapper {
@@ -12,33 +12,20 @@ public class ItemMapper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static ItemDTO toDTO(Item item) {
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setId(item.getId());
-        itemDTO.setName(item.getName());
-        itemDTO.setValue(item.getValue());
-        itemDTO.setActive(item.getActive());
-        itemDTO.setExpenseId(item.getExpense() != null ? item.getExpense().getId() : null);
-        itemDTO.setShoppingListId(item.getShoppingList().getId());
-        return itemDTO;
+    public static ItemResponseDTO toResponseDTO(Item item) {
+        return new ItemResponseDTO(
+            item.getId(),
+            item.getName(),
+            item.getValue()
+        );
     }
 
-    public static Item toModel(ItemDTO itemDTO) {
+    public static Item toModel(ItemRequestDTO itemRequestDTO) {
         Item item = new Item();
-        item.setName(itemDTO.getName());
-        item.setValue(itemDTO.getValue());
-        item.setActive(itemDTO.getActive());
+        item.setName(itemRequestDTO.name());
+        item.setValue(Objects.nonNull(itemRequestDTO.value()) ? itemRequestDTO.value() : null);
+        item.setActive(Boolean.TRUE);
         return item;
-    }
-
-    public static ItemNameDTO toItemNameDto(Item item) {
-        ItemNameDTO itemNameDTO = new ItemNameDTO();
-        itemNameDTO.setId(item.getId());
-        itemNameDTO.setName(item.getName());
-        if (Objects.nonNull(item.getValue())) {
-            itemNameDTO.setValue(item.getValue());
-        }
-        return itemNameDTO;
     }
 
 }

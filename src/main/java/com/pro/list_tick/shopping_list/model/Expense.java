@@ -10,13 +10,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,17 +30,15 @@ public class Expense {
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount cannot be negative")
-    private Double amount;
+    private BigDecimal amount;
 
-    @NotBlank(message = "Currency cannot be blank")
-    @Size(min = 3, max = 3, message = "Currency has to be 3 characters long")
     @Enumerated(EnumType.STRING)
     private CurrencyCode currency;
 
     @NotNull(message = "Reimbursed cannot be null")
     private Boolean reimbursed;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "shopping_list_id")
     private ShoppingList shoppingList;
 
@@ -49,5 +46,20 @@ public class Expense {
             cascade = CascadeType.ALL,
             mappedBy = "expense")
     private List<Item> items;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "expense")
+    private List<ExpenseShare> expenseShares;
+
+    @Override
+    public String toString() {
+        return "Expense{" +
+            "id=" + id +
+            ", amount=" + amount +
+            ", currency='" + currency + '\'' +
+            ", reimbursed=" + reimbursed +
+            '}';
+    }
 
 }

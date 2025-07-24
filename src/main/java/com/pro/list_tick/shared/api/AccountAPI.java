@@ -6,6 +6,8 @@ public interface AccountAPI {
 
     UUID getAccountIdByEmail(String email);
 
+    String getEmailByAccountId(UUID accountId);
+
     Integer getDefaultPomodoroDuration();
 
     Integer getDefaultPomodoroBreakDuration();

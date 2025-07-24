@@ -1,6 +1,9 @@
 package com.pro.list_tick.shopping_list.controller;
 
-import com.pro.list_tick.shopping_list.dto.ExpenseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
+import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
 import jakarta.validation.Valid;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,45 +36,62 @@ public class ExpenseController {
     private final String requestLogTemplate = "Received request, method: {}, context path: /api/expense{}, body {}";
 
     @GetMapping
-    public ResponseEntity<List<ExpenseDTO>> getAllByAccountId() {
+    public ResponseEntity<List<ExpenseResponseDTO>> getAllByAccountId() {
         log.debug(String.format(requestLogTemplate),
                 "GET", "", "");
         final var expenses = expenseService.getAllByAccountId();
         return ResponseEntity.ok(expenses);
     }
 
+    @GetMapping("/shared")
+    public ResponseEntity<List<ExpenseShareResponseDto>> getAllSharedByAccountId(
+        @RequestParam(required = false) String reimbursed) {
+        log.debug(String.format(requestLogTemplate),
+            "GET", "/shared", "");
+        final var shares = expenseService.getAllSharedByAccountId(reimbursed);
+        return ResponseEntity.ok(shares);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<ExpenseDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<ExpenseResponseDTO> getById(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
                 "GET", id, "");
         final var expense = expenseService.getById(id);
-        return ResponseEntity.ok(ExpenseMapper.toDto(expense));
+        return ResponseEntity.ok(ExpenseMapper.toResponseDto(expense));
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ExpenseResponseDTO> createExpense(@RequestBody ExpenseRequestDTO expenseRequestDTO) {
         log.debug(String.format(requestLogTemplate),
-                "POST", "", expenseDTO);
-        final var expense = expenseService.create(expenseDTO);
+                "POST", "", expenseRequestDTO);
+        final var expense = expenseService.create(expenseRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(expense);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExpenseDTO> updateExpense(@PathVariable UUID id,
-                                                    @Valid @RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable UUID id,
+                                                            @Valid @RequestBody ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PUT", "", expenseDTO);
-        final var expense = expenseService.update(id, expenseDTO);
+                "PUT", "", expenseRequestUpdateDTO);
+        final var expense = expenseService.update(id, expenseRequestUpdateDTO);
         return ResponseEntity.ok(expense);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ExpenseDTO> updateExpenseByFields(@PathVariable UUID id,
-                                                            @RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ExpenseResponseDTO> updateExpenseByFields(@PathVariable UUID id,
+                                                                    @RequestBody ExpenseRequestUpdateDTO expenseRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
-                "PATCH", "", expenseDTO);
-        final var item = expenseService.update(id, expenseDTO);
+                "PATCH", "", expenseRequestUpdateDTO);
+        final var item = expenseService.updateByFields(id, expenseRequestUpdateDTO);
         return ResponseEntity.ok(item);
+    }
+
+    @PatchMapping("/{id}/reimburse")
+    public ResponseEntity<ExpenseResponseDTO> reimburse(@PathVariable UUID id) {
+        log.debug(String.format(requestLogTemplate),
+            "PATCH", id + "/reimburse", "");
+        expenseService.reimburse(id);
+        return ResponseEntity.ok().build();
     }
 
 }
