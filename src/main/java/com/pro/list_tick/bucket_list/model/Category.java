@@ -1,4 +1,7 @@
-package com.pro.list_tick.shopping_list.model;
+package com.pro.list_tick.bucket_list.model;
+
+import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,9 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
-
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "category")
@@ -35,7 +35,7 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "category")
-    private List<ShoppingList> shoppingLists;
+    private List<BucketList> bucketLists;
 
     @Column(name = "account_id")
     private UUID accountId;
