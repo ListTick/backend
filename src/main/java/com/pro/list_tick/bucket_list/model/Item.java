@@ -2,7 +2,6 @@ package com.pro.list_tick.bucket_list.model;
 
 import java.util.UUID;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -10,7 +9,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -28,10 +26,6 @@ public class Item {
     @Size(min = 3, max = 255, message = "Name has to have 3-255 characters")
     private String name;
 
-    @Nullable
-    @Positive(message = "Value cannot be negative")
-    private Double value;
-
     @NotNull(message = "Active field cannot be null")
     private Boolean active;
 
@@ -44,7 +38,6 @@ public class Item {
         return "Item{" +
             "id=" + id +
             ", name='" + name + '\'' +
-            ", value=" + value +
             ", active=" + active +
             '}';
     }
