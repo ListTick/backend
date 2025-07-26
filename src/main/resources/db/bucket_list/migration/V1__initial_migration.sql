@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS public.item (
      FOREIGN KEY (bucket_list_id) REFERENCES public.bucket_list(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.account_bucket_list (
-     bucket_list_id UUID NOT NULL,
+CREATE TABLE IF NOT EXISTS public.shared_bucket_list (
      account_id UUID NOT NULL,
+     bucket_list_id UUID NOT NULL,
      PRIMARY KEY (bucket_list_id, account_id),
      FOREIGN KEY (bucket_list_id) REFERENCES public.bucket_list(id)
 );

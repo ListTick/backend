@@ -42,10 +42,10 @@ public class BLItemController {
         return ResponseEntity.ok(ItemMapper.toResponseDTO(item));
     }
 
-    @GetMapping("/shopping-list/{id}")
-    public ResponseEntity<List<ItemResponseDTO>> getAllByShoppingListId(@PathVariable UUID id) {
+    @GetMapping("/bucket-list/{id}")
+    public ResponseEntity<List<ItemResponseDTO>> getAllByBucketListId(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
-            "GET", "shopping-list " + id, "");
+            "GET", "bucket-list " + id, "");
         final var items = itemService.getAllByBucketListId(id);
         return ResponseEntity.ok(items);
     }
