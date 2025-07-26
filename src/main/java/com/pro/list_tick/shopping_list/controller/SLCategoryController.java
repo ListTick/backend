@@ -1,12 +1,9 @@
-package com.pro.list_tick.bucket_list.controller;
+package com.pro.list_tick.shopping_list.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.pro.list_tick.bucket_list.dto.CategoryRequestDTO;
-import com.pro.list_tick.bucket_list.dto.CategoryResponseDTO;
-import com.pro.list_tick.bucket_list.mapper.CategoryMapper;
-import com.pro.list_tick.bucket_list.service.CategoryService;
+import com.pro.list_tick.shopping_list.dto.CategoryResponseDTO;
+import com.pro.list_tick.shopping_list.dto.CategoryRequestDTO;
+import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
+import com.pro.list_tick.shopping_list.service.SLCategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,16 +19,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/bucket-lists/categories")
+@RequestMapping("/api/shopping-lists/categories")
 @AllArgsConstructor
 @Slf4j
 @Validated
-public class CategoryController {
+public class SLCategoryController {
 
-    private final CategoryService categoryService;
+    private final SLCategoryService categoryService;
     private static final String REQUEST_LOG_TEMPLATE =
-        "Received request, method: {}, context path: /api/bucket-lists/categories{}, body {}";
+        "Received request, method: {}, context path: /api/shopping-lists/categories{}, body {}";
 
     @GetMapping
     public ResponseEntity<List<CategoryResponseDTO>> getAllByAccountId() {

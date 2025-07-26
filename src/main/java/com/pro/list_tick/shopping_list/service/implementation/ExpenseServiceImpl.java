@@ -13,7 +13,7 @@ import com.pro.list_tick.shopping_list.model.Item;
 import com.pro.list_tick.shopping_list.repository.ExpenseRepository;
 import com.pro.list_tick.shopping_list.service.ExpenseService;
 import com.pro.list_tick.shopping_list.service.ExpenseShareService;
-import com.pro.list_tick.shopping_list.service.ItemService;
+import com.pro.list_tick.shopping_list.service.SLItemService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
 
-    private final ItemService itemService;
+    private final SLItemService itemService;
     private final ShoppingListService shoppingListService;
     private final CurrentAccountService accountService;
     private final ExpenseShareService expenseShareService;

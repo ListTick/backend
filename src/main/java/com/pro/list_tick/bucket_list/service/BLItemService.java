@@ -8,7 +8,7 @@ import com.pro.list_tick.bucket_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.bucket_list.dto.ItemResponseDTO;
 import com.pro.list_tick.bucket_list.model.Item;
 
-public interface ItemService {
+public interface BLItemService {
 
     Item getById(UUID id);
     List<ItemResponseDTO> getAllByBucketListId(UUID bucketListId);

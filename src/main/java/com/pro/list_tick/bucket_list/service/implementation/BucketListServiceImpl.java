@@ -6,11 +6,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.pro.list_tick.bucket_list.repository.BucketListRepository;
-import com.pro.list_tick.bucket_list.service.CategoryService;
+import com.pro.list_tick.bucket_list.service.BLCategoryService;
 import com.pro.list_tick.bucket_list.service.SharedBucketListService;
 import com.pro.list_tick.bucket_list.service.BucketListService;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.bucket_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.bucket_list.dto.AccountSharedWithResponseDto;
 import com.pro.list_tick.bucket_list.dto.BucketListRequestDTO;
 import com.pro.list_tick.bucket_list.dto.BucketListRequestUpdateDTO;
@@ -33,7 +32,7 @@ public class BucketListServiceImpl implements BucketListService {
     private final BucketListRepository bucketListRepository;
 
     private final CurrentAccountService currentAccountService;
-    private final CategoryService categoryService;
+    private final BLCategoryService categoryService;
     private final SharedBucketListService sharedBucketListService;
 
     public BucketList getById(UUID id) {

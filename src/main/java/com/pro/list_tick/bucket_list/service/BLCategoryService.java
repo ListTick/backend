@@ -7,7 +7,7 @@ import com.pro.list_tick.bucket_list.dto.CategoryRequestDTO;
 import com.pro.list_tick.bucket_list.dto.CategoryResponseDTO;
 import com.pro.list_tick.bucket_list.model.Category;
 
-public interface CategoryService {
+public interface BLCategoryService {
 
     Category getById(UUID id);
     List<CategoryResponseDTO> getAllDTOByAccountId();

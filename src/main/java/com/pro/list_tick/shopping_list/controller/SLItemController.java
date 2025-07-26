@@ -1,13 +1,10 @@
-package com.pro.list_tick.bucket_list.controller;
+package com.pro.list_tick.shopping_list.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.pro.list_tick.bucket_list.dto.ItemRequestDTO;
-import com.pro.list_tick.bucket_list.dto.ItemRequestUpdateDTO;
-import com.pro.list_tick.bucket_list.dto.ItemResponseDTO;
-import com.pro.list_tick.bucket_list.mapper.ItemMapper;
-import com.pro.list_tick.bucket_list.service.ItemService;
+import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
+import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
+import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
+import com.pro.list_tick.shopping_list.mapper.ItemMapper;
+import com.pro.list_tick.shopping_list.service.SLItemService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +20,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/bucket-lists/items")
+@RequestMapping("/api/shopping-lists/items")
 @AllArgsConstructor
 @Validated
 @Slf4j
-public class ItemController {
+public class SLItemController {
 
-    private final ItemService itemService;
-    private final String requestLogTemplate = "Received request, method: {}, context path: /api/bucket-lists/items{}, body {}";
+    private final SLItemService itemService;
+    private final String requestLogTemplate = "Received request, method: {}, context path: /api/shopping-lists/items{}, body {}";
 
 
     @GetMapping("/{id}")
@@ -46,7 +46,7 @@ public class ItemController {
     public ResponseEntity<List<ItemResponseDTO>> getAllByShoppingListId(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
             "GET", "shopping-list " + id, "");
-        final var items = itemService.getAllByBucketListId(id);
+        final var items = itemService.getAllByShoppingListId(id);
         return ResponseEntity.ok(items);
     }
 
