@@ -13,13 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class BucketListExceptionHandler {
 
-    @ExceptionHandler(com.pro.list_tick.account.exception.AccountException.class)
-    public ResponseEntity<ErrorEntity> handleAccountException(com.pro.list_tick.account.exception.AccountException ex) {
-        log.error(ex.toString());
-        var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
-        return ResponseEntity.status(ex.getHttpStatus()).body(error);
-    }
-
     @ExceptionHandler(AccountException.class)
     public ResponseEntity<ErrorEntity> handleAccountException(AccountException ex) {
         log.error(ex.toString());
