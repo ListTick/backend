@@ -1,1 +1,1 @@
-CREATE INDEX idx_account_settings_account_id ON account_settings(account_id);
+CREATE INDEX IF NOT EXISTS idx_account_settings_account_id ON account_settings(account_id);
