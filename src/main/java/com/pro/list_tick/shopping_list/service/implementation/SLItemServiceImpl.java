@@ -5,6 +5,7 @@ import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ItemException;
+import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.model.Expense;
 import com.pro.list_tick.shopping_list.model.Item;
@@ -54,6 +55,11 @@ public class SLItemServiceImpl implements SLItemService {
         log.debug("Creating the item: {}", itemRequestDTO);
         Item item = ItemMapper.toModel(itemRequestDTO);
         var shoppingList = shoppingListService.getById(itemRequestDTO.shoppingListId());
+        if (!shoppingList.getActive()) {
+            log.error("Cannot add item to the inactive shopping list: {}", shoppingList.getId());
+            throw new ShoppingListException("The selected shopping list is inactive.");
+        }
+
         item.setShoppingList(shoppingList);
         var savedItem = itemRepository.save(item);
 

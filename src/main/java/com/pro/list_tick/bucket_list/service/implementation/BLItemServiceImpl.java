@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.pro.list_tick.bucket_list.exception.BucketListException;
 import com.pro.list_tick.bucket_list.service.BLItemService;
 import com.pro.list_tick.bucket_list.service.BucketListService;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
@@ -53,6 +54,11 @@ public class BLItemServiceImpl implements BLItemService {
         log.debug("Creating the item: {}", itemRequestDTO);
         Item item = ItemMapper.toModel(itemRequestDTO);
         var bucketList = bucketListService.getById(itemRequestDTO.bucketListId());
+        if (!bucketList.getActive()) {
+            log.error("Cannot add item to the inactive bucket list: {}", bucketList.getId());
+            throw new BucketListException("The selected bucket list is inactive.");
+        }
+
         item.setBucketList(bucketList);
         var savedItem = itemRepository.save(item);
 
