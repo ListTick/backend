@@ -82,6 +82,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense expense = ExpenseMapper.toModel(expenseRequestDTO);
         var shoppingList = shoppingListService.getById(expenseRequestDTO.shoppingListId());
         expense.setShoppingList(shoppingList);
+        expense.setShared(shoppingList.getShared());
         var savedExpense = expenseRepository.save(expense);
 
         var itemIds = Optional.ofNullable(expenseRequestDTO.items())
@@ -146,13 +147,34 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
-    public void reimburse(UUID id) {
+    public ExpenseResponseDTO reimburse(UUID id) {
         log.debug("Reimbursing the expense: {}", id);
         Expense expense = getById(id);
         expense.setReimbursed(Boolean.TRUE);
 
-        expenseRepository.save(expense);
+        var reimbursedExpense = expenseRepository.save(expense);
         log.info("The expense has been reimbursed: {}", expense);
+        return ExpenseMapper.toResponseDto(reimbursedExpense);
+    }
+
+    @Transactional(transactionManager = "shoppingListTransactionManager")
+    public ExpenseShareResponseDto reimburseShared(UUID id) {
+        log.debug("Reimbursing the shared expense: {}", id);
+        var reimbursedSharedExpense = expenseShareService.reimburse(id);
+        var expense = getById(reimbursedSharedExpense.expenseId()); //validate access
+        if (expense.getExpenseShares().stream()
+            .map(ExpenseShare::getReimbursed)
+            .allMatch(reimbursed -> reimbursed.equals(Boolean.TRUE))
+        ) {
+            log.debug("All expense shares have been reimbursed, updating the expense to reimbursed: {}",
+                expense.getId());
+            expense.setReimbursed(Boolean.TRUE);
+            expenseRepository.save(expense);
+            log.info("The expense has been reimbursed due to reimbursed shares: {}", expense.getId());
+        }
+
+        log.info("The shared expense has been reimbursed: {}", reimbursedSharedExpense);
+        return reimbursedSharedExpense;
     }
 
     private void validateExpenseAccess(Expense expense) {
