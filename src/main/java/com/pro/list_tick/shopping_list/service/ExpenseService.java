@@ -18,6 +18,7 @@ public interface ExpenseService {
     ExpenseResponseDTO update(UUID id, ExpenseRequestUpdateDTO expenseRequestUpdateDTO);
     ExpenseResponseDTO updateByFields(UUID id, ExpenseRequestUpdateDTO expenseRequestUpdateDTO);
     void delete(UUID id);
-    void reimburse(UUID id);
+    ExpenseResponseDTO reimburse(UUID id);
+    ExpenseShareResponseDto reimburseShared(UUID id);
 
 }

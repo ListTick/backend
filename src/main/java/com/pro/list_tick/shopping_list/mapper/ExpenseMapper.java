@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.mapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ public class ExpenseMapper {
     expense.setAmount(expenseRequestDTO.amount());
     expense.setCurrency(expenseRequestDTO.currency());
     expense.setReimbursed(expenseRequestDTO.reimbursed());
+    expense.setCreationDate(LocalDate.now());
     expense.setItems(new ArrayList<>());
     return expense;
   }
@@ -30,6 +32,8 @@ public class ExpenseMapper {
         expense.getAmount(),
         expense.getCurrency(),
         expense.getReimbursed(),
+        expense.getShared(),
+        expense.getCreationDate(),
         expense.getShoppingList().getId(),
         expense.getItems().stream()
             .map(ItemMapper::toResponseDTO)
@@ -43,6 +47,7 @@ public class ExpenseMapper {
         expenseShare.getAmount(),
         expenseShare.getCurrency(),
         expenseShare.getReimbursed(),
+        expenseShare.getCreationDate(),
         expenseShare.getAccountId(),
         expenseShare.getExpense().getId()
     );
