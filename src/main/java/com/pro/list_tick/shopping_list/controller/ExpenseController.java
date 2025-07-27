@@ -90,8 +90,16 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDTO> reimburse(@PathVariable UUID id) {
         log.debug(String.format(requestLogTemplate),
             "PATCH", id + "/reimburse", "");
-        expenseService.reimburse(id);
-        return ResponseEntity.ok().build();
+        var reimbursedExpense = expenseService.reimburse(id);
+        return ResponseEntity.ok(reimbursedExpense);
+    }
+
+    @PatchMapping("shared/{id}/reimburse")
+    public ResponseEntity<ExpenseShareResponseDto> reimburseShared(@PathVariable UUID id) {
+        log.debug(String.format(requestLogTemplate),
+            "PATCH", "shared/" + id + "/reimburse", "");
+        var reimbursedShareExpense = expenseService.reimburseShared(id);
+        return ResponseEntity.ok(reimbursedShareExpense);
     }
 
 }

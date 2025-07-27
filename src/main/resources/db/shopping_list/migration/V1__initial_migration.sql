@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS public.expense (
     amount MONEY NOT NULL,
     currency VARCHAR(3) NOT NULL,
     reimbursed BOOLEAN NOT NULL,
+    shared BOOLEAN NOT NULL,
+    creation_date TIMESTAMP NOT NULL,
     shopping_list_id UUID,
     FOREIGN KEY (shopping_list_id) REFERENCES public.shopping_list(id)
 );

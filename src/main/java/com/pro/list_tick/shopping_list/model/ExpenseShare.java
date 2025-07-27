@@ -1,6 +1,7 @@
 package com.pro.list_tick.shopping_list.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -34,6 +36,10 @@ public class ExpenseShare {
 
   @NotNull(message = "Reimbursed cannot be null")
   private Boolean reimbursed;
+
+  @PastOrPresent(message = "Creation date cannot be in the future")
+  @Column(name = "creation_date")
+  private LocalDate creationDate;
 
   @Column(name = "account_id")
   private UUID accountId;
