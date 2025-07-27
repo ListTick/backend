@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ItemRepository extends JpaRepository<Item, UUID> {
+public interface SLItemRepository extends JpaRepository<Item, UUID> {
 
   @Query("SELECT i FROM Item i WHERE i.shoppingList.id = :shoppingListId")
   List<Item> findAllByShoppingListId(UUID shoppingListId);

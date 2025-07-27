@@ -1,6 +1,10 @@
 1. Database setup:
 
 - execute setup-db.sh script
+<<<<<<< Updated upstream
+=======
+- after the database is set up, execute db_config.sql script
+>>>>>>> Stashed changes
 
 2. Keycloak setup:
 
@@ -11,6 +15,12 @@ password -> admin
 on the left top corner, click 'Create realm' button
 choose a path to the realm-export.json file 
 
+<<<<<<< Updated upstream
+=======
+go to realm settings, select events tab, add custom-registration-listener to the event listeners
+save the changes
+
+>>>>>>> Stashed changes
 
 3. OpenAPI documentation:
 

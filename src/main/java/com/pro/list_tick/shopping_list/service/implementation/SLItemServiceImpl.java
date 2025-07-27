@@ -5,11 +5,12 @@ import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
 import com.pro.list_tick.shopping_list.exception.ItemException;
+import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.mapper.ItemMapper;
 import com.pro.list_tick.shopping_list.model.Expense;
 import com.pro.list_tick.shopping_list.model.Item;
-import com.pro.list_tick.shopping_list.repository.ItemRepository;
-import com.pro.list_tick.shopping_list.service.ItemService;
+import com.pro.list_tick.shopping_list.repository.SLItemRepository;
+import com.pro.list_tick.shopping_list.service.SLItemService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,9 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class ItemServiceImpl implements ItemService {
+public class SLItemServiceImpl implements SLItemService {
 
-    private final ItemRepository itemRepository;
+    private final SLItemRepository itemRepository;
 
     private final CurrentAccountService accountService;
     private final ShoppingListService shoppingListService;
@@ -54,6 +55,11 @@ public class ItemServiceImpl implements ItemService {
         log.debug("Creating the item: {}", itemRequestDTO);
         Item item = ItemMapper.toModel(itemRequestDTO);
         var shoppingList = shoppingListService.getById(itemRequestDTO.shoppingListId());
+        if (!shoppingList.getActive()) {
+            log.error("Cannot add item to the inactive shopping list: {}", shoppingList.getId());
+            throw new ShoppingListException("The selected shopping list is inactive.");
+        }
+
         item.setShoppingList(shoppingList);
         var savedItem = itemRepository.save(item);
 

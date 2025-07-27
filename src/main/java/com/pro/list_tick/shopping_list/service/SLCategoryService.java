@@ -7,7 +7,7 @@ import com.pro.list_tick.shopping_list.model.Category;
 import java.util.List;
 import java.util.UUID;
 
-public interface CategoryService {
+public interface SLCategoryService {
 
     Category getById(UUID id);
     List<CategoryResponseDTO> getAllDTOByAccountId();

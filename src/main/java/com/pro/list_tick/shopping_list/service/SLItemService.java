@@ -9,7 +9,7 @@ import com.pro.list_tick.shopping_list.model.Item;
 import java.util.List;
 import java.util.UUID;
 
-public interface ItemService {
+public interface SLItemService {
 
     Item getById(UUID id);
     List<ItemResponseDTO> getAllByShoppingListId(UUID shoppingListId);

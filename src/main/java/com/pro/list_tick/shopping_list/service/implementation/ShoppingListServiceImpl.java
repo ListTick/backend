@@ -11,7 +11,7 @@ import com.pro.list_tick.shopping_list.mapper.ShoppingListMapper;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
 import com.pro.list_tick.shopping_list.model.ShoppingList;
 import com.pro.list_tick.shopping_list.repository.ShoppingListRepository;
-import com.pro.list_tick.shopping_list.service.CategoryService;
+import com.pro.list_tick.shopping_list.service.SLCategoryService;
 import com.pro.list_tick.shopping_list.service.SharedShoppingListService;
 import com.pro.list_tick.shopping_list.service.ShoppingListService;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     private final ShoppingListRepository shoppingListRepository;
 
     private final CurrentAccountService currentAccountService;
-    private final CategoryService categoryService;
+    private final SLCategoryService categoryService;
     private final SharedShoppingListService sharedShoppingListService;
 
     public ShoppingList getById(UUID id) {

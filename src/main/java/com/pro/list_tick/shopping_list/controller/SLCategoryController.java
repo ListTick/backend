@@ -3,7 +3,7 @@ package com.pro.list_tick.shopping_list.controller;
 import com.pro.list_tick.shopping_list.dto.CategoryResponseDTO;
 import com.pro.list_tick.shopping_list.dto.CategoryRequestDTO;
 import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
-import com.pro.list_tick.shopping_list.service.CategoryService;
+import com.pro.list_tick.shopping_list.service.SLCategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +27,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Slf4j
 @Validated
-public class CategoryController {
+public class SLCategoryController {
 
-    private final CategoryService categoryService;
+    private final SLCategoryService categoryService;
     private static final String REQUEST_LOG_TEMPLATE =
         "Received request, method: {}, context path: /api/shopping-lists/categories{}, body {}";
 

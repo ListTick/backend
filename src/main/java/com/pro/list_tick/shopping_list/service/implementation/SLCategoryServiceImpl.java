@@ -9,7 +9,7 @@ import com.pro.list_tick.shopping_list.exception.CategoryException;
 import com.pro.list_tick.shopping_list.mapper.CategoryMapper;
 import com.pro.list_tick.shopping_list.model.Category;
 import com.pro.list_tick.shopping_list.repository.SLCategoryRepository;
-import com.pro.list_tick.shopping_list.service.CategoryService;
+import com.pro.list_tick.shopping_list.service.SLCategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class CategoryServiceImpl implements CategoryService {
+public class SLCategoryServiceImpl implements SLCategoryService {
 
     private final AccountAPI accountAPI;
     private final CurrentAccountService currentAccountService;
