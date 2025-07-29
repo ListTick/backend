@@ -39,7 +39,7 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
             String.format("Couldn't find the shared expense: %s", id)));
   }
 
-  public List<ExpenseShare> createExpenseShares(Expense expense, ShoppingList shoppingList) {
+  public List<ExpenseShare> createExpenseShares(Expense expense, ShoppingList shoppingList, UUID accountId) {
     var totalAmount = expense.getAmount();
 
     Map<UUID, Integer> accountCostFactorMap = new HashMap<>();
@@ -56,7 +56,7 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
       ExpenseShare share = new ExpenseShare();
       share.setAmount(shareAmount);
       share.setCurrency(expense.getCurrency());
-      if (entry.getKey().equals(shoppingList.getAccountId())) {
+      if (entry.getKey().equals(accountId)) {
         share.setReimbursed(Boolean.TRUE);
       } else {
         share.setReimbursed(expense.getReimbursed());
