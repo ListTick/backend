@@ -8,8 +8,6 @@ services:
       context: .
       dockerfile: Dockerfile.keycloak
     command: start-dev
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "8090:8080"
     environment:
@@ -23,3 +21,17 @@ services:
       KC_SPI_EVENTS_LISTENER: "custom-registration-listener"
     networks:
       - listtick-network
+  listtick:
+    build:
+      context: .
+      dockerfile: Dockerfile.listtick
+    networks:
+      - listtick-network
+#  frontend:
+#    build:
+#      context: ../frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "80:80"
+#    networks:
+#      - listtick-network

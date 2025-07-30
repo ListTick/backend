@@ -1,0 +1,65 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  docker:
+    compose:
+      enabled: false
+  application:
+    name: ListTick
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8090/realms/listtick
+
+datasource:
+  database:
+    account_settings: jdbc:postgresql://listtick-db:5432/account_settings
+    keycloak: jdbc:postgresql://listtick-db:5432/keycloak
+    bucket_list: jdbc:postgresql://listtick-db:5432/bucket_list
+    note: jdbc:postgresql://listtick-db:5432/note
+    notification: jdbc:postgresql://listtick-db:5432/notification
+    shopping_list: jdbc:postgresql://listtick-db:5432/shopping_list
+    task: jdbc:postgresql://listtick-db:5432/task
+  user: postgres
+  password: admin
+  driver: org.postgresql.Driver
+  dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  swagger-ui:
+    oauth2-redirect-url: http://localhost:8080/swagger-ui/oauth2-redirect.html
+    oauth:
+      client-id: listtick-swagger
+      use-pkce-with-authorization-code-grant: true
+      scopes:
+        - openid
+        - profile
+        - email
+
+keycloak:
+  auth:
+    server:
+      url: http://keycloak:8090
+  realm: listtick
+  event:
+    secret: "KEjG2q8P4nX9vM3tL5wY7bR1cV6hN0dS"
+
+logging:
+  level:
+    root: INFO
+    com.pro.list_tick: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.cache: DEBUG
+    org.springframework.transaction: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.engine.transaction: DEBUG
+    org.hibernate.event: DEBUG
