@@ -11,7 +11,7 @@ import com.pro.list_tick.shopping_list.model.ShoppingList;
 public interface ExpenseShareService {
 
   ExpenseShare getById(UUID id);
-  List<ExpenseShare> createExpenseShares(Expense expense, ShoppingList shoppingList);
+  List<ExpenseShare> createExpenseShares(Expense expense, ShoppingList shoppingList, UUID accountId);
   List<ExpenseShare> findAllExpenseSharesByAccountId(UUID accountId);
   List<ExpenseShare> findAllExpenseSharesByAccountIdAndReimbursed(UUID accountId, Boolean reimbursed);
   ExpenseShareResponseDto reimburse(UUID id);

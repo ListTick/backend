@@ -78,6 +78,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO) {
+        var accountId = accountService.getCurrentAccountId();
         log.debug("Creating the expense: {}", expenseRequestDTO.amount());
         Expense expense = ExpenseMapper.toModel(expenseRequestDTO);
         var shoppingList = shoppingListService.getById(expenseRequestDTO.shoppingListId());
@@ -95,7 +96,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         savedExpense.setItems(items);
 
         if (shoppingList.getShared()) {
-            var shares = expenseShareService.createExpenseShares(expense, shoppingList);
+            var shares = expenseShareService.createExpenseShares(expense, shoppingList, accountId);
             savedExpense.setExpenseShares(shares);
         }
 
