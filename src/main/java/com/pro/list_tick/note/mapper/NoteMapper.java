@@ -13,7 +13,7 @@ public class NoteMapper {
   public static NoteResponseDTO toResponseDTO(Note note) {
     return new NoteResponseDTO(
         note.getId(),
-        note.getName(),
+        note.getTitle(),
         note.getCreatedAt(),
         note.getModifiedAt(),
         note.getDescription(),
@@ -23,7 +23,7 @@ public class NoteMapper {
 
   public static Note toModel(NoteRequestDTO noteRequestDTO) {
     Note note = new Note();
-    note.setName(noteRequestDTO.name());
+    note.setTitle(noteRequestDTO.title());
     note.setDescription(noteRequestDTO.description());
     return note;
   }

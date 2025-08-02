@@ -12,6 +12,6 @@ public interface NoteRepository extends JpaRepository<Note, UUID> {
 
   List<Note> findAllByAccountId(UUID userId);
 
-  boolean existsByNameAndAccountId(String name, UUID accountId);
+  boolean existsByTitleAndAccountId(String title, UUID accountId);
 
 }

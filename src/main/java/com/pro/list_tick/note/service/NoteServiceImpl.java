@@ -12,7 +12,6 @@ import com.pro.list_tick.note.mapper.NoteMapper;
 import com.pro.list_tick.note.model.Note;
 import com.pro.list_tick.note.repository.NoteRepository;
 import com.pro.list_tick.shared.current_user.CurrentAccountService;
-import com.pro.list_tick.shopping_list.exception.CategoryException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -54,10 +53,10 @@ public class NoteServiceImpl implements NoteService {
   @Transactional(transactionManager = "noteTransactionManager")
   public NoteResponseDTO create(NoteRequestDTO noteRequestDTO) {
     var accountId = currentAccountService.getCurrentAccountId();
-    log.debug("Creating a note for the accountId: {}, note name: {}",
-        accountId, noteRequestDTO.name());
+    log.debug("Creating a note for the accountId: {}, note title: {}",
+        accountId, noteRequestDTO.title());
 
-    validateName(accountId, noteRequestDTO.name());
+    validateTitle(accountId, noteRequestDTO.title());
     var note = NoteMapper.toModel(noteRequestDTO);
     note.setCreatedAt(LocalDate.now());
     note.setAccountId(accountId);
@@ -73,9 +72,9 @@ public class NoteServiceImpl implements NoteService {
     log.info("Updating the note by fields: {}", id);
 
     var note = getById(id);
-    if (Objects.nonNull(noteRequestDTO.name())) {
-      validateName(accountId, noteRequestDTO.name());
-      note.setName(noteRequestDTO.name());
+    if (Objects.nonNull(noteRequestDTO.title())) {
+      validateTitle(accountId, noteRequestDTO.title());
+      note.setTitle(noteRequestDTO.title());
     }
     if (Objects.nonNull(noteRequestDTO.description())) {
       note.setDescription(noteRequestDTO.description());
@@ -94,11 +93,11 @@ public class NoteServiceImpl implements NoteService {
     log.info("Note has been deleted: {}", note.getId());
   }
 
-  private void validateName(UUID accountId, String name) {
-    if (noteRepository.existsByNameAndAccountId(name, accountId)) {
-      String errMessage = "Note name already exists";
-      log.error("{} :{}", errMessage, name);
-      throw new CategoryException(HttpStatus.CONFLICT, errMessage);
+  private void validateTitle(UUID accountId, String title) {
+    if (noteRepository.existsByTitleAndAccountId(title, accountId)) {
+      String errMessage = "Note title already exists";
+      log.error("{} :{}", errMessage, title);
+      throw new NoteException(HttpStatus.CONFLICT, errMessage);
     }
   }
 

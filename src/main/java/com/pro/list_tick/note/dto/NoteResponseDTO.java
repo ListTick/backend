@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record NoteResponseDTO(
     UUID id,
-    String name,
+    String title,
     LocalDate createdAt,
     LocalDate modifiedAt,
     String description,

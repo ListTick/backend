@@ -23,9 +23,9 @@ public class Note {
   @UuidGenerator
   private UUID id;
 
-  @NotBlank(message = "Name cannot be blank")
-  @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
-  private String name;
+  @NotBlank(message = "Title cannot be blank")
+  @Size(min = 3, max = 255, message = "Title must be between 3 and 255 characters")
+  private String title;
 
   @PastOrPresent(message = "Creation date cannot be in the future")
   @Column(name = "created_at")
@@ -35,7 +35,6 @@ public class Note {
   @Column(name = "modified_at")
   private LocalDate modifiedAt;
 
-  @Lob
   private String description;
 
   @Column(name = "account_id")
