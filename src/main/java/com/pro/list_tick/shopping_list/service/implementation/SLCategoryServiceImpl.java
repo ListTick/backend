@@ -34,7 +34,7 @@ public class SLCategoryServiceImpl implements SLCategoryService {
 
     public Category getById(UUID id) {
         var accountId = currentAccountService.getCurrentAccountId();
-        log.debug("Getting a shopping list category by the accountId: {}", accountId);
+        log.debug("Getting a shopping list category by the id: {}", id);
 
         var category = categoryRepository.findById(id)
             .orElseThrow(() -> {
@@ -138,7 +138,7 @@ public class SLCategoryServiceImpl implements SLCategoryService {
         if (!category.getAccountId().equals(accountId)) {
             String errMessage = "Access denied";
             log.error("{} {}: {}", errMessage, ",categoryId: ",category.getId());
-            throw new CategoryException(HttpStatus.CONFLICT, errMessage);
+            throw new CategoryException(HttpStatus.FORBIDDEN, errMessage);
         }
     }
 
