@@ -16,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8090/realms/listtick
+          issuer-uri: http://localhost:8090/realms/listtick
 
 datasource:
   database:
@@ -46,7 +46,7 @@ springdoc:
 keycloak:
   auth:
     server:
-      url: http://keycloak:8090
+      url: http://localhost:8090
   realm: listtick
   event:
     secret: "KEjG2q8P4nX9vM3tL5wY7bR1cV6hN0dS"
@@ -55,11 +55,12 @@ logging:
   level:
     root: INFO
     com.pro.list_tick: DEBUG
-    org.springframework.web: INFO
-    org.springframework.security: INFO
     org.springframework.cache: DEBUG
     org.springframework.transaction: DEBUG
     org.springframework.orm.jpa: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.engine.transaction: DEBUG
     org.hibernate.event: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web: DEBUG

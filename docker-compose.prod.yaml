@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.keycloak
+    container_name: listtick-keycloak
     command: start-dev
     ports:
       - "8090:8080"
@@ -19,19 +20,14 @@ services:
       KC_DB_PASSWORD: admin
       KEYCLOAK_EVENTS_ENABLED: "true"
       KC_SPI_EVENTS_LISTENER: "custom-registration-listener"
+#      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
+#      KC_HOSTNAME: "http://localhost:8080/"
     networks:
       - listtick-network
   listtick:
     build:
       context: .
       dockerfile: Dockerfile.listtick
+    container_name: listtick-backend
     networks:
       - listtick-network
-#  frontend:
-#    build:
-#      context: ../frontend
-#      dockerfile: Dockerfile
-#    ports:
-#      - "80:80"
-#    networks:
-#      - listtick-network
