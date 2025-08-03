@@ -1,15 +1,10 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
-CREATE TABLE IF NOT EXISTS public.account (
-     id UUID PRIMARY KEY,
-     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS public.notification (
      id UUID PRIMARY KEY,
-     account_id UUID NOT NULL,
      object_class VARCHAR(255),
      object_id INT,
-     description VARCHAR(255),
-     FOREIGN KEY (account_id) REFERENCES public.account(id)
+     description VARCHAR(255) NOT NULL,
+     acknowledged BOOLEAN NOT NULL,
+     account_id UUID NOT NULL
 )
