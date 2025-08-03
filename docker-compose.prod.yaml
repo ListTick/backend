@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.keycloak
+    image: listtick-keycloak-image
     container_name: listtick-keycloak
     command: start-dev
     ports:
@@ -28,6 +29,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.listtick
+    image: listtick-backend-image
     container_name: listtick-backend
     networks:
       - listtick-network
