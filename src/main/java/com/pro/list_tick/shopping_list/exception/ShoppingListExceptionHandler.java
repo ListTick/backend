@@ -20,13 +20,6 @@ public class ShoppingListExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).body(error);
     }
 
-    @ExceptionHandler(com.pro.list_tick.account.exception.AccountException.class)
-    public ResponseEntity<ErrorEntity> handleAccountException(com.pro.list_tick.account.exception.AccountException ex) {
-        log.error(ex.toString());
-        var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
-        return ResponseEntity.status(ex.getHttpStatus()).body(error);
-    }
-
     @ExceptionHandler(CategoryException.class)
     public ResponseEntity<ErrorEntity> handleCategoryException(CategoryException ex) {
         log.error(ex.toString());
