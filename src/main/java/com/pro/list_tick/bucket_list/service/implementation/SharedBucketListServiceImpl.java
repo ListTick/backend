@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.pro.list_tick.bucket_list.model.SharedBucketList;
 import com.pro.list_tick.bucket_list.repository.SharedBucketListRepository;
 import com.pro.list_tick.bucket_list.service.SharedBucketListService;
-import com.pro.list_tick.shared.api.AccountAPI;
+import com.pro.list_tick.shared.AccountAPI;
 import com.pro.list_tick.bucket_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.bucket_list.exception.BucketListException;
 import com.pro.list_tick.bucket_list.model.BucketList;

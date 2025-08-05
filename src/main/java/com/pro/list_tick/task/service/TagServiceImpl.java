@@ -1,6 +1,6 @@
 package com.pro.list_tick.task.service;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.task.dto.TagRequestDto;
 import com.pro.list_tick.task.dto.TagResponseDto;
 import com.pro.list_tick.task.exception.TagNameAlreadyUsedException;
@@ -19,11 +19,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
 
     @Transactional
     public TagResponseDto createTag(TagRequestDto tagRequestDto) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
 
         Tag tag = TagMapper.toEntity(tagRequestDto, currentAccountId);
@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
     }
 
     public List<TagResponseDto> getAllTags() {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         List<Tag> tags = tagRepository.findAllByAccountId(currentAccountId);
 
         return tags.stream().map(TagMapper::toDto).toList();
@@ -41,7 +41,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagResponseDto updateTag(TagRequestDto tagRequestDto, UUID tagId) {
         Tag tag = getTagById(tagId);
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
 
         if (!Objects.equals(tagRequestDto.name(),tag.getName())) {
             checkIfTagNameExists(tagRequestDto.name(), currentAccountId);

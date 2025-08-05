@@ -1,6 +1,6 @@
 package com.pro.list_tick.task.service;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.task.dto.TaskPageDto;
 import com.pro.list_tick.task.dto.TaskRequestDto;
 import com.pro.list_tick.task.dto.TaskResponseDto;
@@ -23,12 +23,12 @@ import java.util.UUID;
 @Slf4j
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
     private final TagRepository tagRepository;
 
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
 
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public List<TaskResponseDto> getTasks(String tag) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
         //todo: add tag
 
@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public TaskPageDto getArchivedTasks(Pageable pageable) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
 
         List<TaskResponseDto> tasks =  tasksPage
@@ -125,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public void deleteAllCompletedTasks() {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         taskRepository.deleteAllCompletedTasksByAccountId(currentAccountId);
     }
 

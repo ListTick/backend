@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NoteController {
 
   private final NoteService noteService;
-  private final String requestLogTemplate = "Received request, method: {}, context path: /api/expense{}, body {}";
+  private final String requestLogTemplate = "Received request, method: {}, context path: /api/notes{}, body {}";
 
 
   @GetMapping("/{id}")

@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.pro.list_tick.bucket_list.exception.BucketListException;
 import com.pro.list_tick.bucket_list.service.BLItemService;
 import com.pro.list_tick.bucket_list.service.BucketListService;
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.bucket_list.dto.ItemRequestDTO;
 import com.pro.list_tick.bucket_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.bucket_list.dto.ItemResponseDTO;
@@ -28,7 +28,7 @@ public class BLItemServiceImpl implements BLItemService {
 
     private final BLItemRepository itemRepository;
 
-    private final CurrentAccountService accountService;
+    private final CurrentAccountAPI accountService;
     private final BucketListService bucketListService;
 
     public Item getById(UUID id) {

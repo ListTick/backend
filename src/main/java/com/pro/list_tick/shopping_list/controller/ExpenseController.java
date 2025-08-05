@@ -33,7 +33,7 @@ import java.util.UUID;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
-    private final String requestLogTemplate = "Received request, method: {}, context path: /api/expense{}, body {}";
+    private final String requestLogTemplate = "Received request, method: {}, context path: /api/expenses{}, body {}";
 
     @GetMapping
     public ResponseEntity<List<ExpenseResponseDTO>> getAllByAccountId() {

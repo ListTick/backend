@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.exception;
 
+import com.pro.list_tick.shared.AccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,6 @@ public class ShoppingListExceptionHandler {
 
     @ExceptionHandler(AccountException.class)
     public ResponseEntity<ErrorEntity> handleAccountException(AccountException ex) {
-        log.error(ex.toString());
-        var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
-        return ResponseEntity.status(ex.getHttpStatus()).body(error);
-    }
-
-    @ExceptionHandler(com.pro.list_tick.account.exception.AccountException.class)
-    public ResponseEntity<ErrorEntity> handleAccountException(com.pro.list_tick.account.exception.AccountException ex) {
         log.error(ex.toString());
         var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
         return ResponseEntity.status(ex.getHttpStatus()).body(error);

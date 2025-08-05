@@ -1,6 +1,6 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithResponseDto;
 import com.pro.list_tick.shopping_list.dto.ShoppingListResponseDTO;
@@ -32,7 +32,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
 
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
     private final SLCategoryService categoryService;
     private final SharedShoppingListService sharedShoppingListService;
 
@@ -41,7 +41,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         final var shoppingList = shoppingListRepository.findById(id)
             .orElseThrow(() -> new ShoppingListException(HttpStatus.NOT_FOUND, "Shopping list not found"));
 
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         if (!validateAccess(accountId, shoppingList) &&
             !validateSharedAccess(accountId, shoppingList)) {
             log.error("User doesn't have access to the shopping list: {}", shoppingList.getId());
@@ -51,7 +51,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     }
 
     public List<ShoppingListResponseDTO> getAllDTOByAccountId() {
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Getting all shopping lists for the accountId: {}", accountId);
 
         var shoppingLists = shoppingListRepository.findAllActiveByAccountId(accountId);
@@ -78,7 +78,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ShoppingListResponseDTO create(ShoppingListRequestDTO shoppingListRequestDTO) {
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Creating a shopping list for the account id: {}, name: {}",
             accountId, shoppingListRequestDTO.name());
 
@@ -118,7 +118,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ShoppingListResponseDTO update(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Updating the shopping list: {}", id);
         var shoppingList = getById(id);
 
@@ -139,7 +139,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Transactional(transactionManager = "shoppingListTransactionManager")
     public ShoppingListResponseDTO updateByFields(UUID id, ShoppingListRequestUpdateDTO shoppingListRequestUpdateDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Updating the shopping list by fields: {}", id);
         var shoppingList = getById(id);
         if (Objects.nonNull(shoppingListRequestUpdateDTO.name())) {
@@ -162,7 +162,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         final var shoppingList = shoppingListRepository.findById(id)
             .orElseThrow(() -> new ShoppingListException(String.format("Shopping list not found: %s", id)));
 
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         validateAccess(accountId, shoppingList);
         shoppingListRepository.delete(shoppingList);
     }
@@ -198,7 +198,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     }
 
     private List<AccountSharedWithResponseDto> getSharedWithAccounts(ShoppingList shoppingList) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         return shoppingList.getSharedShoppingLists()
             .stream()
             .map(list -> {

@@ -3,7 +3,7 @@ package com.pro.list_tick.shopping_list.service.implementation;
 import java.util.List;
 import java.util.UUID;
 
-import com.pro.list_tick.shared.api.AccountAPI;
+import com.pro.list_tick.shared.AccountAPI;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;

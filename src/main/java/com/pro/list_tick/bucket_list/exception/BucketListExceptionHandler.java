@@ -2,6 +2,7 @@ package com.pro.list_tick.bucket_list.exception;
 
 import java.util.Objects;
 
+import com.pro.list_tick.shared.AccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(basePackages = "com.pro.list_tick.bucket_list")
 @Slf4j
 public class BucketListExceptionHandler {
-
-    @ExceptionHandler(com.pro.list_tick.account.exception.AccountException.class)
-    public ResponseEntity<ErrorEntity> handleAccountException(com.pro.list_tick.account.exception.AccountException ex) {
-        log.error(ex.toString());
-        var error = new ErrorEntity(ex.getHttpStatus(), ex.getMessage());
-        return ResponseEntity.status(ex.getHttpStatus()).body(error);
-    }
 
     @ExceptionHandler(AccountException.class)
     public ResponseEntity<ErrorEntity> handleAccountException(AccountException ex) {
