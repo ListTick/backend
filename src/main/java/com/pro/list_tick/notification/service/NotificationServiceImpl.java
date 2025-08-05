@@ -49,12 +49,10 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Transactional(transactionManager = "notificationTransactionManager")
   public void create(Notification notification) {
-    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Creating a notification for the accountId: {}, description: {}",
-        accountId, notification.getDescription());
+        notification.getAccountId(), notification.getDescription());
 
     notification.setAcknowledged(Boolean.FALSE);
-    notification.setAccountId(accountId);
 
     var savedNotification = notificationRepository.save(notification);
     log.info("The notification has been created: {}", savedNotification.getId());
@@ -62,22 +60,18 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Transactional(transactionManager = "notificationTransactionManager")
   public void delete(UUID id) {
-    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Deleting the notification: {}", id);
     final var notification = getById(id);
 
-    validateOwnership(notification, accountId);
     notificationRepository.delete(notification);
     log.info("Notification has been deleted: {}", notification.getId());
   }
 
   @Transactional(transactionManager = "notificationTransactionManager")
   public NotificationResponseDTO acknowledge(UUID id) {
-    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Acknowledging the notification: {}", id);
 
     final var notification = getById(id);
-    validateOwnership(notification, accountId);
     notification.setAcknowledged(Boolean.TRUE);
 
     var savedNotification = notificationRepository.save(notification);

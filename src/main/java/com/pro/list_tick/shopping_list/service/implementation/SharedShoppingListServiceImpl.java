@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.pro.list_tick.shared.AccountAPI;
+import com.pro.list_tick.shared.NotificationAPI;
 import com.pro.list_tick.shopping_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.shopping_list.exception.ShoppingListException;
 import com.pro.list_tick.shopping_list.model.SharedShoppingList;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class SharedShoppingListServiceImpl implements SharedShoppingListService {
 
   private final AccountAPI accountAPI;
+  private final NotificationAPI notificationAPI;
   private final SharedShoppingListRepository sharedShoppingListRepository;
 
   public List<SharedShoppingList> findAllActiveByAccountId(UUID accountId) {
@@ -53,6 +55,12 @@ public class SharedShoppingListServiceImpl implements SharedShoppingListService 
           SharedShoppingList shared = new SharedShoppingList();
           shared.setShoppingListAndAccount(shoppingList, accountId);
           shared.setCostFactor(accountSharedWithRequestDto.costFactor());
+          notificationAPI.create(
+              shoppingList.getId(),
+              shoppingList.getClass().getSimpleName(),
+              "You have been added to the shared shopping list: " + shoppingList.getName(),
+              accountId
+          );
           return sharedShoppingListRepository.save(shared);
         }).toList();
   }

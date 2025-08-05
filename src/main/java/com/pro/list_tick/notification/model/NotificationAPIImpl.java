@@ -13,17 +13,14 @@ public class NotificationAPIImpl implements NotificationAPI {
 
   private final NotificationService notificationService;
 
-  @Override
-  public void create(UUID objectId, String objectClass, String description) {
+
+  public void create(UUID objectId, String objectClass, String description, UUID accountId) {
     Notification notification = new Notification();
 
-    if (notification.getObjectId() != null) {
-      notification.setObjectId(objectId);
-    }
-    if (notification.getObjectClass() != null) {
-      notification.setObjectClass(objectClass);
-    }
+    notification.setObjectId(objectId);
+    notification.setObjectClass(objectClass);
     notification.setDescription(description);
+    notification.setAccountId(accountId);
 
     notificationService.create(notification);
   }

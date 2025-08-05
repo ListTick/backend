@@ -6,6 +6,6 @@ import org.springframework.lang.Nullable;
 
 public interface NotificationAPI {
 
-  void create(@Nullable UUID objectId, @Nullable String objectClass, String description);
+  void create(@Nullable UUID objectId, @Nullable String objectClass, String description, UUID accountId);
 
 }
