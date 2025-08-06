@@ -1,0 +1,15 @@
+name: Deploy to AWS EC2
+on:
+  push:
+    branches:
+      - main
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deploy repo
+        run: |
+          curl -X POST https://api.github.com/repos/listtick/deployment/actions/workflows/deploy.yml/dispatches \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+          -d '{"ref":"main"}'
