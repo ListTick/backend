@@ -29,5 +29,7 @@ services:
       dockerfile: Dockerfile.listtick-local
     image: listtick-backend-image
     container_name: listtick-backend
+    ports:
+      - "8080:8080"
     networks:
       - listtick-network
