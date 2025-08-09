@@ -30,16 +30,19 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getTasks(
-            @RequestParam(required = false) String tag
+            @RequestParam(required = false) UUID tagId
     ) {
-        List<TaskResponseDto> taskResponseDto = taskService.getTasks(tag);
+        List<TaskResponseDto> taskResponseDto = taskService.getTasks(tagId);
 
         return ResponseEntity.ok(taskResponseDto);
     }
 
     @GetMapping("/archive")
-    public ResponseEntity<TaskPageDto> getArchivedTasks(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
-        TaskPageDto taskResponseDto = taskService.getArchivedTasks(pageable);
+    public ResponseEntity<TaskPageDto> getArchivedTasks(
+            @PageableDefault(size = 20, sort = "name") Pageable pageable,
+            @RequestParam(required = false) UUID tagId
+    ) {
+        TaskPageDto taskResponseDto = taskService.getArchivedTasks(pageable, tagId);
 
         return ResponseEntity.ok(taskResponseDto);
     }

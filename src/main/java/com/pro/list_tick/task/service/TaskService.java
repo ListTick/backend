@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public interface TaskService {
     TaskResponseDto createTask(TaskRequestDto taskRequestDto);
-    List<TaskResponseDto> getTasks(String tag);
-    TaskPageDto getArchivedTasks(Pageable pageable);
+    List<TaskResponseDto> getTasks(UUID tagId);
+    TaskPageDto getArchivedTasks(Pageable pageable, UUID tagId);
     TaskResponseDto updateTask(TaskRequestDto taskRequestDto, UUID taskId);
     void softDeleteTask(UUID taskId);
     TaskResponseDto updateCompletedPomodoros(Integer completedPomodoros, UUID taskId);

@@ -27,36 +27,33 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query(
             "SELECT t " +
             "FROM Task t " +
+            "LEFT JOIN Tag tg " +
+            "ON t.tag.id = tg.id " +
+            "WHERE t.accountId = :accountId " +
+            "AND tg.id = :tagId " +
+            "AND (t.isDeleted = false) " +
+            "ORDER BY t.createdAt ASC"
+    )
+    List<Task> findAllNotDeletedByAccountIdAndTag(UUID accountId, UUID tagId);
+
+    @Query(
+            "SELECT t " +
+            "FROM Task t " +
             "WHERE t.accountId = :accountId " +
             "AND (t.isDeleted = true)" +
             "ORDER BY t.createdAt DESC"
     )
     Page<Task> findAllArchivedByAccountId(UUID accountId, Pageable pageable);
 
-//    @Query(
-//            "SELECT t " +
-//            "FROM Task  t " +
-//            "LEFT JOIN TaskTag tt " +
-//            "ON t.id = tt.taskId " +
-//            "LEFT JOIN Tag tg " +
-//            "ON tt.tagId = tg.id " +
-//            "WHERE t.account.id = :accountId " +
-//            "AND (t.isDeleted = false) " +
-//            "AND (tg.name IN :tasks)"
-//    )
-//    List<Task> findAllNotDeletedByAccountIdAndTag(UUID accountId, List<String> tasks);
-
-//    @Query(
-//            "SELECT t " +
-//                    "FROM Task  t " +
-//                    "LEFT JOIN TaskTag tt " +
-//                    "ON t.id = tt.taskId " +
-//                    "LEFT JOIN Tag tg " +
-//                    "ON tt.tagId = tg.id " +
-//                    "WHERE t.account.id = :accountId " +
-//                    "AND (tg.name IN :tasks)"
-//    )
-//    List<Task> findAllByAccountIdAndTags(UUID accountId, List<String> tasks);
+    @Query(
+            "SELECT t " +
+            "FROM Task t " +
+            "WHERE t.accountId = :accountId " +
+            "AND t.tag.id = :tagId " +
+            "AND (t.isDeleted = true)" +
+            "ORDER BY t.createdAt DESC"
+    )
+    Page<Task> findAllArchivedByAccountIdAndTag(UUID accountId, Pageable pageable, UUID tagId);
 
     @Modifying
     @Transactional

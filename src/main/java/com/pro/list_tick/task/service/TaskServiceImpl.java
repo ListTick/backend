@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,19 +43,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public List<TaskResponseDto> getTasks(String tag) {
+    public List<TaskResponseDto> getTasks(UUID tagId) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
-        //todo: add tag
+        List<Task> tasks;
+        if (tagId == null) {
+            tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
+        } else {
+            tasks = taskRepository.findAllNotDeletedByAccountIdAndTag(currentAccountId, tagId);
+        }
 
         return tasks.stream().map(TaskMapper::toDto).toList();
     }
 
 
     @Transactional
-    public TaskPageDto getArchivedTasks(Pageable pageable) {
+    public TaskPageDto getArchivedTasks(Pageable pageable, UUID tagId) {
         UUID currentAccountId = currentAccountService.getCurrentAccountId();
-        Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
+        Page<Task> tasksPage;
+
+        if (tagId == null) {
+            tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
+        } else {
+            tasksPage = taskRepository.findAllArchivedByAccountIdAndTag(currentAccountId, pageable, tagId);
+        }
 
         List<TaskResponseDto> tasks =  tasksPage
                 .getContent()
