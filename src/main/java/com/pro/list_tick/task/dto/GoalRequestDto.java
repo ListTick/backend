@@ -8,11 +8,10 @@ import java.time.LocalDate;
 
 public record GoalRequestDto(
 
-        @NotBlank(message = "Name cannot be blank")
         @Size(min = 1, max = 255, message = "Name should be between 1 and 255 characters")
         String name,
 
-        @Size(max = 255, message = "Description should be at most 255 characters")
+        @Size(max = 512, message = "Description should be at most 512 characters")
         String description,
         Integer priority,
 
