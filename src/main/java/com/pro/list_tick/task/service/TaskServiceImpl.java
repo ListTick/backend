@@ -28,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         validateTaskRequest(taskRequestDto);
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public List<TaskResponseDto> getTasks(UUID tagId) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         List<Task> tasks;
         if (tagId == null) {
             tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
@@ -57,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public TaskPageDto getArchivedTasks(Pageable pageable, UUID tagId) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         Page<Task> tasksPage;
 
         if (tagId == null) {
