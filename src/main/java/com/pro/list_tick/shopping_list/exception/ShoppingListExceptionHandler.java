@@ -1,5 +1,6 @@
 package com.pro.list_tick.shopping_list.exception;
 
+import com.pro.list_tick.shared.AccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

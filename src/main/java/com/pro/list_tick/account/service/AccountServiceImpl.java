@@ -1,11 +1,11 @@
 package com.pro.list_tick.account.service;
 
 import com.pro.list_tick.account.dto.AccountSettingsInputDto;
-import com.pro.list_tick.account.exception.AccountException;
 import com.pro.list_tick.account.model.settings.AccountSettings;
 import com.pro.list_tick.account.repository.settings.AccountSettingsRepository;
 import com.pro.list_tick.account.repository.keycloak.KeycloakRepository;
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.AccountException;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +23,7 @@ public class AccountServiceImpl implements AccountService {
   private final AccountSettingsRepository accountSettingsRepository;
   private final KeycloakRepository keycloakRepository;
 
-  private final CurrentAccountService currentAccountService;
+  private final CurrentAccountAPI currentAccountAPI;
 
   private static final String ERROR_LOG_TEMPLATE = "{} for the accountId: {}";
 
@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Integer getDefaultPomodoroDuration() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default pomodoro duration for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultPomodoroDuration(accountId)
@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Integer getDefaultPomodoroBreakDuration() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default pomodoro break duration for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultPomodoroBreakDuration(accountId)
@@ -76,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Integer getDefaultPomodoroLongBreakDuration() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default pomodoro long break duration for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultPomodoroLongBreakDuration(accountId)
@@ -88,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Integer getDefaultPomodoroLongBreakInterval() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default pomodoro long break interval for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultPomodoroLongBreakInterval(accountId)
@@ -100,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Integer getDefaultNotificationBreakReminderTime() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default notification break reminder time for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultNotificationBreakReminderTime(accountId)
@@ -112,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Boolean getLongBreakEnabled() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a long break enabled for the accountId: {}", accountId);
 
     return accountSettingsRepository.findLongBreakEnabled(accountId)
@@ -124,7 +124,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public String getDefaultTaskTagColour() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default task tag colour for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultTaskTagColour(accountId)
@@ -136,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public String getDefaultNoteTagColour() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default note tag colour for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultNoteTagColour(accountId)
@@ -148,7 +148,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public String getDefaultGoalCategoryColour() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default goal category colour for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultGoalCategoryColour(accountId)
@@ -160,7 +160,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public String getDefaultShoppingListCategoryColour() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default shopping list category colour for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultShoppingListCategoryColour(accountId)
@@ -172,7 +172,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public String getDefaultBucketListCategoryColour() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a default bucket list category colour for the accountId: {}", accountId);
 
     return accountSettingsRepository.findDefaultBucketListCategoryColour(accountId)
@@ -184,7 +184,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public AccountSettings getAccountSettings() {
-    final UUID accountId = currentAccountService.getCurrentAccountId();
+    final UUID accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting account settings for the accountId: {}", accountId);
 
     return accountSettingsRepository.findById(accountId)

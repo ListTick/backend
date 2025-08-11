@@ -9,7 +9,7 @@ import com.pro.list_tick.bucket_list.repository.BucketListRepository;
 import com.pro.list_tick.bucket_list.service.BLCategoryService;
 import com.pro.list_tick.bucket_list.service.SharedBucketListService;
 import com.pro.list_tick.bucket_list.service.BucketListService;
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.bucket_list.dto.AccountSharedWithResponseDto;
 import com.pro.list_tick.bucket_list.dto.BucketListRequestDTO;
 import com.pro.list_tick.bucket_list.dto.BucketListRequestUpdateDTO;
@@ -31,7 +31,7 @@ public class BucketListServiceImpl implements BucketListService {
 
     private final BucketListRepository bucketListRepository;
 
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
     private final BLCategoryService categoryService;
     private final SharedBucketListService sharedBucketListService;
 
@@ -40,7 +40,7 @@ public class BucketListServiceImpl implements BucketListService {
         final var bucketList = bucketListRepository.findById(id)
             .orElseThrow(() -> new BucketListException(HttpStatus.NOT_FOUND, "Bucket list not found"));
 
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         if (!validateAccess(accountId, bucketList) &&
             !validateSharedAccess(accountId, bucketList)) {
             log.error("User doesn't have access to the bucket list: {}", bucketList.getId());
@@ -50,7 +50,7 @@ public class BucketListServiceImpl implements BucketListService {
     }
 
     public List<BucketListResponseDTO> getAllDTOByAccountId() {
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Getting all bucket lists for the accountId: {}", accountId);
 
         var bucketLists = bucketListRepository.findAllActiveByAccountId(accountId);
@@ -77,7 +77,7 @@ public class BucketListServiceImpl implements BucketListService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public BucketListResponseDTO create(BucketListRequestDTO bucketListRequestDTO) {
-        final var accountId = currentAccountService.getCurrentAccountId();
+        final var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Creating a bucket list for the account id: {}, name: {}",
             accountId, bucketListRequestDTO.name());
 
@@ -90,7 +90,7 @@ public class BucketListServiceImpl implements BucketListService {
         bucketList.setCategory(category);
         bucketList.setItems(new ArrayList<>());
         bucketList.setSharedBucketLists(new ArrayList<>());
-        
+
         var savedBucketList = bucketListRepository.save(bucketList);
 
         if (bucketListRequestDTO.shared()) {
@@ -113,7 +113,7 @@ public class BucketListServiceImpl implements BucketListService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public BucketListResponseDTO update(UUID id, BucketListRequestUpdateDTO bucketListRequestUpdateDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Updating the bucket list: {}", id);
         var bucketList = getById(id);
 
@@ -134,7 +134,7 @@ public class BucketListServiceImpl implements BucketListService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public BucketListResponseDTO updateByFields(UUID id, BucketListRequestUpdateDTO bucketListRequestUpdateDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.info("Updating the bucket list by fields: {}", id);
         var bucketList = getById(id);
         if (Objects.nonNull(bucketListRequestUpdateDTO.name())) {
@@ -157,7 +157,7 @@ public class BucketListServiceImpl implements BucketListService {
         final var bucketList = bucketListRepository.findById(id)
             .orElseThrow(() -> new BucketListException(String.format("Bucket list not found: %s", id)));
 
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         validateAccess(accountId, bucketList);
         bucketListRepository.delete(bucketList);
     }
@@ -176,7 +176,7 @@ public class BucketListServiceImpl implements BucketListService {
     }
 
     private List<AccountSharedWithResponseDto> getSharedWithAccounts(BucketList bucketList) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         return bucketList.getSharedBucketLists()
             .stream()
             .map(list -> {
