@@ -1,12 +1,10 @@
 package com.pro.list_tick.task.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record TagRequestDto(
 
-        @NotBlank(message = "Name cannot be blank")
         @Size(min = 1, max = 255, message = "Name should be between 1 and 255 characters")
         String name,
 

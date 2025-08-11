@@ -1,17 +1,18 @@
 package com.pro.list_tick.task.dto;
 
+import com.pro.list_tick.task.validation.ValidPomodoroFields;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+@ValidPomodoroFields
 public record TaskRequestDto(
 
-        @NotBlank
         @Size(min = 1, max = 255, message = "Task name should be between 1 and 255 characters")
         String name,
 
-        @Min(value = 1, message = "There should be at least 1 pomodoro")
+        @Min(value = 1, message = "There should be at least 1 total pomodoro")
         Integer totalPomodoros,
 
         @PositiveOrZero(message = "Completed pomodoros should not be negative")

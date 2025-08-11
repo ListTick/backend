@@ -3,6 +3,7 @@ package com.pro.list_tick.task.controller;
 import com.pro.list_tick.task.dto.TagRequestDto;
 import com.pro.list_tick.task.dto.TagResponseDto;
 import com.pro.list_tick.task.service.TagService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class TagController {
     private final TagService tagService;
 
     @PostMapping
-    public ResponseEntity<TagResponseDto> createTag(@RequestBody TagRequestDto tagRequestDto) {
+    public ResponseEntity<TagResponseDto> createTag(@RequestBody @Valid TagRequestDto tagRequestDto) {
         TagResponseDto tagResponseDto = tagService.createTag(tagRequestDto);
 
         return ResponseEntity.ok(tagResponseDto);

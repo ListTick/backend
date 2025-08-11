@@ -3,6 +3,7 @@ package com.pro.list_tick.security;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -65,6 +66,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Profile("dev")
     public JwtDecoder jwtDecoder() {
         String jwkSetUri = "http://listtick-keycloak:8080/realms/listtick/protocol/openid-connect/certs";
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
@@ -90,7 +92,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173," +
+                        "https://ec2-56-228-2-97.eu-north-1.compute.amazonaws.com")
+        );
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

@@ -1,6 +1,6 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.shopping_list.dto.ItemRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ItemRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ItemResponseDTO;
@@ -29,7 +29,7 @@ public class SLItemServiceImpl implements SLItemService {
 
     private final SLItemRepository itemRepository;
 
-    private final CurrentAccountService accountService;
+    private final CurrentAccountAPI accountService;
     private final ShoppingListService shoppingListService;
 
     public Item getById(UUID id) {

@@ -6,10 +6,11 @@ import java.util.UUID;
 import com.pro.list_tick.bucket_list.model.SharedBucketList;
 import com.pro.list_tick.bucket_list.repository.SharedBucketListRepository;
 import com.pro.list_tick.bucket_list.service.SharedBucketListService;
-import com.pro.list_tick.shared.api.AccountAPI;
+import com.pro.list_tick.shared.AccountAPI;
 import com.pro.list_tick.bucket_list.dto.AccountSharedWithRequestDto;
 import com.pro.list_tick.bucket_list.exception.BucketListException;
 import com.pro.list_tick.bucket_list.model.BucketList;
+import com.pro.list_tick.shared.NotificationAPI;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class SharedBucketListServiceImpl implements SharedBucketListService {
 
   private final AccountAPI accountAPI;
+  private final NotificationAPI notificationAPI;
   private final SharedBucketListRepository sharedBucketListRepository;
 
   public List<SharedBucketList> findAllActiveByAccountId(UUID accountId) {
@@ -34,7 +36,7 @@ public class SharedBucketListServiceImpl implements SharedBucketListService {
   public List<SharedBucketList> createSharedBucketLists(BucketList bucketList,
                                                           List<AccountSharedWithRequestDto> sharedWithAccounts) {
     if (sharedWithAccounts == null || sharedWithAccounts.isEmpty()) {
-      var errorMessage = "'sharedWithAccounts' cannot be null or empty while 'shared' is set to true";
+      var errorMessage = "Shared with user's data has to be fulfilled.";
       log.error(errorMessage);
       throw new BucketListException(HttpStatus.BAD_REQUEST, errorMessage);
     }
@@ -52,6 +54,11 @@ public class SharedBucketListServiceImpl implements SharedBucketListService {
           }
           SharedBucketList shared = new SharedBucketList();
           shared.setBucketListAndAccount(bucketList, accountId);
+          notificationAPI.create(
+              bucketList.getId(),
+              bucketList.getClass().getSimpleName(),
+              "You have been added to the shared bucket list: " + bucketList.getName(),
+              accountId);
           return sharedBucketListRepository.save(shared);
         }).toList();
   }

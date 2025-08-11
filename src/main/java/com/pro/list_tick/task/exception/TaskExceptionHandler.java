@@ -48,8 +48,13 @@ public class TaskExceptionHandler {
                         fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "Invalid value",
                         (msg1, msg2) -> msg1
                 ));
-        log.error("{} Validation error occurred: {}", TASK_ERROR, errors);
 
+        // Add global (object) errors
+        ex.getBindingResult().getGlobalErrors().forEach(error -> {
+            errors.put(error.getObjectName(), error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid value");
+        });
+
+        log.error("{} Validation error occurred: {}", TASK_ERROR, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
