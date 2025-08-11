@@ -12,6 +12,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://ec2-56-228-2-97.eu-north-1.compute.amazonaws.com/auth/realms/listtick
 
 datasource:
   database:
