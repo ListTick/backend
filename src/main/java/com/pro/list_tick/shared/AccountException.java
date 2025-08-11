@@ -1,4 +1,4 @@
-package com.pro.list_tick.shopping_list.exception;
+package com.pro.list_tick.shared;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -10,7 +10,7 @@ public class AccountException extends RuntimeException {
 
     private final HttpStatus httpStatus;
 
-    public AccountException(String message, HttpStatus httpStatus) {
+    public AccountException(HttpStatus httpStatus, String message) {
         super(message);
         this.httpStatus = httpStatus;
     }

@@ -1,6 +1,6 @@
 package com.pro.list_tick.account.service;
 
-import com.pro.list_tick.shared.api.AccountAPI;
+import com.pro.list_tick.shared.AccountAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

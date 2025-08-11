@@ -1,6 +1,6 @@
 package com.pro.list_tick.task.service;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.task.dto.GoalRequestDto;
 import com.pro.list_tick.task.dto.GoalResponseDto;
 import com.pro.list_tick.task.mapper.GoalMapper;
@@ -16,11 +16,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GoalServiceImpl implements GoalService {
     private final GoalRepository goalRepository;
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
 
     @Override
     public List<GoalResponseDto> getAllGoals() {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         List<Goal> goals = goalRepository.findAllByAccountId(currentAccountId);
 
         return goals.stream().map(GoalMapper::toDto).toList();
@@ -36,7 +36,7 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public GoalResponseDto createGoal(GoalRequestDto goalRequestDto) {
-        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         Goal goal = GoalMapper.toEntity(goalRequestDto, currentAccountId);
 
         goalRepository.save(goal);

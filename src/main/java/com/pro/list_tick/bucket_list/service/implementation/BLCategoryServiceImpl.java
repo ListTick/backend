@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import com.pro.list_tick.bucket_list.repository.BLCategoryRepository;
 import com.pro.list_tick.bucket_list.service.BLCategoryService;
-import com.pro.list_tick.shared.api.AccountAPI;
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.AccountAPI;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.bucket_list.dto.CategoryRequestDTO;
 import com.pro.list_tick.bucket_list.dto.CategoryResponseDTO;
 import com.pro.list_tick.bucket_list.exception.CategoryException;
@@ -26,14 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class BLCategoryServiceImpl implements BLCategoryService {
 
     private final AccountAPI accountAPI;
-    private final CurrentAccountService currentAccountService;
+    private final CurrentAccountAPI currentAccountAPI;
 
     private final BLCategoryRepository categoryRepository;
 
     private static final UUID SHARED_CATEGORY_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
 
     public Category getById(UUID id) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Getting a bucket list category by the accountId: {}", accountId);
 
         var category = categoryRepository.findById(id)
@@ -47,7 +47,7 @@ public class BLCategoryServiceImpl implements BLCategoryService {
     }
 
     public List<CategoryResponseDTO> getAllDTOByAccountId() {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Getting all bucket list categories by the accountId: {}", accountId);
 
         var categories = categoryRepository.findAllByAccountId(accountId);
@@ -59,7 +59,7 @@ public class BLCategoryServiceImpl implements BLCategoryService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public CategoryResponseDTO create(CategoryRequestDTO categoryRequestDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Creating a bucket list category for the accountId: {}, category name: {}",
                 accountId, categoryRequestDTO.name());
 
@@ -78,7 +78,7 @@ public class BLCategoryServiceImpl implements BLCategoryService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public CategoryResponseDTO update(UUID id, CategoryRequestDTO categoryRequestDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Updating the category: {}, for the accountId: {}", id, accountId);
 
         var category = getById(id);
@@ -99,7 +99,7 @@ public class BLCategoryServiceImpl implements BLCategoryService {
 
     @Transactional(transactionManager = "bucketListTransactionManager")
     public CategoryResponseDTO updateByFields(UUID id, CategoryRequestDTO categoryRequestDTO) {
-        var accountId = currentAccountService.getCurrentAccountId();
+        var accountId = currentAccountAPI.getCurrentAccountId();
         log.debug("Updating by fields the category: {}, for the accountId: {}", id, accountId);
 
         var category = getById(id);

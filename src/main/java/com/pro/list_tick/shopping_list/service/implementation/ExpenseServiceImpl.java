@@ -1,6 +1,6 @@
 package com.pro.list_tick.shopping_list.service.implementation;
 
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseRequestUpdateDTO;
 import com.pro.list_tick.shopping_list.dto.ExpenseResponseDTO;
@@ -37,7 +37,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final SLItemService itemService;
     private final ShoppingListService shoppingListService;
-    private final CurrentAccountService accountService;
+    private final CurrentAccountAPI accountService;
     private final ExpenseShareService expenseShareService;
 
 

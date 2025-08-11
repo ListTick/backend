@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.pro.list_tick.shared.NotificationAPI;
 import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
 import com.pro.list_tick.shopping_list.mapper.ExpenseMapper;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ExpenseShareServiceImpl implements ExpenseShareService {
 
+  private final NotificationAPI notificationAPI;
   private ExpenseShareRepository expenseShareRepository;
 
 
@@ -65,6 +67,13 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
       share.setAccountId(entry.getKey());
       share.setExpense(expense);
 
+      notificationAPI.create(
+          expense.getId(),
+          expense.getClass().getSimpleName(),
+          "The shared expense has been added. Your share equals: " + share.getAmount() + " " + share.getCurrency(),
+          share.getAccountId()
+      );
+
       var savedShare = expenseShareRepository.save(share);
       expenseShares.add(savedShare);
     }
@@ -85,6 +94,14 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
     log.debug("Reimbursing the expense: {}", id);
     ExpenseShare expenseShare = getById(id);
     expenseShare.setReimbursed(Boolean.TRUE);
+
+    final var expense = expenseShare.getExpense();
+    notificationAPI.create(
+        expense.getId(),
+        expense.getClass().getSimpleName(),
+        "You have been reimbursed " + expenseShare.getAmount() + " " + expenseShare.getCurrency() +  " for a shared expense.",
+        expense.getShoppingList().getAccountId()
+    );
 
     var reimbursedSharedExpense = expenseShareRepository.save(expenseShare);
     log.info("The share expense has been reimbursed: {}", expenseShare);

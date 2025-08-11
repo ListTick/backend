@@ -11,7 +11,7 @@ import com.pro.list_tick.note.exception.NoteException;
 import com.pro.list_tick.note.mapper.NoteMapper;
 import com.pro.list_tick.note.model.Note;
 import com.pro.list_tick.note.repository.NoteRepository;
-import com.pro.list_tick.shared.current_user.CurrentAccountService;
+import com.pro.list_tick.shared.CurrentAccountAPI;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoteServiceImpl implements NoteService {
 
   private final NoteRepository noteRepository;
-  private final CurrentAccountService currentAccountService;
+  private final CurrentAccountAPI currentAccountAPI;
 
   public Note getById(UUID id) {
-    var accountId = currentAccountService.getCurrentAccountId();
+    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting a note by the id: {}", id);
 
     var note = noteRepository.findById(id)
@@ -41,7 +41,7 @@ public class NoteServiceImpl implements NoteService {
   }
 
   public List<NoteResponseDTO> getAllByAccountId() {
-    var accountId = currentAccountService.getCurrentAccountId();
+    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Getting all notes by the accountId: {}", accountId);
 
     return noteRepository.findAllByAccountId(accountId)
@@ -52,7 +52,7 @@ public class NoteServiceImpl implements NoteService {
 
   @Transactional(transactionManager = "noteTransactionManager")
   public NoteResponseDTO create(NoteRequestDTO noteRequestDTO) {
-    var accountId = currentAccountService.getCurrentAccountId();
+    var accountId = currentAccountAPI.getCurrentAccountId();
     log.debug("Creating a note for the accountId: {}, note title: {}",
         accountId, noteRequestDTO.title());
 
@@ -68,7 +68,7 @@ public class NoteServiceImpl implements NoteService {
 
   @Transactional(transactionManager = "noteTransactionManager")
   public NoteResponseDTO updateByFields(UUID id, NoteRequestDTO noteRequestDTO) {
-    var accountId = currentAccountService.getCurrentAccountId();
+    var accountId = currentAccountAPI.getCurrentAccountId();
     log.info("Updating the note by fields: {}", id);
 
     var note = getById(id);

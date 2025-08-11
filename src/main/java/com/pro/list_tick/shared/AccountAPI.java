@@ -1,4 +1,4 @@
-package com.pro.list_tick.shared.api;
+package com.pro.list_tick.shared;
 
 import java.util.UUID;
 

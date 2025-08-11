@@ -2,6 +2,7 @@ package com.pro.list_tick.bucket_list.exception;
 
 import java.util.Objects;
 
+import com.pro.list_tick.shared.AccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
