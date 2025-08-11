@@ -28,8 +28,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
-        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
-
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        validateTaskRequest(taskRequestDto);
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
         if (taskRequestDto.tagId() != null) {
@@ -42,19 +42,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public List<TaskResponseDto> getTasks(String tag) {
-        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
-        List<Task> tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
-        //todo: add tag
+    public List<TaskResponseDto> getTasks(UUID tagId) {
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        List<Task> tasks;
+        if (tagId == null) {
+            tasks = taskRepository.findAllNotDeletedByAccountId(currentAccountId);
+        } else {
+            tasks = taskRepository.findAllNotDeletedByAccountIdAndTag(currentAccountId, tagId);
+        }
 
         return tasks.stream().map(TaskMapper::toDto).toList();
     }
 
 
     @Transactional
-    public TaskPageDto getArchivedTasks(Pageable pageable) {
-        UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
-        Page<Task> tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
+    public TaskPageDto getArchivedTasks(Pageable pageable, UUID tagId) {
+        UUID currentAccountId = currentAccountService.getCurrentAccountId();
+        Page<Task> tasksPage;
+
+        if (tagId == null) {
+            tasksPage = taskRepository.findAllArchivedByAccountId(currentAccountId, pageable);
+        } else {
+            tasksPage = taskRepository.findAllArchivedByAccountIdAndTag(currentAccountId, pageable, tagId);
+        }
 
         List<TaskResponseDto> tasks =  tasksPage
                 .getContent()
@@ -132,5 +142,20 @@ public class TaskServiceImpl implements TaskService {
     private Task findTaskById(UUID taskId) {
         return taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task doesn't exist!"));
+    }
+
+    private void validateTaskRequest(TaskRequestDto taskRequestDto) {
+        if (hasPomodoroDurationOrBreakDuration(taskRequestDto) && !hasCompletedPomodorosAndTotalPomodoros(taskRequestDto)) {
+            throw new IllegalArgumentException("If pomodoro or break duration is set, " +
+                    "both completed and total pomodoros must be provided.");
+        }
+    }
+
+    private boolean hasPomodoroDurationOrBreakDuration(TaskRequestDto taskRequestDto) {
+        return taskRequestDto.pomodoroDuration() != null || taskRequestDto.breakDuration() != null;
+    }
+
+    private boolean hasCompletedPomodorosAndTotalPomodoros(TaskRequestDto taskRequestDto) {
+        return taskRequestDto.completedPomodoros() == null && taskRequestDto.totalPomodoros() == null;
     }
 }

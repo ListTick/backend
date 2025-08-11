@@ -6,10 +6,10 @@ services:
   keycloak:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.keycloak
+    image: listtick-keycloak-image
+    container_name: listtick-keycloak
     command: start-dev
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "8090:8080"
     environment:
@@ -21,5 +21,15 @@ services:
       KC_DB_PASSWORD: admin
       KEYCLOAK_EVENTS_ENABLED: "true"
       KC_SPI_EVENTS_LISTENER: "custom-registration-listener"
+    networks:
+      - listtick-network
+  listtick:
+    build:
+      context: .
+      dockerfile: Dockerfile.listtick-local
+    image: listtick-backend-image
+    container_name: listtick-backend
+    ports:
+      - "8080:8080"
     networks:
       - listtick-network

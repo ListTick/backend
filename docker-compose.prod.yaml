@@ -1,0 +1,33 @@
+networks:
+  listtick-network:
+    external: true
+
+services:
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
+    image: listtick-keycloak-image
+    container_name: listtick-keycloak
+    command: start-dev
+    ports:
+      - "8090:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://listtick-db:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: admin
+      KEYCLOAK_EVENTS_ENABLED: "true"
+      KC_SPI_EVENTS_LISTENER: "custom-registration-listener"
+    networks:
+      - listtick-network
+  listtick:
+    build:
+      context: .
+      dockerfile: Dockerfile.listtick
+    image: listtick-backend-image
+    container_name: listtick-backend
+    networks:
+      - listtick-network
