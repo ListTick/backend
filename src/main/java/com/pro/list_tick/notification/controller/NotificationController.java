@@ -44,7 +44,7 @@ public class NotificationController {
     return ResponseEntity.ok(notifications);
   }
 
-  @PatchMapping("/{id}")
+  @PatchMapping("/{id}/acknowledge")
   public ResponseEntity<NotificationResponseDTO> acknowledge(@PathVariable UUID id) {
     log.debug(String.format(requestLogTemplate),
         "GET", id, "");
