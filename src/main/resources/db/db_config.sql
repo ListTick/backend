@@ -1,19 +1,17 @@
 -- DB Version: 17
 -- OS Type: linux
 -- DB Type: web
--- Total Memory (RAM): 8 GB
--- CPUs num: 4
--- Connections num: 100
+-- Total Memory (RAM): 2
 -- Data Storage: ssd
 
 ALTER SYSTEM SET
-    max_connections = '100';
+    max_connections = '200';
 ALTER SYSTEM SET
-    shared_buffers = '2GB';
+    shared_buffers = '512MB';
 ALTER SYSTEM SET
-    effective_cache_size = '6GB';
+    effective_cache_size = '1536MB';
 ALTER SYSTEM SET
-    maintenance_work_mem = '512MB';
+    maintenance_work_mem = '128MB';
 ALTER SYSTEM SET
     checkpoint_completion_target = '0.9';
 ALTER SYSTEM SET
@@ -25,18 +23,10 @@ ALTER SYSTEM SET
 ALTER SYSTEM SET
     effective_io_concurrency = '200';
 ALTER SYSTEM SET
-    work_mem = '20164kB';
+    work_mem = '2520kB';
 ALTER SYSTEM SET
     huge_pages = 'off';
 ALTER SYSTEM SET
     min_wal_size = '1GB';
 ALTER SYSTEM SET
     max_wal_size = '4GB';
-ALTER SYSTEM SET
-    max_worker_processes = '4';
-ALTER SYSTEM SET
-    max_parallel_workers_per_gather = '2';
-ALTER SYSTEM SET
-    max_parallel_workers = '4';
-ALTER SYSTEM SET
-    max_parallel_maintenance_workers = '2';
