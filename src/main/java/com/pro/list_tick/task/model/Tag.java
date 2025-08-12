@@ -28,7 +28,7 @@ public class Tag {
     @Column(name = "account_id", nullable = false)
     UUID accountId;
 
-    @Column
+    @Column(name = "is_deleted", nullable = false)
     boolean isDeleted;
 
     @Column(name = "created_at")
