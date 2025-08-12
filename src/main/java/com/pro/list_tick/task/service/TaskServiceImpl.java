@@ -29,7 +29,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
         UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
-        validateTaskRequest(taskRequestDto);
         Task task = TaskMapper.toEntity(taskRequestDto, currentAccountId);
 
         if (taskRequestDto.tagId() != null) {
@@ -142,20 +141,5 @@ public class TaskServiceImpl implements TaskService {
     private Task findTaskById(UUID taskId) {
         return taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task doesn't exist!"));
-    }
-
-    private void validateTaskRequest(TaskRequestDto taskRequestDto) {
-        if (hasPomodoroDurationOrBreakDuration(taskRequestDto) && !hasCompletedPomodorosAndTotalPomodoros(taskRequestDto)) {
-            throw new IllegalArgumentException("If pomodoro or break duration is set, " +
-                    "both completed and total pomodoros must be provided.");
-        }
-    }
-
-    private boolean hasPomodoroDurationOrBreakDuration(TaskRequestDto taskRequestDto) {
-        return taskRequestDto.pomodoroDuration() != null || taskRequestDto.breakDuration() != null;
-    }
-
-    private boolean hasCompletedPomodorosAndTotalPomodoros(TaskRequestDto taskRequestDto) {
-        return taskRequestDto.completedPomodoros() == null && taskRequestDto.totalPomodoros() == null;
     }
 }
