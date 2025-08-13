@@ -51,7 +51,7 @@ public class SLItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO) {
+    public ResponseEntity<ItemResponseDTO> createItem(@Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
                 "POST", "", itemRequestDTO);
         final var item = itemService.create(itemRequestDTO);
