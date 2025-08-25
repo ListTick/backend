@@ -51,7 +51,7 @@ public class BLItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO) {
+    public ResponseEntity<ItemResponseDTO> createItem(@Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         log.debug(String.format(requestLogTemplate),
                 "POST", "", itemRequestDTO);
         final var item = itemService.create(itemRequestDTO);
@@ -69,7 +69,7 @@ public class BLItemController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ItemResponseDTO> updateItemByFields(@PathVariable UUID id,
-                                                             @RequestBody ItemRequestUpdateDTO itemRequestUpdateDTO) {
+                                                             @Valid @RequestBody ItemRequestUpdateDTO itemRequestUpdateDTO) {
         log.debug(String.format(requestLogTemplate),
                 "PATCH", id, itemRequestUpdateDTO);
         final var item = itemService.updateByFields(id, itemRequestUpdateDTO);

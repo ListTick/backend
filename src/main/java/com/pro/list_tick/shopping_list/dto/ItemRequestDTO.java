@@ -2,6 +2,7 @@ package com.pro.list_tick.shopping_list.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -17,7 +18,7 @@ public record ItemRequestDTO (
     @Positive(message = "Value cannot be negative")
     Double value,
 
-    @NotBlank(message = "ShoppingListId cannot be blank")
+    @NotNull(message = "ShoppingListId cannot be null")
     UUID shoppingListId
 
 ) {

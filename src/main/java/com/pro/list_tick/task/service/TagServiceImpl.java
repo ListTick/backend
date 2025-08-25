@@ -24,13 +24,22 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagResponseDto createTag(TagRequestDto tagRequestDto) {
         UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
-        checkIfTagNameExists(tagRequestDto.name(), currentAccountId);
+
+         if (checkIfTagNameExists(tagRequestDto.name(), currentAccountId)) {
+             if (checkIfTagIsDeleted(tagRequestDto.name(), currentAccountId)) {
+                 Tag tag = undeleteTag(tagRequestDto.name(), currentAccountId);
+
+                 tagRepository.save(tag);
+                 return TagMapper.toDto(tag);
+             } else {
+                 throw new TagNameAlreadyUsedException("Tag name already exists");
+             }
+         }
 
         Tag tag = TagMapper.toEntity(tagRequestDto, currentAccountId);
         tagRepository.save(tag);
         return TagMapper.toDto(tag);
     }
-
     public List<TagResponseDto> getAllTags() {
         UUID currentAccountId = currentAccountAPI.getCurrentAccountId();
         List<Tag> tags = tagRepository.findAllByAccountId(currentAccountId);
@@ -58,14 +67,28 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public void deleteTag(UUID tagId) {
         Tag tag = getTagById(tagId);
+        tag.setDeleted(true);
 
-        tagRepository.delete(tag);
+        tagRepository.save(tag);
     }
 
-    private void checkIfTagNameExists(String name, UUID currentAccountId) {
-        if (tagRepository.existsByName(name, currentAccountId)) {
-            throw new TagNameAlreadyUsedException("Tag name is already used!");
-        }
+    private Tag undeleteTag(String name, UUID currentAccountId) {
+        Tag tag = tagRepository.findByName(name, currentAccountId);
+
+        tag.setDeleted(false);
+        tagRepository.save(tag);
+
+        return tag;
+    }
+
+    private boolean checkIfTagNameExists(String name, UUID currentAccountId) {
+        return tagRepository.existsByName(name, currentAccountId);
+    }
+
+    private boolean checkIfTagIsDeleted(String name, UUID currentAccountId) {
+        Tag tag = tagRepository.findByName(name, currentAccountId);
+
+        return tag.isDeleted();
     }
 
     private Tag getTagById(UUID tagId) {

@@ -25,6 +25,7 @@ public class TagMapper {
         tag.setName(tagRequestDto.name());
         tag.setColor(tagRequestDto.color());
         tag.setAccountId(accountId);
+        tag.setDeleted(false);
 
         return tag;
     }
