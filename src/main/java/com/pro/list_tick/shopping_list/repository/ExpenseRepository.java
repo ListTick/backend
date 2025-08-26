@@ -17,4 +17,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     @Query("SELECT e FROM Expense e JOIN FETCH e.items items JOIN e.shoppingList sl WHERE sl.accountId = :accountId")
     List<Expense> findAllByAccountIdWithItems(UUID accountId);
 
+    @Query("SELECT e FROM Expense e JOIN FETCH e.items items JOIN e.shoppingList sl WHERE e.id = :id")
+    Expense findByIdWithItems(UUID id);
 }
