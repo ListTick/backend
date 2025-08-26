@@ -60,8 +60,16 @@ public class ExpenseController {
         return ResponseEntity.ok(ExpenseMapper.toResponseDto(expense));
     }
 
+  @GetMapping("/{id}/shared")
+  public ResponseEntity<ExpenseResponseDTO> getBySharedExpenseId(@PathVariable UUID id) {
+    log.debug(String.format(requestLogTemplate),
+        "GET", id, "");
+    final var expense = expenseService.getBySharedExpenseId(id);
+    return ResponseEntity.ok(ExpenseMapper.toResponseDto(expense));
+  }
+
     @PostMapping
-    public ResponseEntity<ExpenseResponseDTO> createExpense(@RequestBody ExpenseRequestDTO expenseRequestDTO) {
+    public ResponseEntity<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expenseRequestDTO) {
         log.debug(String.format(requestLogTemplate),
                 "POST", "", expenseRequestDTO);
         final var expense = expenseService.create(expenseRequestDTO);

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.pro.list_tick.shared.AccountAPI;
 import com.pro.list_tick.shared.NotificationAPI;
 import com.pro.list_tick.shopping_list.dto.ExpenseShareResponseDto;
 import com.pro.list_tick.shopping_list.exception.ExpenseException;
@@ -29,9 +30,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ExpenseShareServiceImpl implements ExpenseShareService {
 
+  private final AccountAPI accountAPI;
   private final NotificationAPI notificationAPI;
   private ExpenseShareRepository expenseShareRepository;
 
+  private static final String EXPENSE_ADDED_NOTIFICATION =
+      "The expense has been added for the shopping list %s.";
+
+  private static final String YOU_OWE_NOTIFICATION = " You owe %s %s to the user %s.";
+
+  private static final String YOUR_SHARE_WAS_NOTIFICATION = "Your share was %s %s.";
 
   public ExpenseShare getById(UUID id) {
     log.debug("Getting the shared expense: {}", id);
@@ -43,6 +51,7 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
 
   public List<ExpenseShare> createExpenseShares(Expense expense, ShoppingList shoppingList, UUID accountId) {
     var totalAmount = expense.getAmount();
+    String notificationBase = String.format(EXPENSE_ADDED_NOTIFICATION, shoppingList.getName());
 
     Map<UUID, Integer> accountCostFactorMap = new HashMap<>();
     accountCostFactorMap.put(shoppingList.getAccountId(), shoppingList.getOwnerCostFactor());
@@ -50,8 +59,10 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
         accountCostFactorMap.put(shared.getAccountId(), shared.getCostFactor())
     );
 
+
     List<ExpenseShare> expenseShares = new ArrayList<>();
     for (Map.Entry<UUID, Integer> entry : accountCostFactorMap.entrySet()) {
+      String customNotification;
       BigDecimal shareAmount = totalAmount
           .multiply(BigDecimal.valueOf(entry.getValue()))
           .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
@@ -60,8 +71,19 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
       share.setCurrency(expense.getCurrency());
       if (entry.getKey().equals(accountId)) {
         share.setReimbursed(Boolean.TRUE);
+        customNotification = String.format(YOUR_SHARE_WAS_NOTIFICATION, share.getAmount(), share.getCurrency());
       } else {
         share.setReimbursed(expense.getReimbursed());
+        if (expense.getReimbursed()) {
+          customNotification = String.format(YOUR_SHARE_WAS_NOTIFICATION, share.getAmount(), share.getCurrency());
+        } else {
+          customNotification = String.format(
+              YOU_OWE_NOTIFICATION,
+              share.getAmount(),
+              share.getCurrency(),
+              accountAPI.getEmailByAccountId(shoppingList.getAccountId())
+          );
+        }
       }
       share.setCreationDate(LocalDate.now());
       share.setAccountId(entry.getKey());
@@ -70,7 +92,7 @@ public class ExpenseShareServiceImpl implements ExpenseShareService {
       notificationAPI.create(
           expense.getId(),
           expense.getClass().getSimpleName(),
-          "The shared expense has been added. Your share equals: " + share.getAmount() + " " + share.getCurrency(),
+          String.join(" ", notificationBase, customNotification),
           share.getAccountId()
       );
 

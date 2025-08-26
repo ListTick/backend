@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface ExpenseService {
 
     Expense getById(UUID id);
+    Expense getBySharedExpenseId(UUID id);
     List<ExpenseResponseDTO> getAllByAccountId();
     List<ExpenseShareResponseDto> getAllSharedByAccountId(String status);
     ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO);
