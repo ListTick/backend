@@ -51,6 +51,15 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expense;
     }
 
+    public Expense getBySharedExpenseId(UUID id) {
+      log.debug("Getting the expense by expense share id: {}", id);
+      UUID expenseId = expenseShareService.getById(id).getExpense().getId();
+      Expense expense = expenseRepository.findByIdWithItems(expenseId);
+      validateExpenseAccess(expense);
+
+      return expense;
+    }
+
     public List<ExpenseResponseDTO> getAllByAccountId() {
         var accountId = accountService.getCurrentAccountId();
         log.debug("Getting all expenses for the account id: {}", accountId);
