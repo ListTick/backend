@@ -95,7 +95,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173," +
-                        "https://ec2-56-228-2-97.eu-north-1.compute.amazonaws.com")
+                        "https://ec2-16-171-112-10.eu-north-1.compute.amazonaws.com")
         );
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
