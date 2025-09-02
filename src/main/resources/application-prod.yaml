@@ -16,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://ec2-56-228-2-97.eu-north-1.compute.amazonaws.com/auth/realms/listtick
+          issuer-uri: https://ec2-16-171-112-10.eu-north-1.compute.amazonaws.com/auth/realms/listtick
 
 datasource:
   database:
